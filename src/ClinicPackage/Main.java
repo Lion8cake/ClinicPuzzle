@@ -1,8 +1,6 @@
 package ClinicPackage;
 
 import java.awt.Graphics;
-import java.awt.image.ImageObserver;
-
 import ClinicPackage.IO.FileIO;
 import Lion8cake.Texture2D;
 
