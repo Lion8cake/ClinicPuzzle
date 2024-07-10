@@ -1,7 +1,6 @@
 package ClinicPackage;
 
 import ClinicPackage.IO.FileIO;
-import Lion8cake.Logging;
 
 public class Main 
 {
@@ -14,7 +13,6 @@ public class Main
 	
 	public void Initialisation()
 	{
-		//System.out.println("Initialised");
 		FileIO.CheckFolderspace();
 		Logging.Log("Initialised", Logging.LoggingType.Base);
 		//Code runs here

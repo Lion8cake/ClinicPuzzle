@@ -5,8 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import ClinicPackage.Logging;
 import ClinicPackage.Main;
-import Lion8cake.Logging;
 
 public class FileIO {
 	
@@ -14,10 +14,13 @@ public class FileIO {
 	
 	final public static String LogsFolderName = (String)(Main.GameName + "-logs");
 	
+	final public static String BackupLogsFolderName = "Archived";
+	
 	public static void CheckFolderspace()
 	{
 		Path path = Paths.get(FolderPath);
 		Path logs = Paths.get(FolderPath + "/" + LogsFolderName);
+		Path backupLogs = Paths.get(FolderPath + "/" + LogsFolderName + "/" + BackupLogsFolderName);
 		//Main Path
 		if (Files.exists(path))
 			Logging.Log("Found File Path, Game will save to: " + path, Logging.LoggingType.File);
@@ -26,6 +29,9 @@ public class FileIO {
 		//Logs Path
 		if (!Files.exists(logs))
 			CreateDirectory(logs, false);
+		//Logs Archive Path
+		if (!Files.exists(backupLogs))
+			CreateDirectory(backupLogs, false);
 	}
 	
 	public static void CreateDirectory(Path path, boolean isCoreFolders)

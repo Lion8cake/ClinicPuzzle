@@ -1,7 +1,5 @@
 package ClinicPackage;
 import javax.swing.JFrame;
-
-import Lion8cake.Logging;
 import Lion8cake.Texture2D;
 
 public class ClinicPuzzel {
@@ -12,11 +10,10 @@ public class ClinicPuzzel {
 		window.setResizable(false);
 		window.setLocationRelativeTo(null);
 
+		Logging.InitiateLogs();
 		Game clinicPuzzel = new Game(new Main());
 		window.add(clinicPuzzel);
 		window.pack();
-		
-		Logging.Log("Game Started", Logging.LoggingType.Base);
 		
 		window.setIconImage(Texture2D.GetIcon());
 		window.setTitle("Game");

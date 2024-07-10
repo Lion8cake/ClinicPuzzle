@@ -6,11 +6,10 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 
 public class Game extends JPanel implements Runnable {
-	
 	/**
-	 * 
+	 * Version of the program
 	 */
-	private static final long serialVersionUID = 8709608860820656319L;
+	private static final long serialVersionUID = 1L;
 	
 	final int originalBlockSize = 16;
 	final int scale = 3;
