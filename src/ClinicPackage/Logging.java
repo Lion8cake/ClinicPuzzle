@@ -11,6 +11,9 @@ import java.nio.file.StandardCopyOption;
 import ClinicPackage.IO.FileIO;
 import Lion8cake.TimeFormatting;
 
+
+//TODO: Add miliseconds to the log text (not file name)
+//TODO: Add support for NON-logging system outputs (ie. System.out/System.err and error/exceptions)
 public class Logging {
 	
 	public enum LoggingType {
