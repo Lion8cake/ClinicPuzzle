@@ -14,11 +14,11 @@ public class Game extends JPanel implements Runnable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	final int originalBlockSize = 16; //From here
-	final int scale = 3;
+	final int originalBlockSize = 32; //From here
+	final int scale = 1;
 	final int blockSize = originalBlockSize * scale;
-	final int screenWidth = blockSize * 16;
-	final int screenHeight = blockSize * 12;
+	final int screenWidth = blockSize * 12;
+	final int screenHeight = blockSize * 10;
 	InputHandler gameKeyHandler = new InputHandler();
 	Thread gameThread; //To here, remnants from a game making tutorial (im smart but ive never made the jump from barebones/nothing to a game making platform through java ok ;-;)
 	//Maybe remove?, ill most likely have a settings option for window size in the future so who knows what'll happen with this.

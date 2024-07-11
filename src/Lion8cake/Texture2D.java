@@ -6,6 +6,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 //Image System Made by Lion8cake
+//TODO: ADD DICTIONARY SO IMAGES AREN'T CONSTANTLY BEING GOTTEN FROM THE SOURCE FILES!!
 public class Texture2D {
 
 	private static String[] ValidExtentions = { ".png", ".ico" }; //reads .Ico files that are just renamed .png files because I cannot be bothered making a whole .Ico reader
