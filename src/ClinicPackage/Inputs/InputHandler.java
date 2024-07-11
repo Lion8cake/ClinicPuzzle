@@ -2,8 +2,7 @@ package ClinicPackage.Inputs;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
-import ClinicPackage.Main;
+import ClinicPackage.Player;
 
 public class InputHandler implements KeyListener {
 
@@ -15,19 +14,19 @@ public class InputHandler implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_W)
 		{
-			Main.kUp = true;
+			Player.kUp = true;
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_S)
 		{
-			Main.kDown = true;
+			Player.kDown = true;
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_A)
 		{
-			Main.kLeft = true;
+			Player.kLeft = true;
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_D)
 		{
-			Main.kRight = true;
+			Player.kRight = true;
 		}
 	}
 
@@ -35,19 +34,19 @@ public class InputHandler implements KeyListener {
 	public void keyReleased(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_W)
 		{
-			Main.kUp = false;
+			Player.kUp = false;
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_S)
 		{
-			Main.kDown = false;
+			Player.kDown = false;
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_A)
 		{
-			Main.kLeft = false;
+			Player.kLeft = false;
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_D)
 		{
-			Main.kRight = false;
+			Player.kRight = false;
 		}
 	}
 }

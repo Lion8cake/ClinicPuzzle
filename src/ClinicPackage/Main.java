@@ -13,22 +13,11 @@ public class Main
 	 */
 	public Main Instance;
 	
-	public static boolean kUp = false;
-	
-	public static boolean kDown = false;
-	
-	public static boolean kLeft = false;
-	
-	public static boolean kRight = false;
-	
-	//Remove in favor for a Player object
-	public int playerX = 0;
-	
-	public int playerY = 0;
-	
-	public int playerSpeed = 4;
-	
 	final public static String GameName = "ClinicPuzzelGame"; //Shouldn't have spaces
+	
+	final private static int MAXPLAYERS = 1;
+	
+	public static Player[] player = new Player[MAXPLAYERS]; //Not multiplayer so we only need 1 player
 	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
 	 * Runs when the game opens or until the Instance of the game is loaded.
@@ -37,6 +26,10 @@ public class Main
 	public void Initialisation()
 	{
 		FileIO.CheckFolderspace();
+		for (int plr = 0; plr < MAXPLAYERS; plr++)
+		{
+			player[plr] = new Player();
+		}
 		//Code runs here
 		Logging.Log("Initialised", LoggingType.Base);
 		Instance = this;
@@ -48,31 +41,25 @@ public class Main
 	 */
 	public void Update()
 	{
-		Logging.Log("Key Up is pressed: " + kUp, LoggingType.Base);
-		if (kUp)
+		for (int plr = 0; plr < MAXPLAYERS; plr++)
 		{
-			playerY -= playerSpeed;
-		}
-		if (kDown)
-		{
-			playerY += playerSpeed;
-		}
-		if (kLeft)
-		{
-			playerX -= playerSpeed;
-		}
-		if (kRight)
-		{
-			playerX += playerSpeed;
+			player[plr].Update();
 		}
 	}
 	
-	/**The method that does all of the game's drawing. This is seperate from Update as it contains both a
-	 * graphics parameter and repaints the screen accordingly to every update. <br />
+	/**The method that does all of the game's drawing. This is seperate from Update as it repaints the screen accordingly to every update. <br />
 	 * NOTE: ANYTHING DRAWN OUTSIDE OF THIS METHOD OR ANY METHODS CALLED INSIDE WILL **NOT** BE UPDATED
 	 */
 	public void DoDraw(Graphics graphics)
 	{
-		graphics.drawImage(Texture2D.Get("PlayerTest"), playerX, playerY, 32, 32, null);
+		DrawPlayers(graphics);
+	}
+	
+	public void DrawPlayers(Graphics graphics)
+	{
+		for (int plr = 0; plr < MAXPLAYERS; plr++)
+		{
+			graphics.drawImage(Texture2D.Get("PlayerTest"), player[plr].x, player[plr].y, 32, 32, null);
+		}
 	}
 }

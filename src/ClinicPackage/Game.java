@@ -31,6 +31,8 @@ public class Game extends JPanel implements Runnable {
 	 */
 	final private static int _ANCHOREDFPS = 60;
 	
+	final private static double _NANOSECONDFPS = 1000000000/_ANCHOREDFPS;
+	
 	public Game(Main main)
 	{
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -50,31 +52,27 @@ public class Game extends JPanel implements Runnable {
 
 	@Override
 	public void run() {
-		double actionInterval = 1000000000/_ANCHOREDFPS;
-		double upcomingActionTime = System.nanoTime() + actionInterval;
+		double frameDelta = 0;
+		long nanoTimeOld = System.nanoTime();
+		long nanoTime;
 		
 		while (gameThread != null)
 		{
-			Main main = gameSystem;
-			if (main.Instance == null)
-			{
-				main.Initialisation();
-			}
-			main.Update();
-			repaint();
+			nanoTime = System.nanoTime();
+			frameDelta += (nanoTime - nanoTimeOld) / _NANOSECONDFPS;
+			nanoTimeOld = nanoTime;
 			
-			try {
-				double remainingActionTime = upcomingActionTime - System.nanoTime();
-				remainingActionTime = remainingActionTime/1000000;
-				if (remainingActionTime < 0)
-					remainingActionTime = 0;
-				
-				Thread.sleep((long)remainingActionTime);
-				upcomingActionTime += actionInterval;
-			}
-			catch (InterruptedException e)
+			if (frameDelta >= 1)
 			{
-				e.printStackTrace();
+				Main main = gameSystem;
+				if (main.Instance == null)
+				{
+					main.Initialisation();
+				}
+				main.Update();
+				repaint();
+				
+				frameDelta--;
 			}
 		}
 	}
