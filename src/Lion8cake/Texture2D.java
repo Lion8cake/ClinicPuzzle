@@ -3,6 +3,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Hashtable;
 import javax.imageio.ImageIO;
 
 //Image System Made by Lion8cake
@@ -10,6 +11,8 @@ import javax.imageio.ImageIO;
 public class Texture2D {
 
 	private static String[] ValidExtentions = { ".png", ".ico" }; //reads .Ico files that are just renamed .png files because I cannot be bothered making a whole .Ico reader
+	
+	private static Hashtable<String, Image> ImageDictionary = new Hashtable<String, Image>();
 	
 	/**Named after Microsoft's Texture2D although it doesn't work the same way.
 	 * <p>Gets the image based on the string path inputed, the path will extend off the Resources folder for this project.
@@ -19,15 +22,19 @@ public class Texture2D {
 	public static Image Get(String texturePath)
 	{
 		Image value = null;
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); //Get the ClassLoader
-    	try {
-    		String FilePath = readImageFile(texturePath, classLoader);
-    		value = ImageIO.read(classLoader.getResourceAsStream(FilePath));  //Call the readImageFile method, returns String, we put the result of the method into the TexturePath String 
+		value = ImageDictionary.get(texturePath);
+		if (value == null)
+		{
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); //Get the ClassLoader
+	    	try {
+	    		String FilePath = readImageFile(texturePath, classLoader);
+	    		value = ImageIO.read(classLoader.getResourceAsStream(FilePath));  //Call the readImageFile method, returns String, we put the result of the method into the TexturePath String 
+	    		ImageDictionary.put(texturePath, value);
+	    	}
+	    	catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-    	catch (IOException e) {
-			e.printStackTrace();
-		}
-    	
     	return value;
 	}
 	

@@ -54,6 +54,11 @@ public class Logging {
 	    }  
 	}
 	
+	public static void Log(String loggedText)
+	{
+		Log(loggedText, LoggingType.Base);
+	}
+	
 	public static void InitiateLogs()
 	{
 		Path logs = Paths.get(FileIO.FolderPath + "/" + FileIO.LogsFolderName);

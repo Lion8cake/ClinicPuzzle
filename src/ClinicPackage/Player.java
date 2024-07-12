@@ -13,12 +13,14 @@ public class Player extends Entity {
 	public Player()
 	{
 		SetStaticDefaults();
+		x *= 32;
+		y *= 32;
 	}
 	
 	public void SetStaticDefaults()
 	{
-		x = 0;
-		y = 0;
+		x = 7;
+		y = 5;
 		velocityY = 4;
 		velocityX = 4;
 	}

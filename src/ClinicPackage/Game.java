@@ -17,7 +17,7 @@ public class Game extends JPanel implements Runnable {
 	final int originalBlockSize = 32; //From here
 	final int scale = 1;
 	final int blockSize = originalBlockSize * scale;
-	final int screenWidth = blockSize * 12;
+	final int screenWidth = blockSize * 18;
 	final int screenHeight = blockSize * 10;
 	InputHandler gameKeyHandler = new InputHandler();
 	Thread gameThread; //To here, remnants from a game making tutorial (im smart but ive never made the jump from barebones/nothing to a game making platform through java ok ;-;)
