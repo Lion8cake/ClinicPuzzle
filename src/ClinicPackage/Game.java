@@ -14,15 +14,10 @@ public class Game extends JPanel implements Runnable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	final int originalBlockSize = 32; //From here
-	final int scale = 1;
-	final int blockSize = originalBlockSize * scale;
-	final int screenWidth = blockSize * 18;
-	final int screenHeight = blockSize * 10;
+	static int screenWidth = 32 * 12;
+	static int screenHeight = 32 * 8;
 	InputHandler gameKeyHandler = new InputHandler();
-	Thread gameThread; //To here, remnants from a game making tutorial (im smart but ive never made the jump from barebones/nothing to a game making platform through java ok ;-;)
-	//Maybe remove?, ill most likely have a settings option for window size in the future so who knows what'll happen with this.
-	
+	Thread gameThread;
 	Main gameSystem;
 	
 	/**Tied how many frames the game runs its calculations at. <br />
@@ -49,7 +44,7 @@ public class Game extends JPanel implements Runnable {
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
-
+	
 	@Override
 	public void run() {
 		double frameDelta = 0;
@@ -65,6 +60,8 @@ public class Game extends JPanel implements Runnable {
 			if (frameDelta >= 1)
 			{
 				Main main = gameSystem;
+				main.ScreenWidth = this.screenWidth;
+				main.ScreenHeight = this.screenHeight;
 				if (main.Instance == null)
 				{
 					main.Initialisation();

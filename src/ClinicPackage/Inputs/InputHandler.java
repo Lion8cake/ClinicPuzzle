@@ -2,6 +2,8 @@ package ClinicPackage.Inputs;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import ClinicPackage.Main;
 import ClinicPackage.Player;
 
 public class InputHandler implements KeyListener {
@@ -27,6 +29,14 @@ public class InputHandler implements KeyListener {
 		else if (e.getKeyCode() == KeyEvent.VK_D)
 		{
 			Player.kRight = true;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_EQUALS)
+		{
+			Main.Zoom(1);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_MINUS)
+		{
+			Main.Zoom(-1);
 		}
 	}
 

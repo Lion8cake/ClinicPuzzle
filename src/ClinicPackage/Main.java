@@ -19,6 +19,28 @@ public class Main
 	
 	final public static String GameName = "ClinicPuzzelGame"; //Shouldn't have spaces
 	
+	//Window Size
+	public int ScreenWidth;
+	
+	public int ScreenHeight;
+	
+	//Camera
+	public int cameraX;
+	
+	public int cameraY;
+	
+	public int cameraCenteredX;
+	
+	public int cameraCenteredY;
+	
+	public static int drawScale = 32;
+	
+	//Distance rendered around the player
+	public static int renderDistX = 10;
+	
+	public static int renderDistY = 10;
+	
+	//Tiles
 	final private static int MAXIMUMTILEX = Byte.MAX_VALUE;
 	
 	final private static int MAXIMUMTILEY = Byte.MAX_VALUE;
@@ -29,11 +51,15 @@ public class Main
 	
 	public static Tile[][] tile = new Tile[MAXIMUMTILEX][MAXIMUMTILEY];
 	
+	//Rooms
 	public int RoomID = 2;
 	
+	//Players
 	final private static int MAXPLAYERS = 1; //Not multiplayer so we only need 1 player
 	
 	public static Player[] player = new Player[MAXPLAYERS]; 
+	
+	public static int myPlayer;
 	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
 	 * Runs when the game opens or until the Instance of the game is loaded.
@@ -42,14 +68,20 @@ public class Main
 	public void Initialisation()
 	{
 		FileIO.CheckFolderspace();
-		//AssetBank.InitiliseTextures();
+		//AssetBank.InitiliseTextures(); //AssetBank used to be a place that stored frequently used textures. Removed due to Texture2D optimisations
 		//Logging.Log("Initialised Textures", LoggingType.Base);
+		if (player[myPlayer] == null)
+		{
+			player[myPlayer] = new Player();
+		}
 		for (int plr = 0; plr < MAXPLAYERS; plr++)
 		{
 			player[plr] = new Player();
 		}
 		Logging.Log("Initialised Players", LoggingType.Base);
 		//Logging.Log("/RoomLayoutData/MapLayout" + RoomID + ".rld");
+		cameraCenteredX = ScreenWidth / 2;
+		cameraCenteredY = ScreenHeight / 2;
 		LoadRoom();
 		//Code runs here
 		Logging.Log("Initialisation Finished", LoggingType.Base);
@@ -104,6 +136,9 @@ public class Main
 		{
 			player[plr].Update();
 		}
+		cameraX = player[myPlayer].x;
+		cameraY = player[myPlayer].y;
+		Logging.Log("Scale: " + drawScale);
 	}
 	
 	/**The method that does all of the game's drawing. This is seperate from Update as it repaints the screen accordingly to every update. <br />
@@ -117,17 +152,14 @@ public class Main
 	
 	public void RenderTileArray(Graphics graphics)
 	{
-		int mapX = 0;
-		int mapY = 0;
-		
-		while (mapX < maxTilesX && mapY < maxTilesY)
+		for (int mapX = (cameraX / 32) - renderDistX; mapX < (cameraX / 32) + 1 + renderDistX; mapX++)
 		{
-			DrawTiles(graphics, mapX, mapY);
-			mapX++;
-			if (mapX >= maxTilesX)
+			for (int mapY = (cameraY / 32) - renderDistY; mapY < (cameraY / 32) + 1 + renderDistY; mapY++)
 			{
-				mapX = 0;
-				mapY++;
+				if (mapX > 0 && mapY > 0 && mapX < MAXIMUMTILEX && mapY < MAXIMUMTILEY)
+				{
+					DrawTiles(graphics, mapX, mapY);
+				}
 			}
 		}
 	}
@@ -135,17 +167,22 @@ public class Main
 	public void DrawTiles(Graphics graphics, int x, int y)
 	{
 		Image value = null;
-		if (tile[x][y].Type == 1)
+		int i = (x * 32) - cameraX + (cameraCenteredX - 16);
+		int j = (y * 32) - cameraY + (cameraCenteredY - 16);
+		if (tile[x][y] != null)
 		{
-			value = Texture2D.Get("FloorTest");
-		}
-		else if (tile[x][y].Type == 2)
-		{
-			value = Texture2D.Get("WallTest");
+			if (tile[x][y].Type == 1)
+			{
+				value = Texture2D.Get("FloorTest");
+			}
+			else if (tile[x][y].Type == 2)
+			{
+				value = Texture2D.Get("WallTest");
+			}
 		}
 		if (value != null)
 		{
-			graphics.drawImage(value, x * 32, y * 32, 32, 32, null);
+			graphics.drawImage(value, i, j, 32, 32, null);
 		}
 	}
 	
@@ -153,7 +190,14 @@ public class Main
 	{
 		for (int plr = 0; plr < MAXPLAYERS; plr++)
 		{
-			graphics.drawImage(Texture2D.Get("PlayerTest"), player[plr].x, player[plr].y, 32, 32, null);
+			int i = player[plr].x - cameraX + (cameraCenteredX - 16);
+			int j = player[plr].y - cameraY + (cameraCenteredY - 16);
+			graphics.drawImage(Texture2D.Get("PlayerTest"), i, j, 32, 32, null);
 		}
+	}
+	
+	public static void Zoom(int zoomAmount)
+	{
+		drawScale += zoomAmount;
 	}
 }
