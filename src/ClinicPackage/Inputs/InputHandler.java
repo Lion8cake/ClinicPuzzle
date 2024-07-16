@@ -32,11 +32,11 @@ public class InputHandler implements KeyListener {
 		}
 		if (e.getKeyCode() == KeyEvent.VK_EQUALS)
 		{
-			Main.Zoom(1);
+			Main.Zoom(0.1f);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_MINUS)
 		{
-			Main.Zoom(-1);
+			Main.Zoom(-0.1f);
 		}
 	}
 

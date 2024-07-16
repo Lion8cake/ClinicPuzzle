@@ -33,7 +33,7 @@ public class Main
 	
 	public int cameraCenteredY;
 	
-	public static int drawScale = 32;
+	public static float drawScale = 1f;
 	
 	//Distance rendered around the player
 	public static int renderDistX = 10;
@@ -50,6 +50,8 @@ public class Main
 	public static int maxTilesY = 1;
 	
 	public static Tile[][] tile = new Tile[MAXIMUMTILEX][MAXIMUMTILEY];
+	
+	public static int tileSize = 32;
 	
 	//Rooms
 	public int RoomID = 2;
@@ -136,8 +138,11 @@ public class Main
 		{
 			player[plr].Update();
 		}
-		cameraX = player[myPlayer].x;
-		cameraY = player[myPlayer].y;
+		tileSize = (int)(32 * drawScale);
+		renderDistX = (int)(10 * drawScale);
+		renderDistY = (int)(10 * drawScale);
+		cameraX = (int)(player[myPlayer].x * drawScale);
+		cameraY = (int)(player[myPlayer].y * drawScale);
 		Logging.Log("Scale: " + drawScale);
 	}
 	
@@ -148,6 +153,13 @@ public class Main
 	{
 		RenderTileArray(graphics);
 		DrawPlayers(graphics);
+	}
+	
+	public static void DrawAsset(Graphics graphics, Image image, int x, int y, float Scale)
+	{
+		int sizeX = (int)(image.getWidth(null) * drawScale * Scale);
+		int sizeY = (int)(image.getHeight(null) * drawScale * Scale);
+		graphics.drawImage(image, x, y, sizeX, sizeY, null);
 	}
 	
 	public void RenderTileArray(Graphics graphics)
@@ -167,8 +179,8 @@ public class Main
 	public void DrawTiles(Graphics graphics, int x, int y)
 	{
 		Image value = null;
-		int i = (x * 32) - cameraX + (cameraCenteredX - 16);
-		int j = (y * 32) - cameraY + (cameraCenteredY - 16);
+		int i = (x * tileSize) - cameraX + (cameraCenteredX - tileSize / 2);
+		int j = (y * tileSize) - cameraY + (cameraCenteredY - tileSize / 2);
 		if (tile[x][y] != null)
 		{
 			if (tile[x][y].Type == 1)
@@ -182,7 +194,8 @@ public class Main
 		}
 		if (value != null)
 		{
-			graphics.drawImage(value, i, j, 32, 32, null);
+			//graphics.drawImage(value, i, j, 32, 32, null);
+			DrawAsset(graphics, value, i, j, 1f);
 		}
 	}
 	
@@ -190,14 +203,18 @@ public class Main
 	{
 		for (int plr = 0; plr < MAXPLAYERS; plr++)
 		{
-			int i = player[plr].x - cameraX + (cameraCenteredX - 16);
-			int j = player[plr].y - cameraY + (cameraCenteredY - 16);
-			graphics.drawImage(Texture2D.Get("PlayerTest"), i, j, 32, 32, null);
+			int i = (int)(player[plr].x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);
+			int j = (int)(player[plr].y * drawScale) - cameraY + (cameraCenteredY - tileSize / 2);
+			DrawAsset(graphics, Texture2D.Get("PlayerTest"), i, j, 1f);
 		}
 	}
 	
-	public static void Zoom(int zoomAmount)
+	public static void Zoom(float zoomAmount)
 	{
 		drawScale += zoomAmount;
+		if (drawScale < 0.5f)
+			drawScale = 0.5f;
+		if (drawScale > 2f)
+			drawScale = 2f;
 	}
 }
