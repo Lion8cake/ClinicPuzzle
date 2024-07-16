@@ -1,5 +1,7 @@
 package ClinicPackage;
 
+import java.awt.Rectangle;
+
 public class Entity {
 	
 	/**The X position of the entity.
@@ -19,4 +21,16 @@ public class Entity {
 	 * Use VelocityX for the entity's X velocity.
 	 */
 	public float velocityY;
+	
+	/**The Width of the Entity Hitbox.
+	 */
+	public int Width;
+	
+	/**The Height of the Entity Hitbox.
+	 */
+	public int Height;
+	
+	/**The collision rectangle of the Entity
+	 */
+	protected Rectangle hitbox;
 }

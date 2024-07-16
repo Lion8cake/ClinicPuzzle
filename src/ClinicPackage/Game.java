@@ -60,8 +60,8 @@ public class Game extends JPanel implements Runnable {
 			if (frameDelta >= 1)
 			{
 				Main main = gameSystem;
-				main.ScreenWidth = this.screenWidth;
-				main.ScreenHeight = this.screenHeight;
+				main.ScreenWidth = screenWidth;
+				main.ScreenHeight = screenHeight;
 				if (main.Instance == null)
 				{
 					main.Initialisation();

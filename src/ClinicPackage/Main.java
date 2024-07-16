@@ -36,9 +36,13 @@ public class Main
 	public static float drawScale = 1f;
 	
 	//Distance rendered around the player
-	public static int renderDistX = 10;
+	private static int renderDistX;
 	
-	public static int renderDistY = 10;
+	private static int renderDistY;
+	
+	public static int renderX = 12;
+	
+	public static int renderY = 12;
 	
 	//Tiles
 	final private static int MAXIMUMTILEX = Byte.MAX_VALUE;
@@ -52,6 +56,8 @@ public class Main
 	public static Tile[][] tile = new Tile[MAXIMUMTILEX][MAXIMUMTILEY];
 	
 	public static int tileSize = 32;
+	
+	public static boolean[] tileSolid = new boolean[3];
 	
 	//Rooms
 	public int RoomID = 2;
@@ -85,9 +91,17 @@ public class Main
 		cameraCenteredX = ScreenWidth / 2;
 		cameraCenteredY = ScreenHeight / 2;
 		LoadRoom();
+		InitiateTileSettings();
 		//Code runs here
 		Logging.Log("Initialisation Finished", LoggingType.Base);
 		Instance = this;
+	}
+	
+	public void InitiateTileSettings()
+	{
+		tileSolid[0] = true;
+		tileSolid[1] = false;
+		tileSolid[2] = true;
 	}
 	
 	public void LoadRoom()
@@ -139,11 +153,11 @@ public class Main
 			player[plr].Update();
 		}
 		tileSize = (int)(32 * drawScale);
-		renderDistX = (int)(10 * drawScale);
-		renderDistY = (int)(10 * drawScale);
+		renderDistX = (int)(renderX * drawScale);
+		renderDistY = (int)(renderY * drawScale);
 		cameraX = (int)(player[myPlayer].x * drawScale);
 		cameraY = (int)(player[myPlayer].y * drawScale);
-		Logging.Log("Scale: " + drawScale);
+		//Logging.Log("Scale: " + drawScale);
 	}
 	
 	/**The method that does all of the game's drawing. This is seperate from Update as it repaints the screen accordingly to every update. <br />
@@ -164,9 +178,9 @@ public class Main
 	
 	public void RenderTileArray(Graphics graphics)
 	{
-		for (int mapX = (cameraX / 32) - renderDistX; mapX < (cameraX / 32) + 1 + renderDistX; mapX++)
+		for (int mapX = (cameraX / tileSize) - renderDistX; mapX < (cameraX / tileSize) + 1 + renderDistX; mapX++)
 		{
-			for (int mapY = (cameraY / 32) - renderDistY; mapY < (cameraY / 32) + 1 + renderDistY; mapY++)
+			for (int mapY = (cameraY / tileSize) - renderDistY; mapY < (cameraY / tileSize) + 1 + renderDistY; mapY++)
 			{
 				if (mapX > 0 && mapY > 0 && mapX < MAXIMUMTILEX && mapY < MAXIMUMTILEY)
 				{
@@ -206,6 +220,11 @@ public class Main
 			int i = (int)(player[plr].x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);
 			int j = (int)(player[plr].y * drawScale) - cameraY + (cameraCenteredY - tileSize / 2);
 			DrawAsset(graphics, Texture2D.Get("PlayerTest"), i, j, 1f);
+			
+			//Hitbox Drawing
+			/*int i2 = (int)(player[plr].hitbox.x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);
+			int j2 = (int)(player[plr].hitbox.y * drawScale) - cameraY + (cameraCenteredY - tileSize / 2);
+			graphics.drawImage(Texture2D.Get("TestBarrier"), i2, j2, player[plr].hitbox.width, player[plr].hitbox.height, null);*/
 		}
 	}
 	
