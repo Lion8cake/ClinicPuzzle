@@ -33,4 +33,17 @@ public class Entity {
 	/**The collision rectangle of the Entity
 	 */
 	protected Rectangle hitbox;
+	
+	/**The frame Rectangle of the Entity
+	 * Use frameXCount and frameYCount instead of this.
+	 */
+	public Rectangle sourceFrame;
+	
+	public int frameX = 0;
+	
+	public int frameY = 0;
+	
+	public int frameXCount = 1;
+	
+	public int frameYCount = 1;
 }

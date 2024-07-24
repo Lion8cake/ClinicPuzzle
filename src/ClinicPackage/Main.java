@@ -2,11 +2,14 @@ package ClinicPackage;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import ClinicPackage.Logging.LoggingType;
+import ClinicPackage.IDs.TileID;
 import ClinicPackage.IO.FileIO;
 import Lion8cake.Texture2D;
 
@@ -57,7 +60,7 @@ public class Main
 	
 	public static int tileSize = 32;
 	
-	public static boolean[] tileSolid = new boolean[3];
+	public static boolean[] tileSolid = new boolean[Byte.MAX_VALUE];
 	
 	//Rooms
 	public int RoomID = 2;
@@ -102,6 +105,7 @@ public class Main
 		tileSolid[0] = true;
 		tileSolid[1] = false;
 		tileSolid[2] = true;
+		tileSolid[3] = true;
 	}
 	
 	public void LoadRoom()
@@ -171,9 +175,22 @@ public class Main
 	
 	public static void DrawAsset(Graphics graphics, Image image, int x, int y, float Scale)
 	{
+		Rectangle frame = null;
+		DrawAsset(graphics, image, x, y, frame, Scale);
+	}
+	
+	public static void DrawAsset(Graphics graphics, Image image, int x, int y, Rectangle frame, float Scale)
+	{
+		BufferedImage img = (BufferedImage)(image);
 		int sizeX = (int)(image.getWidth(null) * drawScale * Scale);
 		int sizeY = (int)(image.getHeight(null) * drawScale * Scale);
-		graphics.drawImage(image, x, y, sizeX, sizeY, null);
+		if (frame != null)
+		{
+			sizeX = (int)(frame.width * drawScale * Scale);
+			sizeY = (int)(frame.height * drawScale * Scale);
+			img = img.getSubimage(frame.x, frame.y, frame.width, frame.height);
+		}
+		graphics.drawImage(img, x, y, sizeX, sizeY, null);
 	}
 	
 	public void RenderTileArray(Graphics graphics)
@@ -197,13 +214,17 @@ public class Main
 		int j = (y * tileSize) - cameraY + (cameraCenteredY - tileSize / 2);
 		if (tile[x][y] != null)
 		{
-			if (tile[x][y].Type == 1)
+			if (tile[x][y].Type == TileID.TestFloor)
 			{
 				value = Texture2D.Get("FloorTest");
 			}
-			else if (tile[x][y].Type == 2)
+			else if (tile[x][y].Type == TileID.TestWall)
 			{
 				value = Texture2D.Get("WallTest");
+			}
+			else if (tile[x][y].Type == TileID.TestObject)
+			{
+				value = Texture2D.Get("InteractionObjectTest");
 			}
 		}
 		if (value != null)
@@ -217,9 +238,18 @@ public class Main
 	{
 		for (int plr = 0; plr < MAXPLAYERS; plr++)
 		{
-			int i = (int)(player[plr].x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);
-			int j = (int)(player[plr].y * drawScale) - cameraY + (cameraCenteredY - tileSize / 2);
-			DrawAsset(graphics, Texture2D.Get("PlayerTest"), i, j, 1f);
+			Player playr = player[plr];
+			Image img = Texture2D.Get("PlayerTest");
+			
+			int frameX = img.getWidth(null) / playr.frameXCount * playr.frameX;
+			int frameY = img.getHeight(null) / playr.frameYCount * playr.frameY;
+			int frameWidth = img.getWidth(null) / playr.frameXCount * (playr.frameX + 1);
+			int frameHeight = img.getHeight(null) / playr.frameYCount * (playr.frameY + 1);
+			playr.sourceFrame = new Rectangle(frameX, frameY, frameWidth, frameHeight);
+			
+			int i = (int)(playr.x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);
+			int j = (int)(playr.y * drawScale) - cameraY + (cameraCenteredY - tileSize / 2);
+			DrawAsset(graphics, img, i, j, playr.sourceFrame, 1f);
 			
 			//Hitbox Drawing
 			/*int i2 = (int)(player[plr].hitbox.x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);

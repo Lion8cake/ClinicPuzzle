@@ -30,6 +30,10 @@ public class InputHandler implements KeyListener {
 		{
 			Player.kRight = true;
 		}
+		if (e.getKeyCode() == KeyEvent.VK_SPACE)
+		{
+			Player.kSpace = true;
+		}
 		if (e.getKeyCode() == KeyEvent.VK_EQUALS)
 		{
 			Main.Zoom(0.1f);
@@ -57,6 +61,10 @@ public class InputHandler implements KeyListener {
 		else if (e.getKeyCode() == KeyEvent.VK_D)
 		{
 			Player.kRight = false;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_SPACE)
+		{
+			Player.kSpace = false;
 		}
 	}
 }

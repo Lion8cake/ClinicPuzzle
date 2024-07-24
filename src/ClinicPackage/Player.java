@@ -12,8 +12,13 @@ public class Player extends Entity {
 	
 	public static boolean kRight = false;
 	
+	public static boolean kSpace = false;
+	
+	public static boolean IsInteracting = false;
+	
 	public boolean[] isColliding = new boolean[4];
 	
+	public int dirFacing = 0;
 	public Player()
 	{
 		for (int col = 0; col < isColliding.length; col++)
@@ -31,6 +36,12 @@ public class Player extends Entity {
 		velocityX = 4;
 		Width = 32;
 		Height = 32;
+		frameXCount = 4;
+	}
+	
+	public void ResetEffects()
+	{
+		IsInteracting = false;
 	}
 	
 	public void UpdateSpeeds()
@@ -65,28 +76,46 @@ public class Player extends Entity {
 		if (Player.kUp && !isColliding[0])
 		{
 			y -= velocityY;
+			dirFacing = 2;
 		}
 		if (Player.kDown && !isColliding[1])
 		{
 			y += velocityY;
+			dirFacing = 0;
 		}
 		if (Player.kLeft && !isColliding[2])
 		{
 			x -= velocityX;
+			dirFacing = 1;
 		}
 		if (Player.kRight && !isColliding[3])
 		{
 			x += velocityX;
+			dirFacing = 3;
 		}
 	}
 	
 	public void Update()
 	{
+		ResetEffects();
 		hitbox = new Rectangle(x, y, Width, Height);
 		UpdateSpeeds();
+		frameX = dirFacing;
 		for (int col = 0; col < isColliding.length; col++)
 		{
 			isColliding[col] = false;
+		}
+		if (kSpace)
+		{
+			IsInteracting = true;
+		}
+	}
+	
+	public void Interaction()
+	{
+		if (IsInteracting)
+		{
+			
 		}
 	}
 }
