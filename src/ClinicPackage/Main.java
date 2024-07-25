@@ -36,7 +36,7 @@ public class Main
 	
 	public int cameraCenteredY;
 	
-	public static float drawScale = 1f;
+	public static float drawScale = 2f;
 	
 	//Distance rendered around the player
 	private static int renderDistX;
@@ -61,6 +61,8 @@ public class Main
 	public static int tileSize = 32;
 	
 	public static boolean[] tileSolid = new boolean[Byte.MAX_VALUE];
+	
+	public static boolean[] tileInteractable = new boolean[Byte.MAX_VALUE];
 	
 	//Rooms
 	public int RoomID = 2;
@@ -106,6 +108,10 @@ public class Main
 		tileSolid[1] = false;
 		tileSolid[2] = true;
 		tileSolid[3] = true;
+		tileInteractable[0] = false;
+		tileInteractable[1] = false;
+		tileInteractable[2] = false;
+		tileInteractable[3] = true;
 	}
 	
 	public void LoadRoom()
@@ -243,14 +249,18 @@ public class Main
 			
 			int frameX = img.getWidth(null) / playr.frameXCount * playr.frameX;
 			int frameY = img.getHeight(null) / playr.frameYCount * playr.frameY;
-			int frameWidth = img.getWidth(null) / playr.frameXCount * (playr.frameX + 1);
-			int frameHeight = img.getHeight(null) / playr.frameYCount * (playr.frameY + 1);
+			int frameWidth = img.getWidth(null) / playr.frameXCount;
+			int frameHeight = img.getHeight(null) / playr.frameYCount;
 			playr.sourceFrame = new Rectangle(frameX, frameY, frameWidth, frameHeight);
 			
 			int i = (int)(playr.x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);
 			int j = (int)(playr.y * drawScale) - cameraY + (cameraCenteredY - tileSize / 2);
 			DrawAsset(graphics, img, i, j, playr.sourceFrame, 1f);
 			
+			/*if (Player.IsInteracting)
+			{
+				DrawAsset(graphics, Texture2D.Get("TestBarrier"), i, j, 1f);
+			}*/
 			//Hitbox Drawing
 			/*int i2 = (int)(player[plr].hitbox.x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);
 			int j2 = (int)(player[plr].hitbox.y * drawScale) - cameraY + (cameraCenteredY - tileSize / 2);
@@ -261,9 +271,17 @@ public class Main
 	public static void Zoom(float zoomAmount)
 	{
 		drawScale += zoomAmount;
-		if (drawScale < 0.5f)
-			drawScale = 0.5f;
-		if (drawScale > 2f)
-			drawScale = 2f;
+		if (drawScale < 1f)
+			drawScale = 1f;
+		if (drawScale > 4f)
+			drawScale = 4f;
+	}
+	
+	public static void TileInteraction(int type, int x, int y)
+	{
+		if (type == TileID.TestObject)
+		{
+			Logging.Log("Interaction, accepted");
+		}
 	}
 }

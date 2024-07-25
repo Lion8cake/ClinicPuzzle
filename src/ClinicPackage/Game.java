@@ -14,8 +14,8 @@ public class Game extends JPanel implements Runnable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	static int screenWidth = 32 * 12;
-	static int screenHeight = 32 * 8;
+	static int screenWidth = 32 * 24;
+	static int screenHeight = 32 * 16;
 	InputHandler gameKeyHandler = new InputHandler();
 	Thread gameThread;
 	Main gameSystem;

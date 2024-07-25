@@ -2,6 +2,13 @@ package ClinicPackage;
 
 import java.awt.Rectangle;
 
+class PlrDirectionTypes {
+	public final static int Down = 0;
+	public final static int Left = 1;
+	public final static int Up = 2;
+	public final static int Right = 3;
+}
+
 public class Player extends Entity {
 
 	public static boolean kUp = false;
@@ -19,6 +26,7 @@ public class Player extends Entity {
 	public boolean[] isColliding = new boolean[4];
 	
 	public int dirFacing = 0;
+	
 	public Player()
 	{
 		for (int col = 0; col < isColliding.length; col++)
@@ -73,25 +81,29 @@ public class Player extends Entity {
 		}
 		
 		//Movement
-		if (Player.kUp && !isColliding[0])
+		if (Player.kUp)
 		{
-			y -= velocityY;
-			dirFacing = 2;
+			if (!isColliding[0])
+				y -= velocityY;
+			dirFacing = PlrDirectionTypes.Up;
 		}
-		if (Player.kDown && !isColliding[1])
+		if (Player.kDown)
 		{
-			y += velocityY;
-			dirFacing = 0;
+			if (!isColliding[1])
+				y += velocityY;
+			dirFacing = PlrDirectionTypes.Down;
 		}
-		if (Player.kLeft && !isColliding[2])
+		if (Player.kLeft)
 		{
-			x -= velocityX;
-			dirFacing = 1;
+			if (!isColliding[2])
+				x -= velocityX;
+			dirFacing = PlrDirectionTypes.Left;
 		}
-		if (Player.kRight && !isColliding[3])
+		if (Player.kRight)
 		{
-			x += velocityX;
-			dirFacing = 3;
+			if (!isColliding[3])
+				x += velocityX;
+			dirFacing = PlrDirectionTypes.Right;
 		}
 	}
 	
@@ -109,13 +121,44 @@ public class Player extends Entity {
 		{
 			IsInteracting = true;
 		}
+		Interaction();
 	}
 	
 	public void Interaction()
 	{
 		if (IsInteracting)
 		{
-			
+			int x;
+			int y;
+			Tile tile;
+			if (dirFacing == PlrDirectionTypes.Down)
+			{
+				x = (hitbox.x + hitbox.width) / 32;
+				y = (hitbox.y + (hitbox.height / 2)) / 32;
+				tile = Main.tile[x][y + 1];
+			}
+			else if (dirFacing == PlrDirectionTypes.Left)
+			{
+				y = hitbox.y / 32;
+				x = (hitbox.x + (hitbox.width / 2)) / 32;
+				tile = Main.tile[x - 1][y];
+			}
+			else if (dirFacing == PlrDirectionTypes.Up)
+			{
+				x = hitbox.x / 32;
+				y = (hitbox.y + (hitbox.height / 2)) / 32;
+				tile = Main.tile[x][y - 1];
+			}
+			else
+			{
+				y = (hitbox.y + hitbox.height) / 32;
+				x = (hitbox.x + (hitbox.width / 2)) / 32;
+				tile = Main.tile[x + 1][y];
+			}
+			if (Main.tileInteractable[tile.Type])
+			{
+				Main.TileInteraction(tile.Type, x, y);
+			}
 		}
 	}
 }
