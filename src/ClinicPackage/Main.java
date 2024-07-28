@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import ClinicPackage.Logging.LoggingType;
 import ClinicPackage.IDs.TileID;
 import ClinicPackage.IO.FileIO;
+import ClinicPackage.UI.TextBoxUI;
+import ClinicPackage.UI.UIElement;
 import Lion8cake.Texture2D;
 
 public class Main 
@@ -18,7 +20,7 @@ public class Main
 	/**The instance of Main when running the game.
 	 * Used to get anything that isn't static inside of Main.
 	 */
-	public Main Instance;
+	public static Main Instance;
 	
 	final public static String GameName = "ClinicPuzzelGame"; //Shouldn't have spaces
 	
@@ -74,6 +76,13 @@ public class Main
 	
 	public static int myPlayer;
 	
+	//UIs
+	//final private static int MAXUISACTIVE = 200;
+		
+	//public static UIElement[] ui = new UIElement[MAXUISACTIVE]; 
+	
+	public static UIElement UI = new UIElement();
+	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
 	 * Runs when the game opens or until the Instance of the game is loaded.
 	 * Make sure that 'Instance = this;' is the last line of this method
@@ -95,6 +104,7 @@ public class Main
 		//Logging.Log("/RoomLayoutData/MapLayout" + RoomID + ".rld");
 		cameraCenteredX = ScreenWidth / 2;
 		cameraCenteredY = ScreenHeight / 2;
+		Texture2D.drawScale = drawScale;
 		LoadRoom();
 		InitiateTileSettings();
 		//Code runs here
@@ -167,6 +177,7 @@ public class Main
 		renderDistY = (int)(renderY * drawScale);
 		cameraX = (int)(player[myPlayer].x * drawScale);
 		cameraY = (int)(player[myPlayer].y * drawScale);
+		UI.UIUpdate();
 		//Logging.Log("Scale: " + drawScale);
 	}
 	
@@ -177,26 +188,7 @@ public class Main
 	{
 		RenderTileArray(graphics);
 		DrawPlayers(graphics);
-	}
-	
-	public static void DrawAsset(Graphics graphics, Image image, int x, int y, float Scale)
-	{
-		Rectangle frame = null;
-		DrawAsset(graphics, image, x, y, frame, Scale);
-	}
-	
-	public static void DrawAsset(Graphics graphics, Image image, int x, int y, Rectangle frame, float Scale)
-	{
-		BufferedImage img = (BufferedImage)(image);
-		int sizeX = (int)(image.getWidth(null) * drawScale * Scale);
-		int sizeY = (int)(image.getHeight(null) * drawScale * Scale);
-		if (frame != null)
-		{
-			sizeX = (int)(frame.width * drawScale * Scale);
-			sizeY = (int)(frame.height * drawScale * Scale);
-			img = img.getSubimage(frame.x, frame.y, frame.width, frame.height);
-		}
-		graphics.drawImage(img, x, y, sizeX, sizeY, null);
+		UI.UIDraw(graphics);
 	}
 	
 	public void RenderTileArray(Graphics graphics)
@@ -236,7 +228,7 @@ public class Main
 		if (value != null)
 		{
 			//graphics.drawImage(value, i, j, 32, 32, null);
-			DrawAsset(graphics, value, i, j, 1f);
+			Texture2D.DrawAsset(graphics, value, i, j, 1f);
 		}
 	}
 	
@@ -255,7 +247,7 @@ public class Main
 			
 			int i = (int)(playr.x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);
 			int j = (int)(playr.y * drawScale) - cameraY + (cameraCenteredY - tileSize / 2);
-			DrawAsset(graphics, img, i, j, playr.sourceFrame, 1f);
+			Texture2D.DrawAsset(graphics, img, i, j, playr.sourceFrame, 1f);
 			
 			/*if (Player.IsInteracting)
 			{
@@ -281,7 +273,10 @@ public class Main
 	{
 		if (type == TileID.TestObject)
 		{
-			Logging.Log("Interaction, accepted");
+			String str = "Interaction, accepted";
+			Logging.Log(str);
+			TextBoxUI textBox = new TextBoxUI(str);
+			UI.Apphend(textBox);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package Lion8cake;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,8 @@ import javax.imageio.ImageIO;
 public class Texture2D {
 
 	private static String[] ValidExtentions = { ".png", ".ico" }; //reads .Ico files that are just renamed .png files because I cannot be bothered making a whole .Ico reader
+	
+	public static float drawScale = 1f;
 	
 	private static Hashtable<String, Image> ImageDictionary = new Hashtable<String, Image>();
 	
@@ -64,4 +67,75 @@ public class Texture2D {
         }
         return path2; //Return the String path of the file
     }
+	
+	/** Draws an image with the set parameters. Uses the position, frame, scale and more for the appopriate drawn position of the sprite.
+	 * Better than graphics.drawImage due to the parameters and their compact customisation.
+	 * Overload of DrawAsset(Graphics, Image, int, int, Rectangle, float, float)
+	 * @param graphics The graphics of the image, used to draw the image with java's inbuilt texture code.
+	 * @param image The image drawn
+	 * @param x The x Position of the graphic on screen
+	 * @param y The y Position of the graphic on screen
+	 * @param Scale The scale of the image
+	 */
+	public static void DrawAsset(Graphics graphics, Image image, int x, int y, float Scale)
+	{
+		Rectangle frame = null;
+		DrawAsset(graphics, image, x, y, frame, Scale, Scale);
+	}
+	
+	/** Draws an image with the set parameters. Uses the position, frame, scale and more for the appopriate drawn position of the sprite.
+	 * Better than graphics.drawImage due to the parameters and their compact customisation.
+	 * Overload of DrawAsset(Graphics, Image, int, int, Rectangle, float, float)
+	 * @param graphics The graphics of the image, used to draw the image with java's inbuilt texture code.
+	 * @param image The image drawn
+	 * @param x The x Position of the graphic on screen
+	 * @param y The y Position of the graphic on screen
+	 * @param ScaleX The x scale of the image
+	 * @param ScaleY The y scale of the image
+	 */
+	public static void DrawAsset(Graphics graphics, Image image, int x, int y, float ScaleX, float ScaleY)
+	{
+		Rectangle frame = null;
+		DrawAsset(graphics, image, x, y, frame, ScaleX, ScaleY);
+	}
+	
+	/** Draws an image with the set parameters. Uses the position, frame, scale and more for the appopriate drawn position of the sprite.
+	 * Better than graphics.drawImage due to the parameters and their compact customisation.
+	 * Overload of DrawAsset(Graphics, Image, int, int, Rectangle, float, float)
+	 * @param graphics The graphics of the image, used to draw the image with java's inbuilt texture code.
+	 * @param image The image drawn
+	 * @param x The x Position of the graphic on screen
+	 * @param y The y Position of the graphic on screen
+	 * @param frame The frame rectangle used to get the current frame
+	 * @param Scale The scale of the image
+	 */
+	public static void DrawAsset(Graphics graphics, Image image, int x, int y, Rectangle frame, float Scale)
+	{
+		DrawAsset(graphics, image, x, y, frame, Scale, Scale);
+	}
+	
+	/** Draws an image with the set parameters. Uses the position, frame, scale and more for the appopriate drawn position of the sprite.
+	 * Better than graphics.drawImage due to the parameters and their compact customisation.
+	 * Overload of DrawAsset(Graphics, Image, int, int, Rectangle, float, float)
+	 * @param graphics The graphics of the image, used to draw the image with java's inbuilt texture code.
+	 * @param image The image drawn
+	 * @param x The x Position of the graphic on screen
+	 * @param y The y Position of the graphic on screen
+	 * @param frame The frame rectangle used to get the current frame
+	 * @param ScaleX The x scale of the image
+	 * @param ScaleY The y scale of the image
+	 */
+	public static void DrawAsset(Graphics graphics, Image image, int x, int y, Rectangle frame, float ScaleX, float ScaleY)
+	{
+		BufferedImage img = (BufferedImage)(image);
+		int sizeX = (int)(image.getWidth(null) * drawScale * ScaleX);
+		int sizeY = (int)(image.getHeight(null) * drawScale * ScaleY);
+		if (frame != null)
+		{
+			sizeX = (int)(frame.width * drawScale * ScaleX);
+			sizeY = (int)(frame.height * drawScale * ScaleY);
+			img = img.getSubimage(frame.x, frame.y, frame.width, frame.height);
+		}
+		graphics.drawImage(img, x, y, sizeX, sizeY, null);
+	}
 }
