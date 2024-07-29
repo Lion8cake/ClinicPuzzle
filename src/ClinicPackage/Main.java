@@ -24,6 +24,8 @@ public class Main
 	
 	final public static String GameName = "ClinicPuzzelGame"; //Shouldn't have spaces
 	
+	public static Texture2D texture2D;
+	
 	//Window Size
 	public int ScreenWidth;
 	
@@ -77,10 +79,6 @@ public class Main
 	public static int myPlayer;
 	
 	//UIs
-	//final private static int MAXUISACTIVE = 200;
-		
-	//public static UIElement[] ui = new UIElement[MAXUISACTIVE]; 
-	
 	public static UIElement UI = new UIElement();
 	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
@@ -104,9 +102,10 @@ public class Main
 		//Logging.Log("/RoomLayoutData/MapLayout" + RoomID + ".rld");
 		cameraCenteredX = ScreenWidth / 2;
 		cameraCenteredY = ScreenHeight / 2;
-		
 		LoadRoom();
 		InitiateTileSettings();
+		texture2D = new Texture2D();
+	
 		//Code runs here
 		Logging.Log("Initialisation Finished", LoggingType.Base);
 		Instance = this;
@@ -168,7 +167,7 @@ public class Main
 	 */
 	public void Update()
 	{
-		Texture2D.drawScale = drawScale;
+		
 		for (int plr = 0; plr < MAXPLAYERS; plr++)
 		{
 			player[plr].Update();
@@ -176,6 +175,7 @@ public class Main
 		tileSize = (int)(32 * drawScale);
 		renderDistX = (int)(renderX * drawScale);
 		renderDistY = (int)(renderY * drawScale);
+		texture2D.drawScale = drawScale;
 		cameraX = (int)(player[myPlayer].x * drawScale);
 		cameraY = (int)(player[myPlayer].y * drawScale);
 		UI.UIUpdate();
@@ -229,7 +229,7 @@ public class Main
 		if (value != null)
 		{
 			//graphics.drawImage(value, i, j, 32, 32, null);
-			Texture2D.DrawAsset(graphics, value, i, j, 1f);
+			texture2D.DrawAsset(graphics, value, i, j, 1f);
 		}
 	}
 	
@@ -248,7 +248,7 @@ public class Main
 			
 			int i = (int)(playr.x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);
 			int j = (int)(playr.y * drawScale) - cameraY + (cameraCenteredY - tileSize / 2);
-			Texture2D.DrawAsset(graphics, img, i, j, playr.sourceFrame, 1f);
+			texture2D.DrawAsset(graphics, img, i, j, playr.sourceFrame, 1f);
 			
 			/*if (Player.IsInteracting)
 			{

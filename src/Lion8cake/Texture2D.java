@@ -12,9 +12,7 @@ public class Texture2D {
 
 	private static String[] ValidExtentions = { ".png", ".ico" }; //reads .Ico files that are just renamed .png files because I cannot be bothered making a whole .Ico reader
 	
-	public static float drawScale = 0f;
-	
-	public static final float drawScaleDefault = 1f;
+	public float drawScale = 2f;
 	
 	private static Hashtable<String, Image> ImageDictionary = new Hashtable<String, Image>();
 	
@@ -78,7 +76,7 @@ public class Texture2D {
 	 * @param y The y Position of the graphic on screen
 	 * @param Scale The scale of the image
 	 */
-	public static void DrawAsset(Graphics graphics, Image image, int x, int y, float Scale)
+	public void DrawAsset(Graphics graphics, Image image, int x, int y, float Scale)
 	{
 		Rectangle frame = null;
 		DrawAsset(graphics, image, x, y, frame, Scale, Scale);
@@ -94,7 +92,7 @@ public class Texture2D {
 	 * @param ScaleX The x scale of the image
 	 * @param ScaleY The y scale of the image
 	 */
-	public static void DrawAsset(Graphics graphics, Image image, int x, int y, float ScaleX, float ScaleY)
+	public void DrawAsset(Graphics graphics, Image image, int x, int y, float ScaleX, float ScaleY)
 	{
 		Rectangle frame = null;
 		DrawAsset(graphics, image, x, y, frame, ScaleX, ScaleY);
@@ -110,7 +108,7 @@ public class Texture2D {
 	 * @param frame The frame rectangle used to get the current frame
 	 * @param Scale The scale of the image
 	 */
-	public static void DrawAsset(Graphics graphics, Image image, int x, int y, Rectangle frame, float Scale)
+	public void DrawAsset(Graphics graphics, Image image, int x, int y, Rectangle frame, float Scale)
 	{
 		DrawAsset(graphics, image, x, y, frame, Scale, Scale);
 	}
@@ -126,13 +124,9 @@ public class Texture2D {
 	 * @param ScaleX The x scale of the image
 	 * @param ScaleY The y scale of the image
 	 */
-	public static void DrawAsset(Graphics graphics, Image image, int x, int y, Rectangle frame, float ScaleX, float ScaleY)
+	public void DrawAsset(Graphics graphics, Image image, int x, int y, Rectangle frame, float ScaleX, float ScaleY)
 	{
 		BufferedImage img = (BufferedImage)(image);
-		if (drawScale == 0f)
-		{
-			drawScale = drawScaleDefault;
-		}
 		int sizeX = (int)(image.getWidth(null) * drawScale * ScaleX);
 		int sizeY = (int)(image.getHeight(null) * drawScale * ScaleY);
 		if (frame != null)
