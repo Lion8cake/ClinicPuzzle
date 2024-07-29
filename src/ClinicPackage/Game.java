@@ -62,7 +62,7 @@ public class Game extends JPanel implements Runnable {
 				Main main = gameSystem;
 				main.ScreenWidth = screenWidth;
 				main.ScreenHeight = screenHeight;
-				if (main.Instance == null)
+				if (Main.Instance == null)
 				{
 					main.Initialisation();
 				}

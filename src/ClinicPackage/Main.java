@@ -104,7 +104,7 @@ public class Main
 		//Logging.Log("/RoomLayoutData/MapLayout" + RoomID + ".rld");
 		cameraCenteredX = ScreenWidth / 2;
 		cameraCenteredY = ScreenHeight / 2;
-		Texture2D.drawScale = drawScale;
+		
 		LoadRoom();
 		InitiateTileSettings();
 		//Code runs here
@@ -168,6 +168,7 @@ public class Main
 	 */
 	public void Update()
 	{
+		Texture2D.drawScale = drawScale;
 		for (int plr = 0; plr < MAXPLAYERS; plr++)
 		{
 			player[plr].Update();
