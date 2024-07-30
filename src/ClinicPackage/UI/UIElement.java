@@ -69,15 +69,9 @@ public class UIElement {
 		ID = _idCounter++;
 	}
 	
-	private static int counter = 0;
-	
 	public void CloseUI(UIElement element)
 	{
-		counter++;
-		if (counter > 120)
-		{
-			uiElements.remove(element.uiElementID);
-		}
+		uiElements.remove(element.uiElementID);
 	}
 	
 	public void Apphend(UIElement element)
