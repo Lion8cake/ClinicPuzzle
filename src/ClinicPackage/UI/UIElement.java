@@ -1,13 +1,19 @@
 package ClinicPackage.UI;
 
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+
+import ClinicPackage.Main;
 
 public class UIElement {
 	public String UIName = this.getClass().getName();
 	
-	public List<UIElement> uiElements = new ArrayList<UIElement>();
+	private List<UIElement> uiElements = new ArrayList<UIElement>();
+	
+	public int uiElementID = -1;
 	
 	private static int _idCounter = 0;
 	
@@ -21,12 +27,33 @@ public class UIElement {
 	 */
 	public float Weight = 1f;
 	
+	public static void DrawPanel(Graphics graphics, Image image, int x, int y, int width, int height) 
+	{
+		Rectangle frame = new Rectangle(0, 0, 16, 16);
+		for (int i  = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				frame.x = 16 * i;
+				frame.y = 16 * j;
+				frame.width = 16;
+				frame.height = 16;
+				int posX = i == 0 ? x : i == 1 ? x + 32 : x + width - 32;
+				int posY = j == 0 ? y : j == 1 ? y + 32 : y + height - 32;
+				float scaleX = i == 1 ? (width / 32) - 2 : 1f;
+				float scaleY = j == 1 ? (height / 32) - 2 : 1f;
+				Main.texture2D.DrawAsset(graphics, image, posX, posY, frame, scaleX, scaleY);
+			}
+		}
+	}
+	
 	public void UIUpdate()
 	{
 		for(UIElement element : uiElements)
 		{
 			element.Update();
 		}
+		System.out.println(uiElements);
 	}
 	
 	public void UIDraw(Graphics g)
@@ -42,14 +69,21 @@ public class UIElement {
 		ID = _idCounter++;
 	}
 	
+	private static int counter = 0;
+	
 	public void CloseUI(UIElement element)
 	{
-		uiElements.remove(element);
+		counter++;
+		if (counter > 120)
+		{
+			uiElements.remove(element.uiElementID);
+		}
 	}
 	
 	public void Apphend(UIElement element)
 	{
 		uiElements.add(element);
+		element.uiElementID = (uiElements.size() - 1);
 		element.SetStaticDefaults();
 	}
 	

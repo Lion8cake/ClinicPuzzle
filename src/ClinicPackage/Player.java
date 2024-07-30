@@ -111,15 +111,18 @@ public class Player extends Entity {
 	{
 		ResetEffects();
 		hitbox = new Rectangle(x, y, Width, Height);
-		UpdateSpeeds();
+		if (!Main.textBoxOpen)
+		{
+			UpdateSpeeds();
+			if (kSpace)
+			{
+				IsInteracting = true;
+			}
+		}
 		frameX = dirFacing;
 		for (int col = 0; col < isColliding.length; col++)
 		{
 			isColliding[col] = false;
-		}
-		if (kSpace)
-		{
-			IsInteracting = true;
 		}
 		Interaction();
 	}

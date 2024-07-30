@@ -3,7 +3,6 @@ package ClinicPackage;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -80,6 +79,8 @@ public class Main
 	
 	//UIs
 	public static UIElement UI = new UIElement();
+	
+	public static boolean textBoxOpen = false;
 	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
 	 * Runs when the game opens or until the Instance of the game is loaded.
@@ -178,6 +179,7 @@ public class Main
 		texture2D.drawScale = drawScale;
 		cameraX = (int)(player[myPlayer].x * drawScale);
 		cameraY = (int)(player[myPlayer].y * drawScale);
+		textBoxOpen = false;
 		UI.UIUpdate();
 		//Logging.Log("Scale: " + drawScale);
 	}
@@ -276,8 +278,11 @@ public class Main
 		{
 			String str = "Interaction, accepted";
 			Logging.Log(str);
-			TextBoxUI textBox = new TextBoxUI(str);
-			UI.Apphend(textBox);
+			if (!textBoxOpen)
+			{
+				TextBoxUI textBox = new TextBoxUI(str);
+				UI.Apphend(textBox);
+			}
 		}
 	}
 }
