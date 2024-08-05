@@ -38,7 +38,7 @@ public class TextBoxUI extends UIElement {
 	public void Update()
 	{
 		Main.textBoxOpen = true;
-		if (Player.kSpace)
+		if (Player.kDown)
 		{
 			CloseUI(this);
 		}

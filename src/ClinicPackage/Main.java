@@ -78,7 +78,7 @@ public class Main
 	public static int myPlayer;
 	
 	//UIs
-	public static UIElement UI = new UIElement();
+	public static UIElement UI;
 	
 	public static boolean textBoxOpen = false;
 	
@@ -106,7 +106,8 @@ public class Main
 		LoadRoom();
 		InitiateTileSettings();
 		texture2D = new Texture2D();
-	
+		UI = new UIElement();
+		
 		//Code runs here
 		Logging.Log("Initialisation Finished", LoggingType.Base);
 		Instance = this;
@@ -280,8 +281,10 @@ public class Main
 			Logging.Log(str);
 			if (!textBoxOpen)
 			{
-				TextBoxUI textBox = new TextBoxUI(str);
+				TextBoxUI textBox = new TextBoxUI(str + "HIHIHIHI#HFQWGFGB@#IFIY@#GIFG#IG#IY@GIY");
 				UI.Apphend(textBox);
+				TextBoxUI textBox2 = new TextBoxUI(str);
+				UI.Apphend(textBox2);
 			}
 		}
 	}

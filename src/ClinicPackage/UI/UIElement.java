@@ -6,12 +6,13 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import ClinicPackage.Logging;
 import ClinicPackage.Main;
 
 public class UIElement {
 	public String UIName = this.getClass().getName();
 	
-	private List<UIElement> uiElements = new ArrayList<UIElement>();
+	private static List<UIElement> uiElements = new ArrayList<UIElement>();
 	
 	public int uiElementID = -1;
 	
@@ -52,8 +53,9 @@ public class UIElement {
 		for(UIElement element : uiElements)
 		{
 			element.Update();
+			System.out.println(element.uiElementID);
 		}
-		System.out.println(uiElements);
+		
 	}
 	
 	public void UIDraw(Graphics g)
@@ -71,7 +73,15 @@ public class UIElement {
 	
 	public void CloseUI(UIElement element)
 	{
+		int size = uiElements.size();
 		uiElements.remove(element.uiElementID);
+		if (size != uiElements.size())
+		{
+			for(UIElement elements : uiElements)
+			{
+				elements.uiElementID = elements.uiElementID - 1;
+			}
+		}
 	}
 	
 	public void Apphend(UIElement element)
