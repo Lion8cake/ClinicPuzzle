@@ -182,6 +182,11 @@ public class Main
 		cameraY = (int)(player[myPlayer].y * drawScale);
 		textBoxOpen = false;
 		UI.UIUpdate();
+		if (Player.kDown && test != null)
+		{
+			UI.CloseUI(test);
+			test = null;
+		}
 		//Logging.Log("Scale: " + drawScale);
 	}
 	
@@ -273,6 +278,8 @@ public class Main
 			drawScale = 4f;
 	}
 	
+	static TextBoxUI test = null;
+	
 	public static void TileInteraction(int type, int x, int y)
 	{
 		if (type == TileID.TestObject)
@@ -281,10 +288,9 @@ public class Main
 			Logging.Log(str);
 			if (!textBoxOpen)
 			{
-				TextBoxUI textBox = new TextBoxUI(str + "HIHIHIHI#HFQWGFGB@#IFIY@#GIFG#IG#IY@GIY");
+				TextBoxUI textBox = new TextBoxUI(str);
 				UI.Apphend(textBox);
-				TextBoxUI textBox2 = new TextBoxUI(str);
-				UI.Apphend(textBox2);
+				test = textBox;
 			}
 		}
 	}

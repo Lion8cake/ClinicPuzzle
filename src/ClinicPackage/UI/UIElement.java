@@ -53,9 +53,7 @@ public class UIElement {
 		for(UIElement element : uiElements)
 		{
 			element.Update();
-			System.out.println(element.uiElementID);
 		}
-		
 	}
 	
 	public void UIDraw(Graphics g)
