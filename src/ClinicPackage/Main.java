@@ -182,7 +182,7 @@ public class Main
 		cameraY = (int)(player[myPlayer].y * drawScale);
 		textBoxOpen = false;
 		UI.UIUpdate();
-		if (Player.kDown && test != null)
+		if (test != null && test.PlaceholderKillUINOW)
 		{
 			UI.CloseUI(test);
 			test = null;
@@ -280,15 +280,13 @@ public class Main
 	
 	static TextBoxUI test = null;
 	
-	public static void TileInteraction(int type, int x, int y)
+	public static void TileInteraction(Player player, int type, int x, int y)
 	{
 		if (type == TileID.TestObject)
 		{
-			String str = "Interaction, accepted";
-			Logging.Log(str);
 			if (!textBoxOpen)
 			{
-				TextBoxUI textBox = new TextBoxUI(str);
+				TextBoxUI textBox = new TextBoxUI(player, new String[] { "Sup", "How's your day been so far?", "hmm", "welp im just chilling in this void", "no clue where the rest of the world is", "bye" }, new int[] {0, 0, 0, 0, 0, 0}, new int[] {0, 0, 1, 0, 2, 0},  new String[] {"PortraitTest", "", "", ""});
 				UI.Apphend(textBox);
 				test = textBox;
 			}

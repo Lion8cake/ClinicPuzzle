@@ -14,8 +14,8 @@ public class Game extends JPanel implements Runnable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	static int screenWidth = 32 * 24;
-	static int screenHeight = 32 * 16;
+	static int screenWidth = 32 * 32;
+	static int screenHeight = 32 * 24;
 	InputHandler gameKeyHandler = new InputHandler();
 	Thread gameThread;
 	Main gameSystem;
@@ -31,6 +31,7 @@ public class Game extends JPanel implements Runnable {
 	public Game(Main main)
 	{
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+		//this.setBounds(20, 20, screenWidth, screenHeight);
 		this.setBackground(Color.black);
 		this.setDoubleBuffered(true);
 		this.addKeyListener(gameKeyHandler);

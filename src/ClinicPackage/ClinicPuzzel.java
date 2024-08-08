@@ -7,9 +7,10 @@ public class ClinicPuzzel {
 	{	
 		JFrame window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setResizable(false);
+		window.setResizable(true);
 		window.setLocationRelativeTo(null);
-
+		window.setBounds(20, 20, 0, 0);
+		
 		Logging.InitiateLogs();
 		Game clinicPuzzel = new Game(new Main());
 		window.add(clinicPuzzel);

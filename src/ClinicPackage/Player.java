@@ -27,6 +27,8 @@ public class Player extends Entity {
 	
 	public int dirFacing = 0;
 	
+	public int InteractionCooldown = 30;
+	
 	public Player()
 	{
 		for (int col = 0; col < isColliding.length; col++)
@@ -125,11 +127,15 @@ public class Player extends Entity {
 			isColliding[col] = false;
 		}
 		Interaction();
+		if (InteractionCooldown > 0)
+			InteractionCooldown--;
+		if (InteractionCooldown <= 0)
+			InteractionCooldown = 0;
 	}
 	
 	public void Interaction()
 	{
-		if (IsInteracting)
+		if (IsInteracting && InteractionCooldown <= 0)
 		{
 			int x;
 			int y;
@@ -160,7 +166,7 @@ public class Player extends Entity {
 			}
 			if (Main.tileInteractable[tile.Type])
 			{
-				Main.TileInteraction(tile.Type, x, y);
+				Main.TileInteraction(this, tile.Type, x, y);
 			}
 		}
 	}
