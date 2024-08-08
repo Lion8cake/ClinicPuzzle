@@ -15,7 +15,7 @@ public class TextBoxUI extends UIElement {
 	
 	public static int Width = 16 * 32;
 	
-	public static int Height = 4 * 32;
+	public static int Height = 8 * 32;
 	
 	public String Text = "";
 	
@@ -23,13 +23,19 @@ public class TextBoxUI extends UIElement {
 	public void SetStaticDefaults()
 	{
 		x = (Main.Instance.ScreenWidth - Width) / 2;
-		y = Main.Instance.ScreenHeight - x - 64;
+		y = Main.Instance.ScreenHeight - x - 128;
 	}
 	
 	@Override
 	public void Draw(Graphics graphics)
 	{
 		BufferedImage img = (BufferedImage)(Texture2D.Get("TestUIPanel"));
+		int iconSquareSize = 96;
+		int halfIcon = iconSquareSize / 2;
+		UIElement.DrawPanel(graphics, img, x - halfIcon, y - halfIcon, iconSquareSize, iconSquareSize);
+		UIElement.DrawPanel(graphics, img, x - halfIcon, y + Height - halfIcon, iconSquareSize, iconSquareSize);
+		UIElement.DrawPanel(graphics, img, x + Width - halfIcon, y - halfIcon, iconSquareSize, iconSquareSize);
+		UIElement.DrawPanel(graphics, img, x + Width - halfIcon, y + Height - halfIcon, iconSquareSize, iconSquareSize);
 		UIElement.DrawPanel(graphics, img, x, y, Width, Height);
 		graphics.drawString(Text, x + 32, y + 32);
 	}
