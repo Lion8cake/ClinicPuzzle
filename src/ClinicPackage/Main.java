@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import ClinicPackage.Logging.LoggingType;
 import ClinicPackage.IDs.TileID;
 import ClinicPackage.IO.FileIO;
+import ClinicPackage.UI.MenuUI;
 import ClinicPackage.UI.TextBoxUI;
 import ClinicPackage.UI.UIElement;
 import Lion8cake.Texture2D;
@@ -26,9 +27,9 @@ public class Main
 	public static Texture2D texture2D;
 	
 	//Window Size
-	public int ScreenWidth;
+	public static int ScreenWidth;
 	
-	public int ScreenHeight;
+	public static int ScreenHeight;
 	
 	//Camera
 	public int cameraX;
@@ -82,6 +83,12 @@ public class Main
 	
 	public static boolean textBoxOpen = false;
 	
+	public int Menu = 0;
+	
+	public boolean InMainMenu = false;
+	
+	public static boolean MenuUIActive = false;
+	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
 	 * Runs when the game opens or until the Instance of the game is loaded.
 	 * Make sure that 'Instance = this;' is the last line of this method
@@ -103,7 +110,8 @@ public class Main
 		//Logging.Log("/RoomLayoutData/MapLayout" + RoomID + ".rld");
 		cameraCenteredX = ScreenWidth / 2;
 		cameraCenteredY = ScreenHeight / 2;
-		LoadRoom();
+		InMainMenu = true;
+		//LoadRoom();
 		InitiateTileSettings();
 		texture2D = new Texture2D();
 		UI = new UIElement();
@@ -163,16 +171,45 @@ public class Main
 		}
 	}
 	
+	public void LoadGame()
+	{
+		Menu = -1;
+		InMainMenu = false;
+		LoadRoom();
+	}
+	
+	public void DoMainMenu()
+	{
+		MenuUI mainMenu = null;
+		if (!MenuUIActive)
+		{
+			switch (Menu)
+			{
+				case 0:
+					mainMenu = new MenuUI(Menu);
+			}
+			MenuUIActive = true;
+		}
+		if (mainMenu != null)
+			UI.Apphend(mainMenu);
+	}
+	
 	/**Runs every frame, used for literally anything <br />
 	 * make sure you have conditions around certain actions as memory leaks are very common when working with 
 	 * unsafe code inside of update methods
 	 */
 	public void Update()
 	{
-		
-		for (int plr = 0; plr < MAXPLAYERS; plr++)
+		if (InMainMenu)
 		{
-			player[plr].Update();
+			DoMainMenu();
+		}
+		else
+		{
+			for (int plr = 0; plr < MAXPLAYERS; plr++)
+			{
+				player[plr].Update();
+			}
 		}
 		tileSize = (int)(32 * drawScale);
 		renderDistX = (int)(renderX * drawScale);
@@ -182,12 +219,6 @@ public class Main
 		cameraY = (int)(player[myPlayer].y * drawScale);
 		textBoxOpen = false;
 		UI.UIUpdate();
-		if (test != null && test.PlaceholderKillUINOW)
-		{
-			UI.CloseUI(test);
-			test = null;
-		}
-		//Logging.Log("Scale: " + drawScale);
 	}
 	
 	/**The method that does all of the game's drawing. This is seperate from Update as it repaints the screen accordingly to every update. <br />
@@ -196,7 +227,10 @@ public class Main
 	public void DoDraw(Graphics graphics)
 	{
 		RenderTileArray(graphics);
-		DrawPlayers(graphics);
+		if (!InMainMenu)
+		{
+			DrawPlayers(graphics);
+		}
 		UI.UIDraw(graphics);
 	}
 	
@@ -278,8 +312,6 @@ public class Main
 			drawScale = 4f;
 	}
 	
-	static TextBoxUI test = null;
-	
 	public static void TileInteraction(Player player, int type, int x, int y)
 	{
 		if (type == TileID.TestObject)
@@ -288,7 +320,6 @@ public class Main
 			{
 				TextBoxUI textBox = new TextBoxUI(player, new String[] { "Sup", "How's your day been so far?", "hmm", "welp im just chilling in this void", "no clue where the rest of the world is", "bye" }, new int[] {0, 0, 0, 0, 0, 0}, new int[] {0, 0, 1, 0, 2, 0},  new String[] {"PortraitTest", "", "", ""});
 				UI.Apphend(textBox);
-				test = textBox;
 			}
 		}
 	}

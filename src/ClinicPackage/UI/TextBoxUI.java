@@ -32,10 +32,6 @@ public class TextBoxUI extends UIElement {
 	
 	Player myPlayer;
 	
-	public static int Width = 20 * 32;
-	
-	public static int Height = 8 * 32;
-	
 	public String[] Text = new String[Byte.MAX_VALUE];
 	
 	public String[] PeopleInConvo = {"", "", "", ""};
@@ -50,13 +46,13 @@ public class TextBoxUI extends UIElement {
 	
 	private int KeyInputProtection = 30;
 	
-	public boolean PlaceholderKillUINOW = false;
-	
 	@Override
 	public void SetStaticDefaults()
 	{
-		x = (Main.Instance.ScreenWidth - Width) / 2;
-		y = Main.Instance.ScreenHeight - x - Height + 98;
+		Width = 20 * 32;
+		Height = 8 * 32;
+		x = (Main.ScreenWidth - Width) / 2;
+		y = Main.ScreenHeight - x - Height + 98;
 	}
 	
 	@Override
@@ -135,8 +131,10 @@ public class TextBoxUI extends UIElement {
 			if (currentDialogNum < maxDialog - 1)
 				currentDialogNum++;
 			else
-				PlaceholderKillUINOW = true;
+			{
+				CloseRequest();
 				myPlayer.InteractionCooldown = 30;
+			}
 		}
 		if (KeyInputProtection > 0)
 			KeyInputProtection--;

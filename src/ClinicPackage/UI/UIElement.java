@@ -5,8 +5,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
-
-import ClinicPackage.Logging;
 import ClinicPackage.Main;
 
 public class UIElement {
@@ -23,6 +21,14 @@ public class UIElement {
 	public int x = 20;
 	
 	public int y = 20;
+	
+	public int Width = 20;
+	
+	public int Height = 20;
+	
+	public boolean closeRequest = false;
+	
+	private static UIElement elementCloseRequest;
 	
 	/**Weight of the UI, the weight determines what priority it has within the drawing of UIs
 	 */
@@ -43,6 +49,7 @@ public class UIElement {
 				int posY = j == 0 ? y : j == 1 ? y + 32 : y + height - 32;
 				float scaleX = i == 1 ? (width / 32) - 2 : 1f;
 				float scaleY = j == 1 ? (height / 32) - 2 : 1f;
+				Main.texture2D.drawScale = 2f;
 				Main.texture2D.DrawAsset(graphics, image, posX, posY, frame, scaleX, scaleY);
 			}
 		}
@@ -53,6 +60,13 @@ public class UIElement {
 		for(UIElement element : uiElements)
 		{
 			element.Update();
+			if (element.closeRequest)
+				elementCloseRequest = element;
+		}
+		if (elementCloseRequest != null)
+		{
+			elementCloseRequest.CloseUI(elementCloseRequest);
+			elementCloseRequest = null;
 		}
 	}
 	
@@ -62,6 +76,11 @@ public class UIElement {
 		{
 			element.Draw(g);
 		}
+	}
+	
+	public void CloseRequest()
+	{
+		this.closeRequest = true;
 	}
 	
 	public UIElement()

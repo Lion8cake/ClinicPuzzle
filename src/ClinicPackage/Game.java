@@ -3,8 +3,8 @@ package ClinicPackage;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import ClinicPackage.Inputs.InputHandler;
 
@@ -28,6 +28,8 @@ public class Game extends JPanel implements Runnable {
 	
 	final private static double _NANOSECONDFPS = 1000000000/_ANCHOREDFPS;
 	
+	private static Game Instance;
+	
 	public Game(Main main)
 	{
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -38,6 +40,7 @@ public class Game extends JPanel implements Runnable {
 		this.setFocusable(true);
 		gameSystem = main;
 		startGameThread();
+		Instance = this;
 	}
 	
 	public void startGameThread()
@@ -61,8 +64,8 @@ public class Game extends JPanel implements Runnable {
 			if (frameDelta >= 1)
 			{
 				Main main = gameSystem;
-				main.ScreenWidth = screenWidth;
-				main.ScreenHeight = screenHeight;
+				Main.ScreenWidth = screenWidth;
+				Main.ScreenHeight = screenHeight;
 				if (Main.Instance == null)
 				{
 					main.Initialisation();
@@ -80,5 +83,13 @@ public class Game extends JPanel implements Runnable {
 		super.paintComponent(g);
 		gameSystem.DoDraw(g);
 		g.dispose();
+	}
+	
+	/**Terminates the game process effectively closing the JPanel <br />
+	 * Use carefully when calling, especially around unsaved data.
+	 */
+	public static void CloseGame()
+	{
+		SwingUtilities.getWindowAncestor(Instance).dispose();
 	}
 }

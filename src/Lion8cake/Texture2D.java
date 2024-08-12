@@ -66,7 +66,7 @@ public class Texture2D {
         }
         return path2; //Return the String path of the file
     }
-	
+
 	/** Draws an image with the set parameters. Uses the position, frame, scale and more for the appopriate drawn position of the sprite.
 	 * Better than graphics.drawImage due to the parameters and their compact customisation.
 	 * Overload of DrawAsset(Graphics, Image, int, int, Rectangle, float, float)
