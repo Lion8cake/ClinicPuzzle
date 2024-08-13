@@ -14,8 +14,8 @@ public class Game extends JPanel implements Runnable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	static int screenWidth = 32 * 32;
-	static int screenHeight = 32 * 24;
+	public static int screenWidth = 32 * 32;
+	public static int screenHeight = 32 * 24;
 	InputHandler gameKeyHandler = new InputHandler();
 	Thread gameThread;
 	Main gameSystem;
@@ -54,7 +54,6 @@ public class Game extends JPanel implements Runnable {
 		double frameDelta = 0;
 		long nanoTimeOld = System.nanoTime();
 		long nanoTime;
-		
 		while (gameThread != null)
 		{
 			nanoTime = System.nanoTime();

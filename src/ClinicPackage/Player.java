@@ -21,6 +21,8 @@ public class Player extends Entity {
 	
 	public static boolean kSpace = false;
 	
+	public static boolean kESC = false;
+	
 	public static boolean IsInteracting = false;
 	
 	public boolean[] isColliding = new boolean[4];

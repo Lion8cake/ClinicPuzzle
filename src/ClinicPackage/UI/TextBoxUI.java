@@ -11,21 +11,13 @@ public class TextBoxUI extends UIElement {
 	public TextBoxUI(Player playerInteracting, String[] textBoxText, int[] personSettings, int[] emotionSettings, String[] peopleInConvo)
 	{
 		for (int i = 0; i < 4; i++)
-		{
 			PeopleInConvo[i] = peopleInConvo[i];
-		}
 		for (int j = 0; j < textBoxText.length; j++)
-		{
 			Text[j] = textBoxText[j];
-		}
 		for (int k = 0; k < textBoxText.length; k++)
-		{
 			PersonTalking[k] = personSettings[k];
-		}
 		for (int l = 0; l < textBoxText.length; l++)
-		{
 			currentEmotion[l] = emotionSettings[l];
-		}
 		maxDialog = textBoxText.length;
 		myPlayer = playerInteracting;
 	}

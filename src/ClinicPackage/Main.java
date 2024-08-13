@@ -3,6 +3,7 @@ package ClinicPackage;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,6 +90,13 @@ public class Main
 	
 	public static boolean MenuUIActive = false;
 	
+	//Settings
+	public static int Sound = 0;
+	
+	public static int Music = 0;
+	
+	public static int ResolutionType = 0;
+	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
 	 * Runs when the game opens or until the Instance of the game is loaded.
 	 * Make sure that 'Instance = this;' is the last line of this method
@@ -108,8 +116,6 @@ public class Main
 		}
 		Logging.Log("Initialised Players", LoggingType.Base);
 		//Logging.Log("/RoomLayoutData/MapLayout" + RoomID + ".rld");
-		cameraCenteredX = ScreenWidth / 2;
-		cameraCenteredY = ScreenHeight / 2;
 		InMainMenu = true;
 		//LoadRoom();
 		InitiateTileSettings();
@@ -183,11 +189,7 @@ public class Main
 		MenuUI mainMenu = null;
 		if (!MenuUIActive)
 		{
-			switch (Menu)
-			{
-				case 0:
-					mainMenu = new MenuUI(Menu);
-			}
+			mainMenu = new MenuUI(Menu);
 			MenuUIActive = true;
 		}
 		if (mainMenu != null)
@@ -217,8 +219,31 @@ public class Main
 		texture2D.drawScale = drawScale;
 		cameraX = (int)(player[myPlayer].x * drawScale);
 		cameraY = (int)(player[myPlayer].y * drawScale);
+		cameraCenteredX = ScreenWidth / 2;
+		cameraCenteredY = ScreenHeight / 2;
 		textBoxOpen = false;
 		UI.UIUpdate();
+		switch(ResolutionType)
+		{
+			case 0: 
+				Game.screenWidth = 32 * 32;
+				Game.screenHeight = 32 * 24;
+				break;
+			case 1:
+				Game.screenWidth = 32 * 48;
+				Game.screenHeight = 32 * 32;
+				break;
+			case 2:
+				Game.screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+				Game.screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+				break;
+			case 3:
+				Game.screenWidth = 32 * 16;
+				Game.screenHeight = 32 * 12;
+				break;
+		}
+		if (ResolutionType > 3)
+			ResolutionType = 0;
 	}
 	
 	/**The method that does all of the game's drawing. This is seperate from Update as it repaints the screen accordingly to every update. <br />
@@ -270,7 +295,6 @@ public class Main
 		}
 		if (value != null)
 		{
-			//graphics.drawImage(value, i, j, 32, 32, null);
 			texture2D.DrawAsset(graphics, value, i, j, 1f);
 		}
 	}
@@ -291,15 +315,6 @@ public class Main
 			int i = (int)(playr.x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);
 			int j = (int)(playr.y * drawScale) - cameraY + (cameraCenteredY - tileSize / 2);
 			texture2D.DrawAsset(graphics, img, i, j, playr.sourceFrame, 1f);
-			
-			/*if (Player.IsInteracting)
-			{
-				DrawAsset(graphics, Texture2D.Get("TestBarrier"), i, j, 1f);
-			}*/
-			//Hitbox Drawing
-			/*int i2 = (int)(player[plr].hitbox.x * drawScale) - cameraX + (cameraCenteredX - tileSize / 2);
-			int j2 = (int)(player[plr].hitbox.y * drawScale) - cameraY + (cameraCenteredY - tileSize / 2);
-			graphics.drawImage(Texture2D.Get("TestBarrier"), i2, j2, player[plr].hitbox.width, player[plr].hitbox.height, null);*/
 		}
 	}
 	
