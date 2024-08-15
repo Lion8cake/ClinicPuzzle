@@ -8,12 +8,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import ClinicPackage.Logging.LoggingType;
-import ClinicPackage.IDs.TileID;
-import ClinicPackage.IO.FileIO;
-import ClinicPackage.UI.MenuUI;
-import ClinicPackage.UI.TextBoxUI;
-import ClinicPackage.UI.UIElement;
+
+import ClinicPackage.Logging.*;
+import ClinicPackage.IDs.*;
+import ClinicPackage.IO.*;
+import ClinicPackage.UI.*;
 import Lion8cake.Texture2D;
 
 public class Main 
@@ -104,6 +103,7 @@ public class Main
 	public void Initialisation()
 	{
 		FileIO.CheckFolderspace();
+		OptionsIO.LoadSettings();
 		//AssetBank.InitiliseTextures(); //AssetBank used to be a place that stored frequently used textures. Removed due to Texture2D optimisations
 		//Logging.Log("Initialised Textures", LoggingType.Base);
 		if (player[myPlayer] == null)

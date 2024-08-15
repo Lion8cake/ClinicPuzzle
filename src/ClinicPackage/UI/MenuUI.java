@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import ClinicPackage.Game;
 import ClinicPackage.Main;
 import ClinicPackage.Player;
+import ClinicPackage.IO.OptionsIO;
 import Lion8cake.Texture2D;
 
 public class MenuUI extends UIElement {
@@ -218,6 +219,7 @@ public class MenuUI extends UIElement {
 	private void Back() {
 		Main.Instance.Menu = 0;
 		CloseRequest();
+		OptionsIO.SaveSettings();
 		Main.MenuUIActive = false;
 	}
 }

@@ -50,4 +50,21 @@ public class FileIO {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void CreateFile(Path path, boolean isCoreFile)
+	{
+		try
+		{
+			Files.createFile(path);
+			String CoreFileLog = (String)("File not found, either your game's files has been saved to another location or its your first time (in this case, WELCOME!!!)."
+					+ "\n Crucial file generated at: " + path);
+			String Log = (String)("File not found, a non-crucial game file was found missing and has been regenerated for you."
+					+ "\n File generated at: " + path);
+			Logging.Log(isCoreFile ? CoreFileLog : Log, Logging.LoggingType.File);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
 }
