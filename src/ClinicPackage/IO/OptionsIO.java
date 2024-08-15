@@ -38,14 +38,14 @@ public class OptionsIO {
 					Main.ResolutionType = Integer.parseInt(line3);
 					Logging.Log("Settings loaded, Welcome Back!", Logging.LoggingType.File);
 				}
-			} catch (IOException e) {
-				try {
+				else
+				{
+					reader.close();
 					Files.delete(optionsPath);
-				} catch (IOException e1) {
-					e1.printStackTrace();
+					LoadSettings();
+					Logging.Log("WARNING!! Invalid text has been indentified within the " + optionsPath + " file! The Saved Options will be reset, please do not mess with this file!", Logging.LoggingType.File);
 				}
-				LoadSettings();
-				Logging.Log("WARNING!! Invalid text has been indentified within the " + optionsPath + " file! The Saved Options will be reset, please do not mess with this file!", Logging.LoggingType.File);
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}

@@ -75,6 +75,8 @@ public class Game extends JPanel implements Runnable {
 				frameDelta--;
 			}
 		}
+		//this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+		
 	}
 	
 	public void paintComponent(Graphics g)
