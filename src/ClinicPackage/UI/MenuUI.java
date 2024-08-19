@@ -1,6 +1,10 @@
 package ClinicPackage.UI;
 
+import java.awt.AWTException;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import ClinicPackage.Game;
 import ClinicPackage.Main;

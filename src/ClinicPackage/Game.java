@@ -1,8 +1,7 @@
 package ClinicPackage;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.*;
+
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -16,6 +15,7 @@ public class Game extends JPanel implements Runnable {
 	
 	public static int screenWidth = 32 * 32;
 	public static int screenHeight = 32 * 24;
+	public static Point windowPos;
 	InputHandler gameKeyHandler = new InputHandler();
 	Thread gameThread;
 	Main gameSystem;
@@ -51,6 +51,7 @@ public class Game extends JPanel implements Runnable {
 	
 	@Override
 	public void run() {
+		windowPos = SwingUtilities.getWindowAncestor(this).getLocation();
 		double frameDelta = 0;
 		long nanoTimeOld = System.nanoTime();
 		long nanoTime;
@@ -69,14 +70,18 @@ public class Game extends JPanel implements Runnable {
 				{
 					main.Initialisation();
 				}
+				int winX = screenWidth;
+				int winY = screenHeight;
 				main.Update();
+				if (winX != screenWidth || winY != screenHeight)
+				{
+					Main.ScreenSizeChange = true;
+				}
 				repaint();
 				
 				frameDelta--;
 			}
 		}
-		//this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-		
 	}
 	
 	public void paintComponent(Graphics g)

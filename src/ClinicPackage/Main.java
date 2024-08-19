@@ -1,9 +1,13 @@
 package ClinicPackage;
 
+import java.awt.AWTException;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +34,8 @@ public class Main
 	public static int ScreenWidth;
 	
 	public static int ScreenHeight;
+	
+	public static boolean ScreenSizeChange;
 	
 	//Camera
 	public int cameraX;
@@ -223,6 +229,10 @@ public class Main
 		cameraCenteredY = ScreenHeight / 2;
 		textBoxOpen = false;
 		UI.UIUpdate();
+		if (Main.ScreenSizeChange)
+		{
+			Logging.Log("change");
+		}
 		switch(ResolutionType)
 		{
 			case 0: 
@@ -244,6 +254,7 @@ public class Main
 		}
 		if (ResolutionType > 3)
 			ResolutionType = 0;
+		ScreenSizeChange = false;
 	}
 	
 	/**The method that does all of the game's drawing. This is seperate from Update as it repaints the screen accordingly to every update. <br />
@@ -251,6 +262,15 @@ public class Main
 	 */
 	public void DoDraw(Graphics graphics)
 	{
+		try {
+			Robot r = new Robot();
+			BufferedImage img = r.createScreenCapture(new Rectangle (Game.windowPos.x, Game.windowPos.y, Main.ScreenWidth, Main.ScreenHeight));
+			BufferedImage result = BlurrImage(img);
+			texture2D.DrawAsset(graphics, result, 0, 0, 1f);
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+		
 		RenderTileArray(graphics);
 		if (!InMainMenu)
 		{
@@ -325,6 +345,31 @@ public class Main
 			drawScale = 1f;
 		if (drawScale > 4f)
 			drawScale = 4f;
+	}
+	
+	/**Optimised code by https://stackoverflow.com/questions/36599547/adding-blur-effect-to-bufferredimage-in-java
+	 * @param img
+	 * @return
+	 */
+	public BufferedImage BlurrImage(BufferedImage img)
+	{
+		BufferedImage result = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
+		for (int raster = 0; raster < img.getRaster().getNumBands(); raster++)
+		{
+		    for (int x = 1; x < img.getWidth() - 1; x++)
+		    {
+		        for (int y = 1; y < img.getHeight() - 1; y++)
+		        {
+		            int newPixel = 0;
+		            for (int i = -1 ; i <= 1 ; i++)
+		                for (int j = -1 ; j <= 1 ; j++)
+		                    newPixel += img.getRaster().getSample(x + i, y + j, raster);
+		            newPixel = (int)(newPixel / 9.0 + 0.5);
+		            result.getRaster().setSample(x, y, raster, newPixel);
+		         }
+		    }
+		}
+		return result;
 	}
 	
 	public static void TileInteraction(Player player, int type, int x, int y)

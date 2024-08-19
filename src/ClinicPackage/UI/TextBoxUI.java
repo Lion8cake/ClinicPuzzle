@@ -43,8 +43,7 @@ public class TextBoxUI extends UIElement {
 	{
 		Width = 20 * 32;
 		Height = 8 * 32;
-		x = (Main.ScreenWidth - Width) / 2;
-		y = Main.ScreenHeight - x - Height + 98;
+		uiSize();
 	}
 	
 	@Override
@@ -130,5 +129,15 @@ public class TextBoxUI extends UIElement {
 		}
 		if (KeyInputProtection > 0)
 			KeyInputProtection--;
+		if (Main.ScreenSizeChange)
+		{
+			uiSize();
+		}
+	}
+	
+	private void uiSize()
+	{
+		x = (Main.ScreenWidth - Width) / 2;
+		y = Main.ScreenHeight - x - Height + 98;
 	}
 }
