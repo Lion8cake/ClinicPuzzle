@@ -2,6 +2,7 @@ package ClinicPackage;
 
 import java.awt.*;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -15,7 +16,7 @@ public class Game extends JPanel implements Runnable {
 	
 	public static int screenWidth = 32 * 32;
 	public static int screenHeight = 32 * 24;
-	public static Point windowPos;
+	public static Point windowPos = new Point(0, 0);
 	InputHandler gameKeyHandler = new InputHandler();
 	Thread gameThread;
 	Main gameSystem;
@@ -30,8 +31,11 @@ public class Game extends JPanel implements Runnable {
 	
 	private static Game Instance;
 	
-	public Game(Main main)
+	public static JFrame Parent = null;
+	
+	public Game(Main main, JFrame parent)
 	{
+		Parent = parent;
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		//this.setBounds(20, 20, screenWidth, screenHeight);
 		this.setBackground(Color.black);
@@ -42,7 +46,7 @@ public class Game extends JPanel implements Runnable {
 		startGameThread();
 		Instance = this;
 	}
-	
+
 	public void startGameThread()
 	{
 		gameThread = new Thread(this);
@@ -51,7 +55,6 @@ public class Game extends JPanel implements Runnable {
 	
 	@Override
 	public void run() {
-		windowPos = SwingUtilities.getWindowAncestor(this).getLocation();
 		double frameDelta = 0;
 		long nanoTimeOld = System.nanoTime();
 		long nanoTime;
@@ -82,6 +85,11 @@ public class Game extends JPanel implements Runnable {
 				frameDelta--;
 			}
 		}
+		JFrame window = Parent;
+		
+		window.add(this);
+		window.setPreferredSize(new Dimension(screenWidth, screenHeight));
+		window.pack();
 	}
 	
 	public void paintComponent(Graphics g)

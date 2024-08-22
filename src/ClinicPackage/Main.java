@@ -4,6 +4,7 @@ import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -29,6 +30,8 @@ public class Main
 	final public static String GameName = "ClinicPuzzelGame"; //Shouldn't have spaces
 	
 	public static Texture2D texture2D;
+	
+	public boolean InGame = false;
 	
 	//Window Size
 	public static int ScreenWidth;
@@ -94,6 +97,8 @@ public class Main
 	public boolean InMainMenu = false;
 	
 	public static boolean MenuUIActive = false;
+	
+	public static BufferedImage GameWindowImage = null;
 	
 	//Settings
 	public static int Sound = 0;
@@ -183,6 +188,19 @@ public class Main
 		}
 	}
 	
+	public void UnloadRoom()
+	{
+			for (int x = 0; x < Byte.MAX_VALUE; x++)
+			{
+				for (int y = 0; y < Byte.MAX_VALUE; y++)
+				{
+					tile[x][y] = null;
+				}
+			}
+			maxTilesX = 1;
+			maxTilesY = 1;
+	}
+	
 	public void LoadGame()
 	{
 		Menu = -1;
@@ -202,13 +220,27 @@ public class Main
 			UI.Apphend(mainMenu);
 	}
 	
+	public void ChangeMainMenu(int Type)
+	{
+		Menu = Type;
+		MenuUIActive = false;
+	}
+	
+	public void BackToMainMenu()
+	{
+		InMainMenu = true;
+		Menu = 0;
+		MenuUIActive = false;
+		UnloadRoom();
+	}
+	
 	/**Runs every frame, used for literally anything <br />
 	 * make sure you have conditions around certain actions as memory leaks are very common when working with 
 	 * unsafe code inside of update methods
 	 */
 	public void Update()
 	{
-		if (InMainMenu)
+		if (InMainMenu || Menu == 2 || Menu == 1)
 		{
 			DoMainMenu();
 		}
@@ -219,6 +251,7 @@ public class Main
 				player[plr].Update();
 			}
 		}
+		InGame = !InMainMenu;
 		tileSize = (int)(32 * drawScale);
 		renderDistX = (int)(renderX * drawScale);
 		renderDistY = (int)(renderY * drawScale);
@@ -255,6 +288,20 @@ public class Main
 		if (ResolutionType > 3)
 			ResolutionType = 0;
 		ScreenSizeChange = false;
+		if (InGame && Player.kESC && Menu != 2)
+		{
+			Menu = 2;
+		}
+		if (Menu == -1)
+		{
+			Game.windowPos = Game.Parent.getLocationOnScreen();
+			try {
+				Robot r = new Robot();
+				GameWindowImage = r.createScreenCapture(new Rectangle (Game.windowPos.x + 12, Game.windowPos.y + 34, Main.ScreenWidth, Main.ScreenHeight));
+			} catch (AWTException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**The method that does all of the game's drawing. This is seperate from Update as it repaints the screen accordingly to every update. <br />
@@ -262,15 +309,6 @@ public class Main
 	 */
 	public void DoDraw(Graphics graphics)
 	{
-		try {
-			Robot r = new Robot();
-			BufferedImage img = r.createScreenCapture(new Rectangle (Game.windowPos.x, Game.windowPos.y, Main.ScreenWidth, Main.ScreenHeight));
-			BufferedImage result = BlurrImage(img);
-			texture2D.DrawAsset(graphics, result, 0, 0, 1f);
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
-		
 		RenderTileArray(graphics);
 		if (!InMainMenu)
 		{
