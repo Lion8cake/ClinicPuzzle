@@ -1,13 +1,9 @@
 package ClinicPackage.UI;
 
-import java.awt.AWTException;
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.image.BufferedImage;
+import java.awt.*;
+import java.awt.image.*;
 import ClinicPackage.Game;
-import ClinicPackage.Logging;
 import ClinicPackage.Main;
 import ClinicPackage.Player;
 import ClinicPackage.IO.OptionsIO;
@@ -20,8 +16,6 @@ public class MenuUI extends UIElement {
 		MainMenuType = menuType;
 	}
 	
-	private boolean justCreated = true;
-	
 	public int MainMenuType = -1;
 	
 	public int panelSelected = 0;
@@ -33,7 +27,7 @@ public class MenuUI extends UIElement {
 	public String[] panelText = new String[Byte.MAX_VALUE];
 	
 	public int KeyInputDelay = 0;
-	
+
 	@Override
 	public void SetStaticDefaults()
 	{
@@ -45,15 +39,29 @@ public class MenuUI extends UIElement {
 		{
 			panelText[i] = "";
 		}
-		
-		if (MainMenuType == 0)
-		{
-			KeyInputDelay = 20;
-		}
+		KeyInputDelay = 20;
 	}
 	
 	@Override
 	public void Draw(Graphics graphics) {
+		if (Main.Instance.InGame)
+		{
+			//Blurr Drawcode
+			BufferedImage background = new BufferedImage(Main.ScreenWidth, Main.ScreenHeight, BufferedImage.TYPE_INT_ARGB);
+			Graphics g2 = background.getGraphics();
+			g2.setColor(new Color(0, 0, 0));
+			g2.fillRect(0, 0, Main.ScreenWidth, Main.ScreenHeight);
+			g2.dispose();
+			
+			BufferedImage bimg = new BufferedImage(Main.ScreenWidth, Main.ScreenHeight, BufferedImage.TYPE_INT_ARGB);
+			Graphics g = bimg.getGraphics();
+			g.drawImage(background, 0, 0, null);
+			Main.Instance.DrawGame(g);
+			g.dispose();
+			
+			BufferedImage bimg2 = Main.Instance.BlurrImage(bimg);
+			graphics.drawImage(bimg2, 0, 0, null);
+		}
 		switch (MainMenuType)
 		{
 			case 0:
@@ -98,12 +106,6 @@ public class MenuUI extends UIElement {
 				break;
 			case 2:
 			{
-				if (Main.GameWindowImage != null)
-				{
-					Logging.Log("Blurr");
-					BufferedImage result = Main.Instance.BlurrImage(Main.GameWindowImage);
-					Main.texture2D.DrawAsset(graphics, result, 0, 0, 1f);
-				}
 				for (int d = 1; d < maxPanels + 1; d++)
 				{
 					BufferedImage img = (BufferedImage)(Texture2D.Get("TestUIPanel"));

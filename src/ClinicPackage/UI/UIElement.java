@@ -5,7 +5,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
-import ClinicPackage.Main;
+import Lion8cake.Texture2D;
 
 public class UIElement {
 	public String UIName = this.getClass().getName();
@@ -49,16 +49,16 @@ public class UIElement {
 				int posY = j == 0 ? y : j == 1 ? y + 32 : y + height - 32;
 				float scaleX = i == 1 ? (width / 32) - 2 : 1f;
 				float scaleY = j == 1 ? (height / 32) - 2 : 1f;
-				Main.texture2D.drawScale = 2f;
-				Main.texture2D.DrawAsset(graphics, image, posX, posY, frame, scaleX, scaleY);
+				Texture2D.DrawStaticAsset(graphics, image, posX, posY, frame, scaleX * 2, scaleY * 2);
 			}
 		}
 	}
 	
 	public void UIUpdate()
 	{
-		for(UIElement element : uiElements)
+		for(int i = 0; i < uiElements.size(); i++)
 		{
+			UIElement element = uiElements.get(i);
 			element.Update();
 			if (element.closeRequest)
 				elementCloseRequest = element;
@@ -72,8 +72,9 @@ public class UIElement {
 	
 	public void UIDraw(Graphics g)
 	{
-		for(UIElement element : uiElements)
+		for(int i = 0; i < uiElements.size(); i++)
 		{
+			UIElement element = uiElements.get(i);
 			element.Draw(g);
 		}
 	}
@@ -90,15 +91,7 @@ public class UIElement {
 	
 	public void CloseUI(UIElement element)
 	{
-		int size = uiElements.size();
-		uiElements.remove(element.uiElementID);
-		if (size != uiElements.size())
-		{
-			for(UIElement elements : uiElements)
-			{
-				elements.uiElementID = elements.uiElementID - 1;
-			}
-		}
+		uiElements.remove(uiElements.get(element.uiElementID));
 	}
 	
 	public void Apphend(UIElement element)

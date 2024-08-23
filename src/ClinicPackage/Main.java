@@ -1,12 +1,8 @@
 package ClinicPackage;
 
-import java.awt.AWTException;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -97,9 +93,7 @@ public class Main
 	public boolean InMainMenu = false;
 	
 	public static boolean MenuUIActive = false;
-	
-	public static BufferedImage GameWindowImage = null;
-	
+		
 	//Settings
 	public static int Sound = 0;
 	
@@ -292,16 +286,6 @@ public class Main
 		{
 			Menu = 2;
 		}
-		if (Menu == -1)
-		{
-			Game.windowPos = Game.Parent.getLocationOnScreen();
-			try {
-				Robot r = new Robot();
-				GameWindowImage = r.createScreenCapture(new Rectangle (Game.windowPos.x + 12, Game.windowPos.y + 34, Main.ScreenWidth, Main.ScreenHeight));
-			} catch (AWTException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
 	/**The method that does all of the game's drawing. This is seperate from Update as it repaints the screen accordingly to every update. <br />
@@ -309,12 +293,17 @@ public class Main
 	 */
 	public void DoDraw(Graphics graphics)
 	{
+		DrawGame(graphics);
+		UI.UIDraw(graphics);
+	}
+	
+	public void DrawGame(Graphics graphics)
+	{
 		RenderTileArray(graphics);
 		if (!InMainMenu)
 		{
 			DrawPlayers(graphics);
 		}
-		UI.UIDraw(graphics);
 	}
 	
 	public void RenderTileArray(Graphics graphics)

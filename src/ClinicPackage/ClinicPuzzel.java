@@ -24,7 +24,7 @@ public class ClinicPuzzel {
 		Logging.InitiateLogs();
 		Game clinicPuzzel = new Game(new Main(), window);
 		window.add(clinicPuzzel);
-		window.setPreferredSize(new Dimension(clinicPuzzel.screenWidth, clinicPuzzel.screenHeight));
+		window.setPreferredSize(new Dimension(Game.screenWidth, Game.screenHeight));
 		window.pack();
 		
 		window.setIconImage(Texture2D.GetIcon());

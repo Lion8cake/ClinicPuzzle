@@ -115,7 +115,6 @@ public class Texture2D {
 	
 	/** Draws an image with the set parameters. Uses the position, frame, scale and more for the appopriate drawn position of the sprite.
 	 * Better than graphics.drawImage due to the parameters and their compact customisation.
-	 * Overload of DrawAsset(Graphics, Image, int, int, Rectangle, float, float)
 	 * @param graphics The graphics of the image, used to draw the image with java's inbuilt texture code.
 	 * @param image The image drawn
 	 * @param x The x Position of the graphic on screen
@@ -133,6 +132,31 @@ public class Texture2D {
 		{
 			sizeX = (int)(frame.width * drawScale * ScaleX);
 			sizeY = (int)(frame.height * drawScale * ScaleY);
+			img = img.getSubimage(frame.x, frame.y, frame.width, frame.height);
+		}
+		graphics.drawImage(img, x, y, sizeX, sizeY, null);
+	}
+	
+	/** Draws an image without the use of the draw scale. This is useful for User Interfaces and panels.
+	 * Uses the position, frame, scale and more for the appopriate drawn position of the sprite.
+	 * Better than graphics.drawImage due to the parameters and their compact customisation.
+	 * @param graphics The graphics of the image, used to draw the image with java's inbuilt texture code.
+	 * @param image The image drawn
+	 * @param x The x Position of the graphic on screen
+	 * @param y The y Position of the graphic on screen
+	 * @param frame The frame rectangle used to get the current frame
+	 * @param ScaleX The x scale of the image
+	 * @param ScaleY The y scale of the image
+	 */
+	public static void DrawStaticAsset(Graphics graphics, Image image, int x, int y, Rectangle frame, float ScaleX, float ScaleY)
+	{
+		BufferedImage img = (BufferedImage)(image);
+		int sizeX = (int)(image.getWidth(null) * ScaleX);
+		int sizeY = (int)(image.getHeight(null) * ScaleY);
+		if (frame != null)
+		{
+			sizeX = (int)(frame.width * ScaleX);
+			sizeY = (int)(frame.height * ScaleY);
 			img = img.getSubimage(frame.x, frame.y, frame.width, frame.height);
 		}
 		graphics.drawImage(img, x, y, sizeX, sizeY, null);

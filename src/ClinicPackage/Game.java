@@ -16,7 +16,6 @@ public class Game extends JPanel implements Runnable {
 	
 	public static int screenWidth = 32 * 32;
 	public static int screenHeight = 32 * 24;
-	public static Point windowPos = new Point(0, 0);
 	InputHandler gameKeyHandler = new InputHandler();
 	Thread gameThread;
 	Main gameSystem;
