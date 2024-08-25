@@ -234,7 +234,7 @@ public class Main
 	 */
 	public void Update()
 	{
-		if (InMainMenu || Menu == 2 || Menu == 1)
+		if (InMainMenu || Menu == 2 || Menu == 1 || Menu == 3)
 		{
 			DoMainMenu();
 		}

@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.*;
 import java.awt.image.*;
 import ClinicPackage.Game;
+import ClinicPackage.Logging;
 import ClinicPackage.Main;
 import ClinicPackage.Player;
 import ClinicPackage.IO.OptionsIO;
@@ -124,6 +125,58 @@ public class MenuUI extends UIElement {
 					graphics.drawString(text, textX, textY);
 				}
 			}
+			case 3:
+			{
+				BufferedImage img = (BufferedImage)(Texture2D.Get("TestUIPanel"));
+				BufferedImage imgIn = (BufferedImage)(Texture2D.Get("TestUIPanelInactive"));
+				int iBWidth = 0;
+				int iBHeight = 0;
+				while (((iBWidth + 1) * 32) + 16 < (Main.ScreenWidth - 30))
+				{
+					iBWidth++;
+				}
+				while (((iBHeight + 1) * 32) + 16 < (Main.ScreenHeight - 30))
+				{
+					iBHeight++;
+				}
+				int k = (Main.ScreenWidth - (iBWidth * 32)) / 3;
+				int l = (Main.ScreenHeight - (iBHeight * 32)) / 3;
+				int backWidth = (iBWidth * 32);
+				int backHeight = (iBHeight * 32);
+				UIElement.DrawPanel(graphics, imgIn, k, l, backWidth, backHeight);
+				for (int d = 1; d < maxPanels + 1; d++)
+				{
+					
+					if (d < 7)
+					{
+						/*int butWidth = (backWidth / 2);
+						int butHeight2 = 0;
+						while ((butHeight2 + 1) * 32 < backHeight / (maxPanels / 2))
+						{
+							butHeight2++;
+						}
+						int butHeight = butHeight2 * 32;
+						int butX = k;
+						int butY = l;
+						UIElement.DrawPanel(graphics, img, butX, butY, butWidth, butHeight);*/
+					}
+					else
+					{
+						int i = (Main.ScreenWidth / 2) - (Width / 2);
+						int j = ((Main.ScreenHeight / 2) - ((Height * maxPanels) / 2)) + (Height);
+						if (d != panelSelected + 1)
+						{
+							img = imgIn;
+						}
+						UIElement.DrawPanel(graphics, img, i, j, Width, Height);
+						String text = panelText[d - 1];
+						int textX = i + (Width / 2) - (15 / 2);
+						int textY = j + (Height / 2) - 8;
+						graphics.drawString(text, textX, textY);
+					}
+				}
+				
+			}
 			break;
 		}
 	}
@@ -146,6 +199,9 @@ public class MenuUI extends UIElement {
 				break;
 			case 2:
 				maxPanels = 3;
+				break;
+			case 3:
+				maxPanels = 7; //Amount of Key input settings + back
 				break;
 		}
 		
@@ -219,7 +275,8 @@ public class MenuUI extends UIElement {
 						Main.Music++;
 						break;
 					case 2:
-						Main.Instance.Menu = 3; //Controls
+						CloseRequest();
+						Main.Instance.ChangeMainMenu(3); //Controls
 						break;
 					case 3:
 						Main.ResolutionType++;
@@ -244,6 +301,26 @@ public class MenuUI extends UIElement {
 					case 2:
 						Main.Instance.BackToMainMenu();
 						CloseRequest();
+						break;
+				}
+				break;
+			case 3:
+				switch (panelSelected)
+				{
+					case 0:
+						break;
+					case 1:
+						break;
+					case 2:
+						break;
+					case 3:
+						break;
+					case 4:
+						break;
+					case 5:
+						break;
+					case 6:
+						Back();
 						break;
 				}
 				break;
@@ -272,6 +349,15 @@ public class MenuUI extends UIElement {
 				panelText[1] = "Options";
 				panelText[2] = "Main Menu";
 				break;
+			case 3:
+				panelText[0] = "Up: ";
+				panelText[1] = "Down: ";
+				panelText[2] = "Left: ";
+				panelText[3] = "Right: ";
+				panelText[4] = "Interact/Accept: ";
+				panelText[5] = "Return/Back: ";
+				panelText[6] = "Back";
+				break;
 		}
 	}
 	
@@ -295,6 +381,11 @@ public class MenuUI extends UIElement {
 		{
 			CloseRequest();
 			Main.Instance.ChangeMainMenu(-1);
+		}
+		else if (MainMenuType == 3)
+		{
+			CloseRequest();
+			Main.Instance.ChangeMainMenu(1);
 		}
 	}
 }
