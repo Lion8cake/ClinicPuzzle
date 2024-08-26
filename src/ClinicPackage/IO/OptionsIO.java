@@ -6,13 +6,17 @@ import java.nio.file.*;
 
 import ClinicPackage.Logging;
 import ClinicPackage.Main;
+import ClinicPackage.Inputs.InputHandler;
 
 public class OptionsIO {
 	
-	public static boolean IsStringNumeric(String string)
+	public static boolean IsStringNumeric(String[] string)
 	{
 		try {
-			Integer.parseInt(string);
+			for (int i = 0; i < string.length; i++)
+			{
+				Integer.parseInt(string[i]);
+			}
 			return true;
 		}
 		catch(Exception e) {
@@ -28,14 +32,22 @@ public class OptionsIO {
 		{
 			try {
 				BufferedReader reader = new BufferedReader(new FileReader(new File(optionsFile)));
-				String line1 = reader.readLine();
-				String line2 = reader.readLine();
-				String line3 = reader.readLine();
-				if (IsStringNumeric(line1) && IsStringNumeric(line2) && IsStringNumeric(line3))
+				String[] lines = new String[9];
+				for (int i = 0; i < lines.length; i++)
 				{
-					Main.Sound = Integer.parseInt(line1);
-					Main.Music = Integer.parseInt(line2);
-					Main.ResolutionType = Integer.parseInt(line3);
+					lines[i] = reader.readLine();
+				}
+				if (IsStringNumeric(lines))
+				{
+					Main.Sound = Integer.parseInt(lines[0]);
+					Main.Music = Integer.parseInt(lines[1]);
+					Main.ResolutionType = Integer.parseInt(lines[2]);
+					InputHandler.UpKeyCode = Integer.parseInt(lines[3]);
+					InputHandler.DownKeyCode = Integer.parseInt(lines[4]);
+					InputHandler.LeftKeyCode = Integer.parseInt(lines[5]);
+					InputHandler.RightKeyCode = Integer.parseInt(lines[6]);
+					InputHandler.SpaceKeyCode = Integer.parseInt(lines[7]);
+					InputHandler.ESCKeyCode = Integer.parseInt(lines[8]);
 					Logging.Log("Settings loaded, Welcome Back!", Logging.LoggingType.File);
 				}
 				else
@@ -67,6 +79,12 @@ public class OptionsIO {
 				opt.println(Main.Sound);
 				opt.println(Main.Music);
 				opt.println(Main.ResolutionType);
+				opt.println(InputHandler.UpKeyCode);
+				opt.println(InputHandler.DownKeyCode);
+				opt.println(InputHandler.LeftKeyCode);
+				opt.println(InputHandler.RightKeyCode);
+				opt.println(InputHandler.SpaceKeyCode);
+				opt.println(InputHandler.ESCKeyCode);
 				opt.close();
 				Logging.Log("Settings Saved", Logging.LoggingType.File);
 			} catch (IOException e) {

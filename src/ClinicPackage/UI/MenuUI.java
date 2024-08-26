@@ -1,6 +1,7 @@
 package ClinicPackage.UI;
 
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.*;
 import java.awt.image.*;
 import ClinicPackage.Game;
@@ -8,6 +9,7 @@ import ClinicPackage.Logging;
 import ClinicPackage.Main;
 import ClinicPackage.Player;
 import ClinicPackage.IO.OptionsIO;
+import ClinicPackage.Inputs.InputHandler;
 import Lion8cake.Texture2D;
 
 public class MenuUI extends UIElement {
@@ -155,26 +157,34 @@ public class MenuUI extends UIElement {
 				UIElement.DrawPanel(graphics, imgIn, k, l, backWidth, backHeight);
 				for (int d = 1; d < maxPanels + 1; d++)
 				{
+					int butWidth = ((backWidth - 64) / 2);
+					int butHeight2 = 0;
+					while ((butHeight2 + 1) * 32 < ((backHeight - Height) / (maxPanels / 2)))
+					{
+						butHeight2++;
+					}
+					int butHeight = butHeight2 * 32;
+					int butX = k + 32 + (d % 2 == 1 ? 0 : butWidth);
+					int butY = l + 16 + (butHeight * ((d - 1) / 2));
 					if (d < 7)
 					{
-						int butWidth = (backWidth / 2);
-						int butHeight2 = 0;
-						while ((butHeight2 + 1) * 32 < backHeight / (maxPanels / 2))
-						{
-							butHeight2++;
-						}
-						int butHeight = butHeight2 * 32;
-						int butX = k + 16;
-						int butY = l + 16;
 						BufferedImage buttonImg = d != panelSelected + 1 ? imgIn : img;
 						UIElement.DrawPanel(graphics, buttonImg, butX, butY, butWidth, butHeight);
+						
+						//Text
+						String text = panelText[d - 1];
+						int textX = butX + (Width / 2) - (15 / 2);
+						int textY = butY + (Height / 2) - 8;
+						graphics.drawString(text, textX, textY);
 					}
 					else
 					{
 						int i = (Main.ScreenWidth / 2) - (Width / 2);
-						int j = ((Main.ScreenHeight / 2) - ((Height * maxPanels) / 2)) + (Height) + 600;
+						int j = butY;
 						BufferedImage buttonImg = d != panelSelected + 1 ? imgIn : img;
 						UIElement.DrawPanel(graphics, buttonImg, i, j, Width, Height);
+						
+						//Text
 						String text = panelText[d - 1];
 						int textX = i + (Width / 2) - (15 / 2);
 						int textY = j + (Height / 2) - 8;
@@ -318,16 +328,12 @@ public class MenuUI extends UIElement {
 				switch (panelSelected)
 				{
 					case 0:
-						break;
 					case 1:
-						break;
 					case 2:
-						break;
 					case 3:
-						break;
 					case 4:
-						break;
 					case 5:
+						InputHandler.SetKeybind(panelSelected);
 						break;
 					case 6:
 						Back();
@@ -360,12 +366,12 @@ public class MenuUI extends UIElement {
 				panelText[2] = "Main Menu";
 				break;
 			case 3:
-				panelText[0] = "Up: ";
-				panelText[1] = "Down: ";
-				panelText[2] = "Left: ";
-				panelText[3] = "Right: ";
-				panelText[4] = "Interact/Accept: ";
-				panelText[5] = "Return/Back: ";
+				panelText[0] = "Up: " + KeyEvent.getKeyText(InputHandler.UpKeyCode);
+				panelText[1] = "Down: " + KeyEvent.getKeyText(InputHandler.DownKeyCode);
+				panelText[2] = "Left: " + KeyEvent.getKeyText(InputHandler.LeftKeyCode);
+				panelText[3] = "Right: " + KeyEvent.getKeyText(InputHandler.RightKeyCode);
+				panelText[4] = "Interact/Accept: " + KeyEvent.getKeyText(InputHandler.SpaceKeyCode);
+				panelText[5] = "Return/Back: " + KeyEvent.getKeyText(InputHandler.ESCKeyCode);
 				panelText[6] = "Back";
 				break;
 		}
