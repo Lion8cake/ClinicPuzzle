@@ -72,13 +72,7 @@ public class Game extends JPanel implements Runnable {
 				{
 					main.Initialisation();
 				}
-				int winX = screenWidth;
-				int winY = screenHeight;
 				main.Update();
-				if (winX != screenWidth || winY != screenHeight)
-				{
-					Main.ScreenSizeChange = true;
-				}
 				repaint();
 				
 				frameDelta--;

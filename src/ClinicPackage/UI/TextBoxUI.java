@@ -129,7 +129,7 @@ public class TextBoxUI extends UIElement {
 		}
 		if (KeyInputProtection > 0)
 			KeyInputProtection--;
-		if (Main.ScreenSizeChange)
+		if (Main.ResolutionChange)
 		{
 			uiSize();
 		}

@@ -34,7 +34,7 @@ public class Main
 	
 	public static int ScreenHeight;
 	
-	public static boolean ScreenSizeChange;
+	public static boolean ResolutionChange;
 	
 	//Camera
 	public int cameraX;
@@ -256,10 +256,6 @@ public class Main
 		cameraCenteredY = ScreenHeight / 2;
 		textBoxOpen = false;
 		UI.UIUpdate();
-		if (Main.ScreenSizeChange)
-		{
-			Logging.Log("change");
-		}
 		switch(ResolutionType)
 		{
 			case 0: 
@@ -281,7 +277,7 @@ public class Main
 		}
 		if (ResolutionType > 3)
 			ResolutionType = 0;
-		ScreenSizeChange = false;
+		ResolutionChange = false;
 		if (InGame && Player.kESC && Menu != 2)
 		{
 			Menu = 2;

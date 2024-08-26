@@ -29,6 +29,10 @@ public class MenuUI extends UIElement {
 	
 	public int KeyInputDelay = 0;
 
+	private BufferedImage blurredImage = null;
+	
+	private boolean changeres = false;
+	
 	@Override
 	public void SetStaticDefaults()
 	{
@@ -47,21 +51,25 @@ public class MenuUI extends UIElement {
 	public void Draw(Graphics graphics) {
 		if (Main.Instance.InGame)
 		{
-			//Blurr Drawcode
-			BufferedImage background = new BufferedImage(Main.ScreenWidth, Main.ScreenHeight, BufferedImage.TYPE_INT_ARGB);
-			Graphics g2 = background.getGraphics();
-			g2.setColor(new Color(0, 0, 0));
-			g2.fillRect(0, 0, Main.ScreenWidth, Main.ScreenHeight);
-			g2.dispose();
-			
-			BufferedImage bimg = new BufferedImage(Main.ScreenWidth, Main.ScreenHeight, BufferedImage.TYPE_INT_ARGB);
-			Graphics g = bimg.getGraphics();
-			g.drawImage(background, 0, 0, null);
-			Main.Instance.DrawGame(g);
-			g.dispose();
-			
-			BufferedImage bimg2 = Main.Instance.BlurrImage(bimg);
-			graphics.drawImage(bimg2, 0, 0, null);
+			if (blurredImage == null || changeres)
+			{
+				//Blurr Drawcode
+				BufferedImage background = new BufferedImage(Main.ScreenWidth, Main.ScreenHeight, BufferedImage.TYPE_INT_ARGB);
+				Graphics g2 = background.getGraphics();
+				g2.setColor(new Color(0, 0, 0));
+				g2.fillRect(0, 0, Main.ScreenWidth, Main.ScreenHeight);
+				g2.dispose();
+				
+				BufferedImage bimg = new BufferedImage(Main.ScreenWidth, Main.ScreenHeight, BufferedImage.TYPE_INT_ARGB);
+				Graphics g = bimg.getGraphics();
+				g.drawImage(background, 0, 0, null);
+				Main.Instance.DrawGame(g);
+				g.dispose();
+				
+				BufferedImage bimg2 = Main.Instance.BlurrImage(bimg);
+				blurredImage = bimg2;
+			}
+			graphics.drawImage(blurredImage, 0, 0, null);
 		}
 		switch (MainMenuType)
 		{
@@ -124,6 +132,7 @@ public class MenuUI extends UIElement {
 					int textY = j + (Height / 2) - 8;
 					graphics.drawString(text, textX, textY);
 				}
+				break;
 			}
 			case 3:
 			{
@@ -146,38 +155,34 @@ public class MenuUI extends UIElement {
 				UIElement.DrawPanel(graphics, imgIn, k, l, backWidth, backHeight);
 				for (int d = 1; d < maxPanels + 1; d++)
 				{
-					
 					if (d < 7)
 					{
-						/*int butWidth = (backWidth / 2);
+						int butWidth = (backWidth / 2);
 						int butHeight2 = 0;
 						while ((butHeight2 + 1) * 32 < backHeight / (maxPanels / 2))
 						{
 							butHeight2++;
 						}
 						int butHeight = butHeight2 * 32;
-						int butX = k;
-						int butY = l;
-						UIElement.DrawPanel(graphics, img, butX, butY, butWidth, butHeight);*/
+						int butX = k + 16;
+						int butY = l + 16;
+						BufferedImage buttonImg = d != panelSelected + 1 ? imgIn : img;
+						UIElement.DrawPanel(graphics, buttonImg, butX, butY, butWidth, butHeight);
 					}
 					else
 					{
 						int i = (Main.ScreenWidth / 2) - (Width / 2);
-						int j = ((Main.ScreenHeight / 2) - ((Height * maxPanels) / 2)) + (Height);
-						if (d != panelSelected + 1)
-						{
-							img = imgIn;
-						}
-						UIElement.DrawPanel(graphics, img, i, j, Width, Height);
+						int j = ((Main.ScreenHeight / 2) - ((Height * maxPanels) / 2)) + (Height) + 600;
+						BufferedImage buttonImg = d != panelSelected + 1 ? imgIn : img;
+						UIElement.DrawPanel(graphics, buttonImg, i, j, Width, Height);
 						String text = panelText[d - 1];
 						int textX = i + (Width / 2) - (15 / 2);
 						int textY = j + (Height / 2) - 8;
 						graphics.drawString(text, textX, textY);
 					}
 				}
-				
+				break;
 			}
-			break;
 		}
 	}
 	
@@ -212,6 +217,11 @@ public class MenuUI extends UIElement {
 		if (Player.kESC)
 		{
 			Back();
+		}
+		
+		if (KeyInputDelay <= 19 && KeyInputDelay > 15 && Main.Instance.InGame)
+		{
+			blurredImage = null;
 		}
 		
 		//Controls
@@ -280,7 +290,7 @@ public class MenuUI extends UIElement {
 						break;
 					case 3:
 						Main.ResolutionType++;
-						KeyInputDelay = 10;
+						KeyInputDelay = 20;
 						break;
 					case 4:
 						Back();
