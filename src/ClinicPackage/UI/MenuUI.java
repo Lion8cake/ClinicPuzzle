@@ -35,6 +35,8 @@ public class MenuUI extends UIElement {
 	
 	private boolean changeres = false;
 	
+	private int saveScrollType = 0;
+	
 	@Override
 	public void SetStaticDefaults()
 	{
@@ -149,28 +151,44 @@ public class MenuUI extends UIElement {
 			}
 			case 4:
 			{
+				int savMaxWidth = 0;
+				int savMaxHeight = 0;
+				while (((savMaxWidth + 1) * 32) + 64 < (Main.ScreenWidth - 64))
+				{
+					savMaxWidth++;
+				}
+				while (((savMaxHeight + 1) * 32) + 128 < (Main.ScreenHeight - 32))
+				{
+					savMaxHeight++;
+				}
 				for (int d = 1; d < maxPanels + 1; d++)
 				{
 					BufferedImage img = (BufferedImage)(Texture2D.Get("TestUIPanel"));
 					BufferedImage imgIn = (BufferedImage)(Texture2D.Get("TestUIPanelInactive"));
-					int i = (Main.ScreenWidth / 2) - (Width / 2);
-					int j = ((Main.ScreenHeight / 2) - ((Height * maxPanels) / 2)) + (Height * (d - 1));
-					if (d != panelSelected + 1)
+					int[] saveArray = new int[] {0, 1, 2};
+					for (int o = 0; o < saveArray.length; o++)
 					{
-						img = imgIn;
+						saveArray[o] = saveArray[o] + saveScrollType;
 					}
-					if (d < 6)
+					for (int playPan = 0; playPan < 3; playPan++)
 					{
-						
-					}
-					else
-					{
-						UIElement.DrawPanel(graphics, img, i, j, Width, Height);
-						
-						String text = panelText[d - 1];
-						int textX = i + (Width / 2) - (15 / 2);
-						int textY = j + (Height / 2) - 8;
-						graphics.drawString(text, textX, textY);
+						int savWidth = (savMaxWidth / 3 * 32);
+						int k = (Main.ScreenWidth - (savMaxWidth * 32)) / 2 + ((savMaxWidth / 3 * 32) * playPan);
+						int l = (Main.ScreenHeight - (savMaxHeight * 32)) / 2 - 64;
+						BufferedImage savPnlImg = saveArray[playPan] == panelSelected ? img : imgIn;
+						UIElement.DrawPanel(graphics, savPnlImg, k, l, savWidth, savMaxHeight * 32);
+						if (d >= 6 && playPan == 0)
+						{
+							BufferedImage pnlImg = d != panelSelected + 1 ? imgIn : img;
+							int i = (Main.ScreenWidth / 2) - (Width / 2);
+							int j = l + savMaxHeight * 32;
+							UIElement.DrawPanel(graphics, pnlImg, i, j, Width, Height);
+							
+							String text = panelText[d - 1];
+							int textX = i + (Width / 2) - (15 / 2);
+							int textY = j + (Height / 2) - 8;
+							graphics.drawString(text, textX, textY);
+						}
 					}
 				}
 				break;
@@ -240,6 +258,24 @@ public class MenuUI extends UIElement {
 			blurredImage = null;
 		}
 		
+		if (MainMenuType == 4)
+		{
+			switch (panelSelected)
+			{
+				case 0:
+				case 1:
+					saveScrollType = 0;
+					break;
+				case 2:
+					saveScrollType = 1;
+					break;
+				case 3:
+				case 4:
+					saveScrollType = 2;
+					break;
+			}
+		}
+		
 		//Controls
 		if (moveWait <= 0)
 		{
@@ -265,7 +301,7 @@ public class MenuUI extends UIElement {
 				}
 				else if (Player.kRight)
 				{
-					if (panelSelected < 5)
+					if (panelSelected < 4)
 						panelSelected++;
 					else
 						panelSelected = 0;
@@ -359,8 +395,6 @@ public class MenuUI extends UIElement {
 					case 4://Space
 					case 5://Esc
 						InputHandler.SetKeybind(panelSelected);
-						Main.MenuUIActive = false;
-						CloseRequest();
 						break;
 					case 6:
 						Back();
@@ -376,6 +410,8 @@ public class MenuUI extends UIElement {
 					case 3:
 					case 4:
 						Main.Instance.LoadGame();
+						Main.MenuUIActive = false;
+						CloseRequest();
 						break;
 					case 5:
 						Back();
