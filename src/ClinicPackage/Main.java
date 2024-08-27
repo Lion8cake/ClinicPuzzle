@@ -94,6 +94,8 @@ public class Main
 	
 	public static boolean MenuUIActive = false;
 		
+	public boolean[] savefileExists = new boolean[5]; //5 save files, checks for if a file exists
+	
 	//Settings
 	public static int Sound = 0;
 	
@@ -107,8 +109,10 @@ public class Main
 	 */ 
 	public void Initialisation()
 	{
+		Instance = this;
 		FileIO.CheckFolderspace();
 		OptionsIO.LoadSettings();
+		SaveFileIO.FileSavesSettup();
 		//AssetBank.InitiliseTextures(); //AssetBank used to be a place that stored frequently used textures. Removed due to Texture2D optimisations
 		//Logging.Log("Initialised Textures", LoggingType.Base);
 		if (player[myPlayer] == null)
@@ -129,7 +133,6 @@ public class Main
 		
 		//Code runs here
 		Logging.Log("Initialisation Finished", LoggingType.Base);
-		Instance = this;
 	}
 	
 	public void InitiateTileSettings()

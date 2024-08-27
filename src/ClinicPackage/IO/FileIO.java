@@ -14,6 +14,8 @@ public class FileIO {
 	
 	final public static String LogsFolderName = (String)(Main.GameName + "-logs");
 	
+	final public static String SavesFolderName = "Saves";
+	
 	final public static String BackupLogsFolderName = "Archived";
 	
 	public static void CheckFolderspace()
@@ -21,6 +23,8 @@ public class FileIO {
 		Path path = Paths.get(FolderPath);
 		Path logs = Paths.get(FolderPath + "/" + LogsFolderName);
 		Path backupLogs = Paths.get(FolderPath + "/" + LogsFolderName + "/" + BackupLogsFolderName);
+		Path saves = Paths.get(FolderPath + "/" + SavesFolderName);
+		
 		//Main Path
 		if (Files.exists(path))
 			Logging.Log("Found File Path, Game will save to: " + path, Logging.LoggingType.File);
@@ -32,6 +36,9 @@ public class FileIO {
 		//Logs Archive Path
 		if (!Files.exists(backupLogs))
 			CreateDirectory(backupLogs, false);
+		//Saves Path
+		if (!Files.exists(saves))
+			CreateDirectory(saves, false);
 	}
 	
 	public static void CreateDirectory(Path path, boolean isCoreFolders)

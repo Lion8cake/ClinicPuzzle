@@ -5,10 +5,10 @@ import java.awt.event.KeyEvent;
 import java.awt.*;
 import java.awt.image.*;
 import ClinicPackage.Game;
-import ClinicPackage.Logging;
 import ClinicPackage.Main;
 import ClinicPackage.Player;
 import ClinicPackage.IO.OptionsIO;
+import ClinicPackage.IO.SaveFileIO;
 import ClinicPackage.Inputs.InputHandler;
 import Lion8cake.Texture2D;
 
@@ -163,31 +163,64 @@ public class MenuUI extends UIElement {
 				}
 				for (int d = 1; d < maxPanels + 1; d++)
 				{
-					BufferedImage img = (BufferedImage)(Texture2D.Get("TestUIPanel"));
-					BufferedImage imgIn = (BufferedImage)(Texture2D.Get("TestUIPanelInactive"));
-					int[] saveArray = new int[] {0, 1, 2};
-					for (int o = 0; o < saveArray.length; o++)
+					
+					if (d >= 6)
 					{
-						saveArray[o] = saveArray[o] + saveScrollType;
-					}
-					for (int playPan = 0; playPan < 3; playPan++)
-					{
-						int savWidth = (savMaxWidth / 3 * 32);
-						int k = (Main.ScreenWidth - (savMaxWidth * 32)) / 2 + ((savMaxWidth / 3 * 32) * playPan);
-						int l = (Main.ScreenHeight - (savMaxHeight * 32)) / 2 - 64;
-						BufferedImage savPnlImg = saveArray[playPan] == panelSelected ? img : imgIn;
-						UIElement.DrawPanel(graphics, savPnlImg, k, l, savWidth, savMaxHeight * 32);
-						if (d >= 6 && playPan == 0)
+						BufferedImage img = (BufferedImage)(Texture2D.Get("TestUIPanel"));
+						BufferedImage imgIn = (BufferedImage)(Texture2D.Get("TestUIPanelInactive"));
+						int[] saveArray = new int[] {0, 1, 2};
+						for (int o = 0; o < saveArray.length; o++)
 						{
-							BufferedImage pnlImg = d != panelSelected + 1 ? imgIn : img;
-							int i = (Main.ScreenWidth / 2) - (Width / 2);
-							int j = l + savMaxHeight * 32;
-							UIElement.DrawPanel(graphics, pnlImg, i, j, Width, Height);
+							saveArray[o] = saveArray[o] + saveScrollType;
+						}
+
+						for (int playPan = 0; playPan < 3; playPan++)
+						{
+							int savWidth = (savMaxWidth / 3 * 32);
+							int k = (Main.ScreenWidth - (savMaxWidth * 32)) / 2 + ((savMaxWidth / 3 * 32) * playPan);
+							int l = (Main.ScreenHeight - (savMaxHeight * 32)) / 2 - 64;
+							BufferedImage savPnlImg = saveArray[playPan] == panelSelected ? img : imgIn;
+							UIElement.DrawPanel(graphics, savPnlImg, k, l, savWidth, savMaxHeight * 32);
 							
-							String text = panelText[d - 1];
-							int textX = i + (Width / 2) - (15 / 2);
-							int textY = j + (Height / 2) - 8;
-							graphics.drawString(text, textX, textY);
+							//Text
+							String text2 = panelText[saveArray[playPan]];
+							int textK = k + (Width / 2) - (15 / 2);
+							int textL = l + (Height / 2) - 8;
+							graphics.drawString(text2, textK, textL);
+							
+							if (Main.Instance.savefileExists[saveArray[playPan]])
+							{
+								String SText = "Welcome Back!";
+								String SText1 = "Playtime: ";
+								String SText2 = "Current Room: ";
+								graphics.drawString(SText, textK - 128, textL + 64);
+								graphics.drawString(SText1, textK - 128, textL + 128);
+								graphics.drawString(SText2, textK - 128, textL + 192);
+							}
+							
+							//arrow graphics
+							if (playPan == 2 && saveScrollType < 2)
+							{
+								Texture2D.DrawStaticAsset(graphics, Texture2D.Get("TestUIArrow2"), k - 22 + savWidth, l - 32, null, 2f, 2f);
+							}
+							if (playPan == 0 && saveScrollType > 0)
+							{
+								Texture2D.DrawStaticAsset(graphics, Texture2D.Get("TestUIArrow"), k - 22 - 15, l - 32, null, 2f, 2f);
+							}
+							
+							if (playPan == 0)
+							{
+								BufferedImage pnlImg = d != panelSelected + 1 ? imgIn : img;
+								int i = (Main.ScreenWidth / 2) - (Width / 2);
+								int j = l + savMaxHeight * 32;
+								UIElement.DrawPanel(graphics, pnlImg, i, j, Width, Height);
+								
+								//Text
+								String text = panelText[d - 1];
+								int textX = i + (Width / 2) - (15 / 2);
+								int textY = j + (Height / 2) - 8;
+								graphics.drawString(text, textX, textY);
+							}
 						}
 					}
 				}
@@ -307,7 +340,7 @@ public class MenuUI extends UIElement {
 						panelSelected = 0;
 				}
 			}
-			moveWait = 10;
+			moveWait = 7;
 		}
 		
 		if (moveWait > 0)
@@ -409,6 +442,10 @@ public class MenuUI extends UIElement {
 					case 2:
 					case 3:
 					case 4:
+						if (!Main.Instance.savefileExists[panelSelected])
+						{
+							SaveFileIO.CreateSaves(panelSelected);
+						}
 						Main.Instance.LoadGame();
 						Main.MenuUIActive = false;
 						CloseRequest();
