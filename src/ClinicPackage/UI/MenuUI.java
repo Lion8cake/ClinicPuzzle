@@ -76,64 +76,18 @@ public class MenuUI extends UIElement {
 		switch (MainMenuType)
 		{
 			case 0:
-				{
-					for (int d = 1; d < maxPanels + 1; d++)
-					{
-						BufferedImage img = (BufferedImage)(Texture2D.Get("TestUIPanel"));
-						BufferedImage imgIn = (BufferedImage)(Texture2D.Get("TestUIPanelInactive"));
-						int i = (Main.ScreenWidth / 2) - (Width / 2);
-						int j = ((Main.ScreenHeight / 2) - ((Height * maxPanels) / 2)) + (Height * (d - 1));
-						if (d != panelSelected + 1)
-						{
-							img = imgIn;
-						}
-						UIElement.DrawPanel(graphics, img, i, j, Width, Height);
-						
-						String text = panelText[d - 1];
-						int textX = i + (Width / 2) - (15 / 2);
-						int textY = j + (Height / 2) - 8;
-						graphics.drawString(text, textX, textY);
-					}
-				}
+			{
+				DefaultUIDrawing(graphics);
 				break;
+			}
 			case 1:
-				for (int d = 1; d < maxPanels + 1; d++)
-				{
-					BufferedImage img = (BufferedImage)(Texture2D.Get("TestUIPanel"));
-					BufferedImage imgIn = (BufferedImage)(Texture2D.Get("TestUIPanelInactive"));
-					int i = (Main.ScreenWidth / 2) - (Width / 2);
-					int j = ((Main.ScreenHeight / 2) - ((Height * maxPanels) / 2)) + (Height * (d - 1));
-					if (d != panelSelected + 1)
-					{
-						img = imgIn;
-					}
-					UIElement.DrawPanel(graphics, img, i, j, Width, Height);
-					
-					String text = panelText[d - 1];
-					int textX = i + (Width / 2) - (15 / 2);
-					int textY = j + (Height / 2) - 8;
-					graphics.drawString(text, textX, textY);
-				}
+			{
+				DefaultUIDrawing(graphics);
 				break;
+			}
 			case 2:
 			{
-				for (int d = 1; d < maxPanels + 1; d++)
-				{
-					BufferedImage img = (BufferedImage)(Texture2D.Get("TestUIPanel"));
-					BufferedImage imgIn = (BufferedImage)(Texture2D.Get("TestUIPanelInactive"));
-					int i = (Main.ScreenWidth / 2) - (Width / 2);
-					int j = ((Main.ScreenHeight / 2) - ((Height * maxPanels) / 2)) + (Height * (d - 1));
-					if (d != panelSelected + 1)
-					{
-						img = imgIn;
-					}
-					UIElement.DrawPanel(graphics, img, i, j, Width, Height);
-					
-					String text = panelText[d - 1];
-					int textX = i + (Width / 2) - (15 / 2);
-					int textY = j + (Height / 2) - 8;
-					graphics.drawString(text, textX, textY);
-				}
+				DefaultUIDrawing(graphics);
 				break;
 			}
 			case 3:
@@ -193,6 +147,55 @@ public class MenuUI extends UIElement {
 				}
 				break;
 			}
+			case 4:
+			{
+				for (int d = 1; d < maxPanels + 1; d++)
+				{
+					BufferedImage img = (BufferedImage)(Texture2D.Get("TestUIPanel"));
+					BufferedImage imgIn = (BufferedImage)(Texture2D.Get("TestUIPanelInactive"));
+					int i = (Main.ScreenWidth / 2) - (Width / 2);
+					int j = ((Main.ScreenHeight / 2) - ((Height * maxPanels) / 2)) + (Height * (d - 1));
+					if (d != panelSelected + 1)
+					{
+						img = imgIn;
+					}
+					if (d < 6)
+					{
+						
+					}
+					else
+					{
+						UIElement.DrawPanel(graphics, img, i, j, Width, Height);
+						
+						String text = panelText[d - 1];
+						int textX = i + (Width / 2) - (15 / 2);
+						int textY = j + (Height / 2) - 8;
+						graphics.drawString(text, textX, textY);
+					}
+				}
+				break;
+			}
+		}
+	}
+	
+	private void DefaultUIDrawing(Graphics graphics)
+	{
+		for (int d = 1; d < maxPanels + 1; d++)
+		{
+			BufferedImage img = (BufferedImage)(Texture2D.Get("TestUIPanel"));
+			BufferedImage imgIn = (BufferedImage)(Texture2D.Get("TestUIPanelInactive"));
+			int i = (Main.ScreenWidth / 2) - (Width / 2);
+			int j = ((Main.ScreenHeight / 2) - ((Height * maxPanels) / 2)) + (Height * (d - 1));
+			if (d != panelSelected + 1)
+			{
+				img = imgIn;
+			}
+			UIElement.DrawPanel(graphics, img, i, j, Width, Height);
+			
+			String text = panelText[d - 1];
+			int textX = i + (Width / 2) - (15 / 2);
+			int textY = j + (Height / 2) - 8;
+			graphics.drawString(text, textX, textY);
 		}
 	}
 	
@@ -218,6 +221,9 @@ public class MenuUI extends UIElement {
 			case 3:
 				maxPanels = 7; //Amount of Key input settings + back
 				break;
+			case 4:
+				maxPanels = 6; //5 saves
+				break;
 		}
 		
 		if (Player.kSpace && KeyInputDelay <= 0)
@@ -237,16 +243,35 @@ public class MenuUI extends UIElement {
 		//Controls
 		if (moveWait <= 0)
 		{
-			if (Player.kDown)
+			if (MainMenuType != 4)
 			{
-				panelSelected++;
-				moveWait = 10;
+				if (Player.kDown)
+					panelSelected++;
+				else if (Player.kUp)
+					panelSelected--;
 			}
-			else if (Player.kUp)
+			else
 			{
-				panelSelected--;
-				moveWait = 10;
+				if (Player.kDown)
+					panelSelected = 5;
+				else if (Player.kUp)
+					panelSelected = 0;
+				else if (Player.kLeft)
+				{
+					if (panelSelected > 0)
+						panelSelected--;
+					else
+						panelSelected = 4;
+				}
+				else if (Player.kRight)
+				{
+					if (panelSelected < 5)
+						panelSelected++;
+					else
+						panelSelected = 0;
+				}
 			}
+			moveWait = 10;
 		}
 		
 		if (moveWait > 0)
@@ -273,7 +298,7 @@ public class MenuUI extends UIElement {
 				switch (panelSelected)
 				{
 					case 0:
-						Main.Instance.LoadGame();
+						Main.Instance.Menu = 4;
 						break;
 					case 1:
 						Main.Instance.Menu = 1;
@@ -282,8 +307,8 @@ public class MenuUI extends UIElement {
 						Game.CloseGame();
 						break;
 				}
-				CloseRequest();
 				Main.MenuUIActive = false;
+				CloseRequest();
 				break;
 			case 1:
 				switch (panelSelected)
@@ -327,15 +352,32 @@ public class MenuUI extends UIElement {
 			case 3:
 				switch (panelSelected)
 				{
+					case 0://W
+					case 1://S
+					case 2://A
+					case 3://D
+					case 4://Space
+					case 5://Esc
+						InputHandler.SetKeybind(panelSelected);
+						Main.MenuUIActive = false;
+						CloseRequest();
+						break;
+					case 6:
+						Back();
+						break;
+				}
+				break;
+			case 4:
+				switch (panelSelected)
+				{
 					case 0:
 					case 1:
 					case 2:
 					case 3:
 					case 4:
-					case 5:
-						InputHandler.SetKeybind(panelSelected);
+						Main.Instance.LoadGame();
 						break;
-					case 6:
+					case 5:
 						Back();
 						break;
 				}
@@ -374,34 +416,46 @@ public class MenuUI extends UIElement {
 				panelText[5] = "Return/Back: " + KeyEvent.getKeyText(InputHandler.ESCKeyCode);
 				panelText[6] = "Back";
 				break;
+			case 4:
+				panelText[0] = "Save1";
+				panelText[1] = "Save2";
+				panelText[2] = "Save3";
+				panelText[3] = "Save4";
+				panelText[4] = "Save5";
+				panelText[5] = "Back";
+				break;
 		}
 	}
 	
 	private void Back() {
-		if (MainMenuType == 1)
+		switch (MainMenuType)
 		{
-			if (Main.Instance.InMainMenu)
-			{
+			case 1:
+				if (Main.Instance.InMainMenu)
+				{
+					CloseRequest();
+					OptionsIO.SaveSettings();
+					Main.Instance.ChangeMainMenu(0);
+				}
+				else
+				{
+					CloseRequest();
+					OptionsIO.SaveSettings();
+					Main.Instance.ChangeMainMenu(2);
+				}
+				break;
+			case 2:
 				CloseRequest();
-				OptionsIO.SaveSettings();
+				Main.Instance.ChangeMainMenu(-1);
+				break;
+			case 3:
+				CloseRequest();
+				Main.Instance.ChangeMainMenu(1);
+				break;
+			case 4:
+				CloseRequest();
 				Main.Instance.ChangeMainMenu(0);
-			}
-			else
-			{
-				CloseRequest();
-				OptionsIO.SaveSettings();
-				Main.Instance.ChangeMainMenu(2);
-			}
-		}
-		else if (MainMenuType == 2)
-		{
-			CloseRequest();
-			Main.Instance.ChangeMainMenu(-1);
-		}
-		else if (MainMenuType == 3)
-		{
-			CloseRequest();
-			Main.Instance.ChangeMainMenu(1);
+				break;
 		}
 	}
 }
