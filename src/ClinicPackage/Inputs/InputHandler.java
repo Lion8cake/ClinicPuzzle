@@ -3,6 +3,7 @@ package ClinicPackage.Inputs;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import ClinicPackage.Logging;
 import ClinicPackage.Main;
 import ClinicPackage.Player;
 
@@ -34,10 +35,16 @@ public class InputHandler implements KeyListener {
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
+		keyRegister(e);
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		keyRegister(e);
+	}
+
+	public void keyRegister(KeyEvent e)
+	{
 		if (KeybindSetting)
 		{
 			switch (KeybindSettingKey)
@@ -100,7 +107,7 @@ public class InputHandler implements KeyListener {
 			}
 		}
 	}
-
+	
 	@Override
 	public void keyReleased(KeyEvent e) {
 		if (e.getKeyCode() == UpKeyCode)

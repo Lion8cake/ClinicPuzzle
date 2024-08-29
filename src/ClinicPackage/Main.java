@@ -27,7 +27,9 @@ public class Main
 	
 	public static Texture2D texture2D;
 	
-	public boolean InGame = false;
+	public static boolean InGame = false;
+	
+	public static boolean CreateGame = false;
 	
 	//Window Size
 	public static int ScreenWidth;

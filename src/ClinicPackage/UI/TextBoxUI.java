@@ -35,15 +35,14 @@ public class TextBoxUI extends UIElement {
 	public int currentDialogNum = 0;
 	
 	public int maxDialog;
-	
-	private int KeyInputProtection = 30;
-	
+		
 	@Override
 	public void SetStaticDefaults()
 	{
 		Width = 20 * 32;
 		Height = 8 * 32;
 		uiSize();
+		KeyInputDelay = 30;
 	}
 	
 	@Override
@@ -116,9 +115,9 @@ public class TextBoxUI extends UIElement {
 	public void Update()
 	{
 		Main.textBoxOpen = true;
-		if (Player.kSpace && KeyInputProtection <= 0)
+		if (Key_Accept && KeyInputDelay <= 0)
 		{
-			KeyInputProtection = 30;
+			KeyInputDelay = 30;
 			if (currentDialogNum < maxDialog - 1)
 				currentDialogNum++;
 			else
@@ -127,8 +126,6 @@ public class TextBoxUI extends UIElement {
 				myPlayer.InteractionCooldown = 30;
 			}
 		}
-		if (KeyInputProtection > 0)
-			KeyInputProtection--;
 		if (Main.ResolutionChange)
 		{
 			uiSize();
