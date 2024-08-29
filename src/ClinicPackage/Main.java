@@ -29,8 +29,13 @@ public class Main
 	
 	public static boolean InGame = false;
 	
+	//files
 	public static boolean CreateGame = false;
 	
+	public static int LoadedSave = -1;
+	
+	public boolean[] savefileExists = new boolean[5]; //5 save files, checks for if a file exists
+
 	//Window Size
 	public static int ScreenWidth;
 	
@@ -95,8 +100,6 @@ public class Main
 	public boolean InMainMenu = false;
 	
 	public static boolean MenuUIActive = false;
-		
-	public boolean[] savefileExists = new boolean[5]; //5 save files, checks for if a file exists
 	
 	//Settings
 	public static int Sound = 0;
@@ -398,6 +401,20 @@ public class Main
 		    }
 		}
 		return result;
+	}
+	
+	public static boolean IsStringNumeric(String[] string)
+	{
+		try {
+			for (int i = 0; i < string.length; i++)
+			{
+				Integer.parseInt(string[i]);
+			}
+			return true;
+		}
+		catch(Exception e) {
+			return false;
+		}
 	}
 	
 	public static void TileInteraction(Player player, int type, int x, int y)

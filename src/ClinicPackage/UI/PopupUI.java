@@ -2,9 +2,7 @@ package ClinicPackage.UI;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.function.Function;
-
-import ClinicPackage.Logging;
+import java.util.function.Supplier;
 import ClinicPackage.Main;
 import Lion8cake.Texture2D;
 
@@ -14,10 +12,12 @@ public class PopupUI extends UIElement {
 	
 	private String popUpText = "";
 	
-	private Object Delegate = null;
+	private Supplier<Runnable> Delegate = null;
 	
-	public PopupUI()
+	public PopupUI(String text, Supplier<Runnable> d)
 	{
+		popUpText = text;
+		Delegate = d;
 	}
 	
 	@Override
@@ -25,7 +25,7 @@ public class PopupUI extends UIElement {
 		Width = 32 * 12;
 		Height = 32 * 7;
 		uiSize();
-		KeyInputDelay = 10;
+		KeyInputDelay = 20;
 	}
 	
 	@Override
@@ -41,8 +41,10 @@ public class PopupUI extends UIElement {
 		int ButX2 = x + 32;
 		UIElement.DrawPanel(graphics, question ? img : imgIn, ButX, ButY, ButWidth, ButHeight);
 		UIElement.DrawPanel(graphics, question ? imgIn : img, ButX2, ButY, ButWidth, ButHeight);
-		graphics.drawString("Yes", ButX, ButY);
-		graphics.drawString("No", ButX2, ButY);
+		
+		graphics.drawString("Yes", ButX + 32, ButY + 32);
+		graphics.drawString("No", ButX2 + 32, ButY + 32);
+		graphics.drawString(popUpText, x + 32, y + 36);
 	}
 	
 	@Override
@@ -55,9 +57,12 @@ public class PopupUI extends UIElement {
 		if (Key_Accept && KeyInputDelay <= 0)
 		{
 			if (question)
+			{
 				if (Delegate != null)
 				{
+					Delegate.get();
 				}
+			}
 			KeyInputDelay = 10;
 			CloseRequest();
 		}

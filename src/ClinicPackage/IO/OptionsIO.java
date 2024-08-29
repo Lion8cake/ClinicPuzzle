@@ -9,21 +9,6 @@ import ClinicPackage.Main;
 import ClinicPackage.Inputs.InputHandler;
 
 public class OptionsIO {
-	
-	public static boolean IsStringNumeric(String[] string)
-	{
-		try {
-			for (int i = 0; i < string.length; i++)
-			{
-				Integer.parseInt(string[i]);
-			}
-			return true;
-		}
-		catch(Exception e) {
-			return false;
-		}
-	}
-	
 	public static void LoadSettings()
 	{
 		String optionsFile = FileIO.FolderPath + "/Options.txt";
@@ -37,7 +22,7 @@ public class OptionsIO {
 				{
 					lines[i] = reader.readLine();
 				}
-				if (IsStringNumeric(lines))
+				if (Main.IsStringNumeric(lines))
 				{
 					Main.Sound = Integer.parseInt(lines[0]);
 					Main.Music = Integer.parseInt(lines[1]);
