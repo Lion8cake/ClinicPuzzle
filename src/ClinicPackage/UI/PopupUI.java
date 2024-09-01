@@ -1,6 +1,7 @@
 package ClinicPackage.UI;
 
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.function.Supplier;
 import ClinicPackage.Main;
@@ -25,7 +26,7 @@ public class PopupUI extends UIElement {
 		Width = 32 * 12;
 		Height = 32 * 7;
 		uiSize();
-		KeyInputDelay = 20;
+		KeyInputDelay = 200;
 	}
 	
 	@Override
@@ -45,6 +46,8 @@ public class PopupUI extends UIElement {
 		graphics.drawString("Yes", ButX + 32, ButY + 32);
 		graphics.drawString("No", ButX2 + 32, ButY + 32);
 		graphics.drawString(popUpText, x + 32, y + 36);
+		Image test = Main.texture2D.DrawText("Hi this is a test text using texture 2D's new text drawing code, heres hope to all that works!", 20, 20);
+		Texture2D.DrawStaticAsset(graphics, test, 20, 20, null, 2f, 2f);
 	}
 	
 	@Override

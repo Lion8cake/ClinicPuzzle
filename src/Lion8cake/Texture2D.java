@@ -7,12 +7,16 @@ import java.io.InputStream;
 import java.util.Hashtable;
 import javax.imageio.ImageIO;
 
+import ClinicPackage.Logging;
+
 //Image System Made by Lion8cake
 public class Texture2D {
 
 	private static String[] ValidExtentions = { ".png", ".ico" }; //reads .Ico files that are just renamed .png files because I cannot be bothered making a whole .Ico reader
 	
 	public float drawScale = 2f;
+	
+	public String FontFileName = "";
 	
 	private static Hashtable<String, Image> ImageDictionary = new Hashtable<String, Image>();
 	
@@ -160,5 +164,89 @@ public class Texture2D {
 			img = img.getSubimage(frame.x, frame.y, frame.width, frame.height);
 		}
 		graphics.drawImage(img, x, y, sizeX, sizeY, null);
+	}
+	
+	public Image DrawText(String text, int x, int y)
+	{
+		BufferedImage testTextImage = new BufferedImage(32767, 32767, BufferedImage.TYPE_INT_ARGB);
+		Image[] Characters = new Image[128]; //ASCII
+		try {
+			Image textImg = GetTextTexture();
+			String[][] fontLayout = new String[7][];
+			for (int d = 0; d < fontLayout.length; d++)
+			{
+				switch (d)
+				{
+					case 0:
+						fontLayout[d] = new String[] { "A", "G", "M", "O", "Q", "S", "T", "U", "V", "W", "X", "Y", "Z", "m", "w", "4", "@", "#", "%", "&", "_", "=", "+", " " };
+						break;
+					case 1:
+						fontLayout[d] = new String[] { "B", "C", "D", "H", "N", "q", "z", "2", "3", "5", "6", "7", "8", "9", "0", "?", "~" };
+						break;
+					case 2:
+						fontLayout[d] = new String[] { "E", "F", "J", "K", "L", "P", "R", "a", "b", "c", "d", "e", "g", "o", "p", "s", "u", "v", "x", "y", "$", "$2", "^", "*", "-", "\\", "/" };
+						break;
+					case 3:
+						fontLayout[d] = new String[] { "h", "j", "k", "n", "r", "{", "}", "\"", "<", ">" };
+						break;
+					case 4:
+						fontLayout[d] = new String[] { "f", "t", "1", "(", ")" };
+						break;
+					case 5:
+						fontLayout[d] = new String[] { "[", "]", ":", ";", "'", "," };
+						break;
+					case 6:
+						fontLayout[d] = new String[] { "I", "i", "l", "!", "." };
+						break;
+				}
+			}
+			float TotalCount = 94;
+			float CurrentProgress = 0;
+			float PrintProgress;
+			for (int j = 0; j < fontLayout.length; j++)
+			{
+				for (int i = 0; i < fontLayout[j].length; i++)
+				{
+					String texture = "Texture2D_Text_" + FontFileName + "_" + fontLayout[j][i];
+					Characters[fontLayout[j][i].charAt(0)] = ImageDictionary.get(texture);
+					if (Characters[fontLayout[j][i].charAt(0)] == null)
+					{
+						CurrentProgress++;
+						PrintProgress = (CurrentProgress / TotalCount) * 100;
+						System.out.println("Constructing Text Textures: " + PrintProgress + "%");
+						int pixelWidth = 6 - j + 1;
+						Logging.Log((int)(fontLayout[j][i].charAt(0)) + "|" + fontLayout[j][i].charAt(0));
+						Logging.Log((i * pixelWidth) + "|" + j * 9 + "|" + pixelWidth + "|" + 9);
+						Characters[fontLayout[j][i].charAt(0)] = ((BufferedImage)textImg).getSubimage(i * pixelWidth, j * 9, pixelWidth, 9);
+						ImageDictionary.put(texture, textImg);
+					}
+				}
+			}
+			
+			char[] texts = new char[text.length()];
+			Graphics2D g = (Graphics2D)testTextImage.getGraphics();
+			int k = x;
+			int l = y;
+			/*for (int o = 0; o < text.length(); o++)
+			{
+				texts[o] = text.charAt(o);
+				Logging.Log((int)(texts[o]) + "|" + texts[o] + "|" + Characters[texts[o]]);
+				g.drawImage(Characters[texts[o]], k, l, null);
+				k += Characters[texts[o]].getWidth(null);
+			}*/
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return Characters['A'];
+	}
+	
+	private Image GetTextTexture() throws IOException
+	{
+		if (FontFileName == "")
+		{
+			throw new IOException("The Texture does not contain a font to draw, did you forget to set a font file to Texture2D.FontFileName?");
+		}
+		Image FontImage = Get(FontFileName);
+		return FontImage;
 	}
 }

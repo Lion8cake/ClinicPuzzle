@@ -51,15 +51,13 @@ public class MenuUI extends UIElement {
 		if (Main.InGame) {
 			if (blurredImage == null || changeres) {
 				// Blurr Drawcode
-				BufferedImage background = new BufferedImage(Main.ScreenWidth, Main.ScreenHeight,
-						BufferedImage.TYPE_INT_ARGB);
+				BufferedImage background = new BufferedImage(Main.ScreenWidth, Main.ScreenHeight, BufferedImage.TYPE_INT_ARGB);
 				Graphics g2 = background.getGraphics();
 				g2.setColor(new Color(0, 0, 0));
 				g2.fillRect(0, 0, Main.ScreenWidth, Main.ScreenHeight);
 				g2.dispose();
 
-				BufferedImage bimg = new BufferedImage(Main.ScreenWidth, Main.ScreenHeight,
-						BufferedImage.TYPE_INT_ARGB);
+				BufferedImage bimg = new BufferedImage(Main.ScreenWidth, Main.ScreenHeight, BufferedImage.TYPE_INT_ARGB);
 				Graphics g = bimg.getGraphics();
 				g.drawImage(background, 0, 0, null);
 				Main.Instance.DrawGame(g);
