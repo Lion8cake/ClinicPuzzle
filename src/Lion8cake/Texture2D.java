@@ -164,16 +164,18 @@ public class Texture2D {
 		graphics.drawImage(img, x, y, sizeX, sizeY, null);
 	}
 	
-	public Image DrawText(String text)
+	public Image DrawText(String text, int width, int height)
 	{
 		Color color = Color.WHITE;
-		return DrawText(text, color);
+		return DrawText(text, width, height, color);
 	}
 	
-	public Image DrawText(String text, Color textColor)
+	public Image DrawText(String text, int width, int height, Color textColor)
 	{
 		BufferedImage testTextImage = null;
 		BufferedImage[] Characters = new BufferedImage[128]; //ASCII
+		boolean noWidthDefined = width == -1;
+		boolean noHeightDefined = height == -1;
 		try {
 			BufferedImage textImg = (BufferedImage)GetTextTexture();
 			String[][] fontLayout = new String[7][];
@@ -234,9 +236,25 @@ public class Texture2D {
 				int k = 0;
 				int l = 0;
 				char[] texts = new char[text.length()];
+				for (int s = 0; s < text.length(); s++)
+				{
+					texts[s] = text.charAt(s);
+				}
 				for (int o = 0; o < text.length(); o++)
 				{
-					texts[o] = text.charAt(o);
+					//Word Warapping
+					int wordWidth = 0;
+					if  (texts[o] == ' ')
+					{
+						wordWidth = 0;
+						for (int futureChar = 1; !(texts[o + futureChar] == ' ' || o + futureChar == text.length() - 1); futureChar++)
+						{
+							wordWidth += Characters[texts[o + futureChar]].getWidth() + (texts[o + futureChar] == ' ' || (o + futureChar < text.length() - 1 && texts[o + futureChar + 1] == ' ') ? 0 : 1);
+							if (o + futureChar + 1 == text.length() - 1)
+								wordWidth += Characters[texts[o + futureChar + 1]].getWidth();
+						}
+					}
+					//Color
 					for (int x = 0; x < Characters[texts[o]].getWidth(); x++)
 					{
 						for (int y = 0; y < Characters[texts[o]].getHeight(); y++)
@@ -247,8 +265,21 @@ public class Texture2D {
 							}
 						}
 					}
-					g.drawImage(Characters[texts[o]], k, l, null);
-					k += Characters[texts[o]].getWidth(null) + 1;
+					//Character Wrapping
+					if (!noHeightDefined && l < height)
+					{
+						if (!noWidthDefined && (k > width || k + wordWidth > width))
+						{
+							k = 0;
+							l += 12;
+						}
+					}
+					//Image Drawing
+					if (!(k == 0 && texts[o] == ' '))
+					{
+						g.drawImage(Characters[texts[o]], k, l, null);
+						k += Characters[texts[o]].getWidth(null) + (texts[o] == ' ' || (o < text.length() - 1 && texts[o + 1] == ' ') ? 0 : 1);
+					}
 				}
 				g.dispose();
 				ImageDictionary.put(savedTextImage, (Image)testTextImage);

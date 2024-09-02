@@ -45,14 +45,14 @@ public class PopupUI extends UIElement {
 		UIElement.DrawPanel(graphics, question ? imgIn : img, ButX2, ButY, ButWidth, ButHeight);
 		
 		//graphics.drawString(popUpText, x + 32, y + 36);
-		Image popupText = Main.texture2D.DrawText(popUpText);
-		Texture2D.DrawStaticAsset(graphics, popupText, x + 32, y + 32, null, 3f, 3f);
+		Image popupText = Main.texture2D.DrawText(popUpText, 96, 32 * 5);
+		Texture2D.DrawStaticAsset(graphics, popupText, x + 32, y + 16, null, 3f, 3f);
 		if (question)
-			Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("Yes", Color.black), ButX + 24 + 3, ButY + 16 + 3, null, 3f, 3f);
+			Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("Yes", -1, -1, Color.black), ButX + 24 + 3, ButY + 16 + 3, null, 3f, 3f);
 		else
-			Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("No", Color.black), ButX2 + 32 + 3, ButY + 16 + 3, null, 3f, 3f);
-		Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("Yes"), ButX + 24, ButY + 16, null, 3f, 3f);
-		Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("No"), ButX2 + 32, ButY + 16, null, 3f, 3f);
+			Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("No", -1, -1, Color.black), ButX2 + 32 + 3, ButY + 16 + 3, null, 3f, 3f);
+		Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("Yes", -1, -1), ButX + 24, ButY + 16, null, 3f, 3f);
+		Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("No", -1, -1), ButX2 + 32, ButY + 16, null, 3f, 3f);
 	}
 	
 	@Override
