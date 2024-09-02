@@ -1,5 +1,6 @@
 package ClinicPackage.UI;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -43,11 +44,15 @@ public class PopupUI extends UIElement {
 		UIElement.DrawPanel(graphics, question ? img : imgIn, ButX, ButY, ButWidth, ButHeight);
 		UIElement.DrawPanel(graphics, question ? imgIn : img, ButX2, ButY, ButWidth, ButHeight);
 		
-		graphics.drawString("Yes", ButX + 32, ButY + 32);
-		graphics.drawString("No", ButX2 + 32, ButY + 32);
-		graphics.drawString(popUpText, x + 32, y + 36);
-		Image test = Main.texture2D.DrawText("Hi this is a test text using texture 2D's new text drawing code, heres hope to all that works!", 20, 20);
-		Texture2D.DrawStaticAsset(graphics, test, 20, 20, null, 2f, 2f);
+		//graphics.drawString(popUpText, x + 32, y + 36);
+		Image popupText = Main.texture2D.DrawText(popUpText);
+		Texture2D.DrawStaticAsset(graphics, popupText, x + 32, y + 32, null, 3f, 3f);
+		if (question)
+			Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("Yes", Color.black), ButX + 24 + 3, ButY + 16 + 3, null, 3f, 3f);
+		else
+			Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("No", Color.black), ButX2 + 32 + 3, ButY + 16 + 3, null, 3f, 3f);
+		Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("Yes"), ButX + 24, ButY + 16, null, 3f, 3f);
+		Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("No"), ButX2 + 32, ButY + 16, null, 3f, 3f);
 	}
 	
 	@Override

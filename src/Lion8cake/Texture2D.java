@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.util.Hashtable;
 import javax.imageio.ImageIO;
 
-import ClinicPackage.Logging;
-
 //Image System Made by Lion8cake
 public class Texture2D {
 
@@ -166,12 +164,18 @@ public class Texture2D {
 		graphics.drawImage(img, x, y, sizeX, sizeY, null);
 	}
 	
-	public Image DrawText(String text, int x, int y)
+	public Image DrawText(String text)
 	{
-		BufferedImage testTextImage = new BufferedImage(32767, 32767, BufferedImage.TYPE_INT_ARGB);
-		Image[] Characters = new Image[128]; //ASCII
+		Color color = Color.WHITE;
+		return DrawText(text, color);
+	}
+	
+	public Image DrawText(String text, Color textColor)
+	{
+		BufferedImage testTextImage = null;
+		BufferedImage[] Characters = new BufferedImage[128]; //ASCII
 		try {
-			Image textImg = GetTextTexture();
+			BufferedImage textImg = (BufferedImage)GetTextTexture();
 			String[][] fontLayout = new String[7][];
 			for (int d = 0; d < fontLayout.length; d++)
 			{
@@ -208,36 +212,51 @@ public class Texture2D {
 				for (int i = 0; i < fontLayout[j].length; i++)
 				{
 					String texture = "Texture2D_Text_" + FontFileName + "_" + fontLayout[j][i];
-					Characters[fontLayout[j][i].charAt(0)] = ImageDictionary.get(texture);
+					Characters[fontLayout[j][i].charAt(0)] = (BufferedImage)ImageDictionary.get(texture);
 					if (Characters[fontLayout[j][i].charAt(0)] == null)
 					{
 						CurrentProgress++;
 						PrintProgress = (CurrentProgress / TotalCount) * 100;
 						System.out.println("Constructing Text Textures: " + PrintProgress + "%");
-						int pixelWidth = 6 - j + 1;
-						Logging.Log((int)(fontLayout[j][i].charAt(0)) + "|" + fontLayout[j][i].charAt(0));
-						Logging.Log((i * pixelWidth) + "|" + j * 9 + "|" + pixelWidth + "|" + 9);
-						Characters[fontLayout[j][i].charAt(0)] = ((BufferedImage)textImg).getSubimage(i * pixelWidth, j * 9, pixelWidth, 9);
-						ImageDictionary.put(texture, textImg);
+						int pixelWidth = 7 - j;
+						Characters[fontLayout[j][i].charAt(0)] = textImg.getSubimage(i * (pixelWidth), j * 9, pixelWidth, 9);
+						ImageDictionary.put(texture, (Image)Characters[fontLayout[j][i].charAt(0)]);
 					}
 				}
 			}
 			
-			char[] texts = new char[text.length()];
-			Graphics2D g = (Graphics2D)testTextImage.getGraphics();
-			int k = x;
-			int l = y;
-			/*for (int o = 0; o < text.length(); o++)
+			String savedTextImage = text + textColor + "_Image";
+			testTextImage = (BufferedImage)ImageDictionary.get(savedTextImage);
+			if (testTextImage == null)
 			{
-				texts[o] = text.charAt(o);
-				Logging.Log((int)(texts[o]) + "|" + texts[o] + "|" + Characters[texts[o]]);
-				g.drawImage(Characters[texts[o]], k, l, null);
-				k += Characters[texts[o]].getWidth(null);
-			}*/
+				testTextImage = new BufferedImage(511, 511, BufferedImage.TYPE_INT_ARGB);
+				Graphics2D g = (Graphics2D)testTextImage.getGraphics();
+				int k = 0;
+				int l = 0;
+				char[] texts = new char[text.length()];
+				for (int o = 0; o < text.length(); o++)
+				{
+					texts[o] = text.charAt(o);
+					for (int x = 0; x < Characters[texts[o]].getWidth(); x++)
+					{
+						for (int y = 0; y < Characters[texts[o]].getHeight(); y++)
+						{
+							if (Characters[texts[o]].getRGB(x, y) != 0)
+							{
+								Characters[texts[o]].setRGB(x, y, textColor.getRGB());
+							}
+						}
+					}
+					g.drawImage(Characters[texts[o]], k, l, null);
+					k += Characters[texts[o]].getWidth(null) + 1;
+				}
+				g.dispose();
+				ImageDictionary.put(savedTextImage, (Image)testTextImage);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return Characters['A'];
+		return testTextImage;
 	}
 	
 	private Image GetTextTexture() throws IOException
