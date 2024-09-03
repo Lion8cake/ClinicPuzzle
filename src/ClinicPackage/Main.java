@@ -134,7 +134,7 @@ public class Main
 		//LoadRoom();
 		InitiateTileSettings();
 		texture2D = new Texture2D();
-		texture2D.FontFileName = "TestFont";
+		texture2D.FontFileName = "CatCodeFont";
 		UI = new UIElement();
 		
 		//Code runs here

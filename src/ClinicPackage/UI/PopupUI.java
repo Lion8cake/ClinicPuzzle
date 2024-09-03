@@ -27,7 +27,7 @@ public class PopupUI extends UIElement {
 		Width = 32 * 12;
 		Height = 32 * 7;
 		uiSize();
-		KeyInputDelay = 200;
+		KeyInputDelay = 20;
 	}
 	
 	@Override
@@ -41,18 +41,24 @@ public class PopupUI extends UIElement {
 		int ButY = y + 4 * 32;
 		int ButX = x + Width / 2 + 32;
 		int ButX2 = x + 32;
-		UIElement.DrawPanel(graphics, question ? img : imgIn, ButX, ButY, ButWidth, ButHeight);
+		UIElement.DrawPanel(graphics, !question ? imgIn : img, ButX, ButY, ButWidth, ButHeight);
 		UIElement.DrawPanel(graphics, question ? imgIn : img, ButX2, ButY, ButWidth, ButHeight);
 		
 		//graphics.drawString(popUpText, x + 32, y + 36);
-		Image popupText = Main.texture2D.DrawText(popUpText, 96, 32 * 5);
-		Texture2D.DrawStaticAsset(graphics, popupText, x + 32, y + 16, null, 3f, 3f);
+		float textScale = 3f;
+		Image popupText = Main.texture2D.DrawText(popUpText, (int)((Width - (64 * textScale) / textScale) / textScale), -1);
+		Image yesTextbg = Main.texture2D.DrawText("Yes", -1, -1, Color.black);
+		Image noTextbg =  Main.texture2D.DrawText("No", -1, -1, Color.black);
+		Image yesText = Main.texture2D.DrawText("Yes", -1, -1, !question ? Color.WHITE : Color.GRAY);
+		Image noText =  Main.texture2D.DrawText("No", -1, -1, question ? Color.WHITE : Color.GRAY);
+		
+		Texture2D.DrawStaticAsset(graphics, popupText, x + 32, y + 16, null, textScale, textScale);
 		if (question)
-			Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("Yes", -1, -1, Color.black), ButX + 24 + 3, ButY + 16 + 3, null, 3f, 3f);
+			Texture2D.DrawStaticAsset(graphics, yesTextbg, ButX + (int)((ButWidth / 2) - (yesTextbg.getWidth(null) * textScale / 2)) + (int)(1 * textScale), ButY + ((ButY / 2) - (int)(yesTextbg.getHeight(null) * textScale / 2)) + (int)(1 * textScale), null, textScale, textScale);
 		else
-			Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("No", -1, -1, Color.black), ButX2 + 32 + 3, ButY + 16 + 3, null, 3f, 3f);
-		Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("Yes", -1, -1), ButX + 24, ButY + 16, null, 3f, 3f);
-		Texture2D.DrawStaticAsset(graphics, Main.texture2D.DrawText("No", -1, -1), ButX2 + 32, ButY + 16, null, 3f, 3f);
+			Texture2D.DrawStaticAsset(graphics, noTextbg, ButX2 + (int)((ButWidth / 2) - (noTextbg.getWidth(null) * textScale / 2)) + (int)(1 * textScale), ButY + (int)((ButY / 2) - (noText.getHeight(null) * textScale / 2)) + (int)(1 * textScale), null, textScale, textScale);
+		Texture2D.DrawStaticAsset(graphics, yesText, ButX + (int)((ButWidth / 2) - (yesText.getWidth(null) * textScale / 2)), ButY + (int)((ButY / 2) - (yesText.getHeight(null) * textScale / 2)), null, textScale, textScale);
+		Texture2D.DrawStaticAsset(graphics, noText, ButX2 + (int)((ButWidth / 2) - (noText.getWidth(null) / 2)), ButY + 16, null, textScale, textScale);
 	}
 	
 	@Override
