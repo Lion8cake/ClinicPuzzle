@@ -172,13 +172,13 @@ public class Texture2D {
 	
 	public Image DrawText(String text, int width, int height, Color textColor)
 	{
-		BufferedImage tempTextImage = null;
+		BufferedImage TextImage = null;
 		BufferedImage[] Characters = new BufferedImage[128]; //ASCII
 		boolean noWidthDefined = width == -1;
 		boolean noHeightDefined = height == -1;
 		int textDrawnLength = 0;
 		int textDrawnHeight = 0;
-		String savedTextImage = text + textColor + "_Image";
+		String savedtempTextImage = text + textColor + "_Image";
 		try {
 			BufferedImage textImg = (BufferedImage)GetTextTexture();
 			String[][] fontLayout = new String[7][];
@@ -230,11 +230,11 @@ public class Texture2D {
 				}
 			}
 			
-			tempTextImage = (BufferedImage)ImageDictionary.get(savedTextImage);
-			if (tempTextImage == null)
+			TextImage = (BufferedImage)ImageDictionary.get(savedtempTextImage);
+			if (TextImage == null)
 			{
-				tempTextImage = new BufferedImage(noWidthDefined ? 511 : width, noHeightDefined ? 511 : height, BufferedImage.TYPE_INT_ARGB);
-				Graphics2D g = (Graphics2D)tempTextImage.getGraphics();
+				TextImage = new BufferedImage(noWidthDefined ? 511 : width, noHeightDefined ? 511 : height, BufferedImage.TYPE_INT_ARGB);
+				Graphics2D g = (Graphics2D)TextImage.getGraphics();
 				int k = 0;
 				int l = 0;
 				char[] texts = new char[text.length()];
@@ -246,7 +246,7 @@ public class Texture2D {
 				{
 					//Word Warapping
 					int wordWidth = 0;
-					if  (texts[o] == ' ')
+					if  (texts[o] == ' ' && o != text.length() - 1)
 					{
 						wordWidth = 0;
 						int futureChar = 1;
@@ -254,11 +254,16 @@ public class Texture2D {
 						while (!endofWord)
 						{
 							futureChar++;
-							wordWidth += Characters[texts[o + futureChar]].getWidth();
-							if (texts[o + futureChar] == ' ' || o + futureChar == text.length() - 1)
+							if (!(o + futureChar == text.length()))
 							{
-								endofWord = true;
+								wordWidth += Characters[texts[o + futureChar]].getWidth();
+								if (texts[o + futureChar] == ' ')
+								{
+									endofWord = true;
+								}
 							}
+							else
+								endofWord = true;
 						}
 					}
 					//Color
@@ -290,30 +295,23 @@ public class Texture2D {
 				}
 				g.dispose();
 				textDrawnLength = k;
-				textDrawnHeight = l;
-				ImageDictionary.put(savedTextImage, (Image)tempTextImage);
+				textDrawnHeight = l + 12;
+				BufferedImage tempTextImage = null;
+				if (noWidthDefined || noHeightDefined)
+				{
+					tempTextImage = new BufferedImage(noWidthDefined ? textDrawnLength : TextImage.getWidth(), noHeightDefined ? textDrawnHeight : TextImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+					Graphics2D g2 = (Graphics2D)tempTextImage.getGraphics();
+					g2.drawImage(TextImage, 0, 0, null);
+					g2.dispose();
+				}
+				else
+					tempTextImage = TextImage;
+				ImageDictionary.put(savedtempTextImage, (Image)tempTextImage);
 			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		BufferedImage TextImage;
-		TextImage = tempTextImage;
-		if (tempTextImage != null)
-		{
-			if (noWidthDefined || noHeightDefined)
-			{
-				System.out.println(textDrawnLength);
-				System.out.println(textDrawnHeight);
-				TextImage = new BufferedImage(noWidthDefined ? textDrawnLength : tempTextImage.getWidth(), noHeightDefined ? textDrawnHeight : tempTextImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-				Graphics2D g = (Graphics2D)tempTextImage.getGraphics();
-				g.drawImage(tempTextImage, 0, 0, null);
-				g.dispose();
-				ImageDictionary.put(savedTextImage, (Image)TextImage);
-			}
-			else
-				TextImage = tempTextImage;
-		}
+		}		
 		return TextImage;
 	}
 	

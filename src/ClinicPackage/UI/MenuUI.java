@@ -1,6 +1,5 @@
 package ClinicPackage.UI;
 
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.*;
 import java.awt.image.*;
@@ -104,11 +103,9 @@ public class MenuUI extends UIElement {
 						BufferedImage buttonImg = d != panelSelected + 1 ? imgIn : img;
 						UIElement.DrawPanel(graphics, buttonImg, butX, butY, butWidth, butHeight);
 	
-						// Text
+						//Text
 						String text = panelText[d - 1];
-						int textX = butX + (Width / 2) - (15 / 2);
-						int textY = butY + (Height / 2) - 8;
-						graphics.drawString(text, textX, textY);
+						DrawText(graphics, text, d, butX, butY);
 					} 
 					else {
 						int i = (Main.ScreenWidth / 2) - (Width / 2);
@@ -116,11 +113,9 @@ public class MenuUI extends UIElement {
 						BufferedImage buttonImg = d != panelSelected + 1 ? imgIn : img;
 						UIElement.DrawPanel(graphics, buttonImg, i, j, Width, Height);
 	
-						// Text
+						//Text
 						String text = panelText[d - 1];
-						int textX = i + (Width / 2) - (15 / 2);
-						int textY = j + (Height / 2) - 8;
-						graphics.drawString(text, textX, textY);
+						DrawText(graphics, text, d, i, j);
 					}
 				}
 				break;
@@ -155,15 +150,15 @@ public class MenuUI extends UIElement {
 							String text2 = panelText[saveArray[playPan]];
 							int textK = k + (Width / 2) - (15 / 2);
 							int textL = l + (Height / 2) - 8;
-							graphics.drawString(text2, textK, textL);
-	
+							DrawText(graphics, text2, saveArray[playPan] + 1, k, l);
+							
 							if (Main.Instance.savefileExists[saveArray[playPan]]) {
 								String SText = "Welcome Back!";
 								String SText1 = "Playtime: ";
 								String SText2 = "Current Room: ";
-								graphics.drawString(SText, textK - 128, textL + 64);
-								graphics.drawString(SText1, textK - 128, textL + 128);
-								graphics.drawString(SText2, textK - 128, textL + 192);
+								DrawTextPercise(graphics, SText, saveArray[playPan] + 1, textK - 128, textL + 64);
+								DrawTextPercise(graphics, SText1, saveArray[playPan] + 1, textK - 128, textL + 128);
+								DrawTextPercise(graphics, SText2, saveArray[playPan] + 1, textK - 128, textL + 192);
 							}
 	
 							// arrow graphics
@@ -180,11 +175,9 @@ public class MenuUI extends UIElement {
 								int j = l + savMaxHeight * 32;
 								UIElement.DrawPanel(graphics, pnlImg, i, j, Width, Height);
 	
-								// Text
+								//Text
 								String text = panelText[d - 1];
-								int textX = i + (Width / 2) - (15 / 2);
-								int textY = j + (Height / 2) - 8;
-								graphics.drawString(text, textX, textY);
+								DrawText(graphics, text, d, i, j);
 							}
 						}
 					}
@@ -205,13 +198,30 @@ public class MenuUI extends UIElement {
 			}
 			UIElement.DrawPanel(graphics, img, i, j, Width, Height);
 
+			//Text
 			String text = panelText[d - 1];
-			int textX = i + (Width / 2) - (15 / 2);
-			int textY = j + (Height / 2) - 8;
-			graphics.drawString(text, textX, textY);
+			DrawText(graphics, text, d, i, j);
 		}
 	}
 
+	private void DrawTextPercise(Graphics graphics, String text, int d, int textX, int textY)
+	{
+		float textScale = 2f;
+		Image Text = Main.texture2D.DrawText(text, -1, -1, !(panelSelected == d - 1) ? Color.WHITE : Color.GRAY);
+		Image Textbg = Main.texture2D.DrawText(text, -1, -1, Color.BLACK);
+		Texture2D.DrawStaticAsset(graphics, Textbg, textX + (int)(1 * textScale), textY + (int)(1 * textScale), null, textScale, textScale);
+		Texture2D.DrawStaticAsset(graphics, Text, textX, textY, null, textScale, textScale);
+	}
+	
+	private void DrawText(Graphics graphics, String text, int d, int i, int j)
+	{
+		float textScale = 2f;
+		Image Text = Main.texture2D.DrawText(text, -1, -1, !(panelSelected == d - 1) ? Color.WHITE : Color.GRAY);
+		int textX = (int)(i + (Width / 2) - (Text.getWidth(null) * textScale / 2));
+		int textY = (int)(j + (Height / 2) - (Text.getHeight(null) * textScale / 2));
+		DrawTextPercise(graphics, text, d, textX, textY);
+	}
+	
 	@Override
 	public void Update() {
 		if (MainMenuType == -1) {

@@ -1,6 +1,8 @@
 package ClinicPackage.UI;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import ClinicPackage.Main;
@@ -107,8 +109,18 @@ public class TextBoxUI extends UIElement {
 				break;
 		}
 
-		graphics.drawString(Text[currentDialogNum], x + 136, y + 32);
-		
+		DrawTextPercise(graphics, Text[currentDialogNum], x + 142, y + 32);		
+	}
+	
+	private void DrawTextPercise(Graphics graphics, String text, int textX, int textY)
+	{
+		float textScale = 2f;
+		Image Text = Main.texture2D.DrawText(text, -1, -1, Color.GRAY);
+		Image Textbg = Main.texture2D.DrawText(text, -1, -1, Color.BLACK);
+		Texture2D.DrawStaticAsset(graphics, Textbg, textX + (int)(1 * textScale), textY + (int)(1 * textScale), null, textScale, textScale);
+		Texture2D.DrawStaticAsset(graphics, Textbg, textX + (int)(1 * textScale), textY, null, textScale, textScale);
+		Texture2D.DrawStaticAsset(graphics, Textbg, textX, textY + (int)(1 * textScale), null, textScale, textScale);
+		Texture2D.DrawStaticAsset(graphics, Text, textX, textY, null, textScale, textScale);
 	}
 	
 	@Override

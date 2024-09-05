@@ -52,13 +52,13 @@ public class PopupUI extends UIElement {
 		Image yesText = Main.texture2D.DrawText("Yes", -1, -1, !question ? Color.WHITE : Color.GRAY);
 		Image noText =  Main.texture2D.DrawText("No", -1, -1, question ? Color.WHITE : Color.GRAY);
 		
-		Texture2D.DrawStaticAsset(graphics, popupText, x + 32, y + 16, null, textScale, textScale);
+		Texture2D.DrawStaticAsset(graphics, popupText, x + (int)((Width / 2) - (popupText.getWidth(null) * textScale / 2)), y + 16 + (int)(((Height - (ButY - y - 16)) / 2) - (popupText.getHeight(null) * textScale / 2)), null, textScale, textScale);
 		if (question)
-			Texture2D.DrawStaticAsset(graphics, yesTextbg, ButX + (int)((ButWidth / 2) - (yesTextbg.getWidth(null) * textScale / 2)) + (int)(1 * textScale), ButY + ((ButY / 2) - (int)(yesTextbg.getHeight(null) * textScale / 2)) + (int)(1 * textScale), null, textScale, textScale);
+			Texture2D.DrawStaticAsset(graphics, yesTextbg, ButX + (int)((ButWidth / 2) - (yesTextbg.getWidth(null) * textScale / 2)) + (int)(1 * textScale), ButY + ((ButHeight / 2) - (int)(yesTextbg.getHeight(null) * textScale / 2)) + (int)(1 * textScale), null, textScale, textScale);
 		else
-			Texture2D.DrawStaticAsset(graphics, noTextbg, ButX2 + (int)((ButWidth / 2) - (noTextbg.getWidth(null) * textScale / 2)) + (int)(1 * textScale), ButY + (int)((ButY / 2) - (noText.getHeight(null) * textScale / 2)) + (int)(1 * textScale), null, textScale, textScale);
-		Texture2D.DrawStaticAsset(graphics, yesText, ButX + (int)((ButWidth / 2) - (yesText.getWidth(null) * textScale / 2)), ButY + (int)((ButY / 2) - (yesText.getHeight(null) * textScale / 2)), null, textScale, textScale);
-		Texture2D.DrawStaticAsset(graphics, noText, ButX2 + (int)((ButWidth / 2) - (noText.getWidth(null) / 2)), ButY + 16, null, textScale, textScale);
+			Texture2D.DrawStaticAsset(graphics, noTextbg, ButX2 + (int)((ButWidth / 2) - (noTextbg.getWidth(null) * textScale / 2)) + (int)(1 * textScale), ButY + (int)((ButHeight / 2) - (noTextbg.getHeight(null) * textScale / 2)) + (int)(1 * textScale), null, textScale, textScale);
+		Texture2D.DrawStaticAsset(graphics, yesText, ButX + (int)((ButWidth / 2) - (yesText.getWidth(null) * textScale / 2)), ButY + (int)((ButHeight / 2) - (yesText.getHeight(null) * textScale / 2)), null, textScale, textScale);
+		Texture2D.DrawStaticAsset(graphics, noText, ButX2 + (int)((ButWidth / 2) - (noText.getWidth(null) * textScale / 2)), ButY + (int)((ButHeight / 2) - (noText.getHeight(null) * textScale / 2)), null, textScale, textScale);
 	}
 	
 	@Override
