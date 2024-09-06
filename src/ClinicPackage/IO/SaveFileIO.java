@@ -8,10 +8,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.stream.Stream;
+
 import ClinicPackage.Logging;
 import ClinicPackage.Main;
 
@@ -56,20 +59,21 @@ public class SaveFileIO {
 		{
 			try {
 				BufferedReader reader = new BufferedReader(new FileReader(new File(savesFile)));
-				String[] lines = new String[2];
+				String[] lines = new String[3];
 				for (int i = 0; i < lines.length; i++)
 				{
 					lines[i] = reader.readLine();
 				}
+				reader.close();
 				if (Main.IsStringNumeric(lines))
 				{
 					Main.player[Main.myPlayer].x = Integer.parseInt(lines[0]);
 					Main.player[Main.myPlayer].y = Integer.parseInt(lines[1]);
+					Main.Instance.RoomID = Integer.parseInt(lines[2]);
 					Logging.Log("Save" + save + " Loaded!", Logging.LoggingType.File);
 				}
 				else
 				{
-					reader.close();
 					Files.delete(savesPath);
 					LoadSaves(save);
 					Logging.Log("Save that is trying to be opened has been found to be corrupted. The file at: " + savesPath + " had invalid characters inside of it causing an error while loading.", Logging.LoggingType.File);
@@ -96,6 +100,7 @@ public class SaveFileIO {
 				PrintWriter opt = new PrintWriter(new BufferedWriter(new FileWriter(savesFile, true)));
 				opt.println(Main.player[Main.myPlayer].x);
 				opt.println(Main.player[Main.myPlayer].y);
+				opt.println(Main.Instance.RoomID);
 				opt.close();
 				Logging.Log("Saving Game Progress", Logging.LoggingType.File);
 			} catch (IOException e) {

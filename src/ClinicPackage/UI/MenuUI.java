@@ -105,7 +105,7 @@ public class MenuUI extends UIElement {
 	
 						//Text
 						String text = panelText[d - 1];
-						DrawText(graphics, text, d, butX, butY);
+						DrawTextCentered(graphics, text, d, butX, butY);
 					} 
 					else {
 						int i = (Main.ScreenWidth / 2) - (Width / 2);
@@ -115,7 +115,7 @@ public class MenuUI extends UIElement {
 	
 						//Text
 						String text = panelText[d - 1];
-						DrawText(graphics, text, d, i, j);
+						DrawTextCentered(graphics, text, d, i, j);
 					}
 				}
 				break;
@@ -150,15 +150,15 @@ public class MenuUI extends UIElement {
 							String text2 = panelText[saveArray[playPan]];
 							int textK = k + (Width / 2) - (15 / 2);
 							int textL = l + (Height / 2) - 8;
-							DrawText(graphics, text2, saveArray[playPan] + 1, k, l);
+							DrawTextCentered(graphics, text2, saveArray[playPan] + 1, k, l);
 							
 							if (Main.Instance.savefileExists[saveArray[playPan]]) {
 								String SText = "Welcome Back!";
 								String SText1 = "Playtime: ";
 								String SText2 = "Current Room: ";
-								DrawTextPercise(graphics, SText, saveArray[playPan] + 1, textK - 128, textL + 64);
-								DrawTextPercise(graphics, SText1, saveArray[playPan] + 1, textK - 128, textL + 128);
-								DrawTextPercise(graphics, SText2, saveArray[playPan] + 1, textK - 128, textL + 192);
+								DrawTextCenteredExact(graphics, SText, saveArray[playPan] + 1, textK - 128, textL + 64);
+								DrawTextCenteredExact(graphics, SText1, saveArray[playPan] + 1, textK - 128, textL + 128);
+								DrawTextCenteredExact(graphics, SText2, saveArray[playPan] + 1, textK - 128, textL + 192);
 							}
 	
 							// arrow graphics
@@ -177,7 +177,7 @@ public class MenuUI extends UIElement {
 	
 								//Text
 								String text = panelText[d - 1];
-								DrawText(graphics, text, d, i, j);
+								DrawTextCentered(graphics, text, d, i, j);
 							}
 						}
 					}
@@ -200,11 +200,11 @@ public class MenuUI extends UIElement {
 
 			//Text
 			String text = panelText[d - 1];
-			DrawText(graphics, text, d, i, j);
+			DrawTextCentered(graphics, text, d, i, j);
 		}
 	}
 
-	private void DrawTextPercise(Graphics graphics, String text, int d, int textX, int textY)
+	private void DrawTextCenteredExact(Graphics graphics, String text, int d, int textX, int textY)
 	{
 		float textScale = 2f;
 		Image Text = Main.texture2D.DrawText(text, -1, -1, !(panelSelected == d - 1) ? Color.WHITE : Color.GRAY);
@@ -213,13 +213,13 @@ public class MenuUI extends UIElement {
 		Texture2D.DrawStaticAsset(graphics, Text, textX, textY, null, textScale, textScale);
 	}
 	
-	private void DrawText(Graphics graphics, String text, int d, int i, int j)
+	private void DrawTextCentered(Graphics graphics, String text, int d, int i, int j)
 	{
 		float textScale = 2f;
 		Image Text = Main.texture2D.DrawText(text, -1, -1, !(panelSelected == d - 1) ? Color.WHITE : Color.GRAY);
 		int textX = (int)(i + (Width / 2) - (Text.getWidth(null) * textScale / 2));
 		int textY = (int)(j + (Height / 2) - (Text.getHeight(null) * textScale / 2));
-		DrawTextPercise(graphics, text, d, textX, textY);
+		DrawTextCenteredExact(graphics, text, d, textX, textY);
 	}
 	
 	@Override

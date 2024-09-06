@@ -126,6 +126,10 @@ public class TextBoxUI extends UIElement {
 	@Override
 	public void Update()
 	{
+		if (Main.Instance.InMainMenu)
+		{
+			CloseRequest();
+		}
 		Main.textBoxOpen = true;
 		if (Key_Accept && KeyInputDelay <= 0)
 		{

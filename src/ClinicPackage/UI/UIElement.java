@@ -119,6 +119,11 @@ public class UIElement {
 	public void CloseUI(UIElement element)
 	{
 		uiElements.remove(uiElements.get(element.uiElementID));
+		for (int i = element.uiElementID; i < uiElements.size(); i++)
+		{
+			UIElement eLement = uiElements.get(i);
+			eLement.uiElementID--;
+		}
 	}
 	
 	public void Apphend(UIElement element)

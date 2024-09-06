@@ -74,6 +74,8 @@ public class Main
 	
 	public static Tile[][] tile = new Tile[MAXIMUMTILEX][MAXIMUMTILEY];
 	
+	public static Furniture[][] furniture = new Furniture[MAXIMUMTILEX][MAXIMUMTILEY];
+	
 	public static int tileSize = 32;
 	
 	public static boolean[] tileSolid = new boolean[Byte.MAX_VALUE];
@@ -135,21 +137,25 @@ public class Main
 		InitiateTileSettings();
 		texture2D = new Texture2D();
 		texture2D.FontFileName = "CatCodeFont";
+		texture2D.drawScale = drawScale;
 		UI = new UIElement();
 		
 		//Code runs here
 		Logging.Log("Initialisation Finished", LoggingType.Base);
 	}
 	
+	/**Contains the settings for both tiles and furniture.
+	 */
 	public void InitiateTileSettings()
 	{
-		tileSolid[0] = true;
+		//Defaults
+		for (int i = 0; i < tileSolid.length; i++)
+		{
+			tileSolid[i] = true;
+			tileInteractable[i] = false;
+		}
+		//Settings
 		tileSolid[1] = false;
-		tileSolid[2] = true;
-		tileSolid[3] = true;
-		tileInteractable[0] = false;
-		tileInteractable[1] = false;
-		tileInteractable[2] = false;
 		tileInteractable[3] = true;
 	}
 	
@@ -183,6 +189,26 @@ public class Main
 					mapY++;
 				}
 			}
+			mapX = 0;
+			mapY = 0;
+			while (mapX < maxTilesX && mapY < maxTilesY)
+			{
+				String line = reader.readLine();
+				
+				while (mapX < maxTilesX)
+				{
+					String numbers[] = line.split(" ");
+					int num = Integer.parseInt(numbers[mapX]);
+					furniture[mapX][mapY] = new Furniture();
+					furniture[mapX][mapY].Type = num;
+					mapX++;
+				}
+				if (mapX >= maxTilesX)
+				{
+					mapX = 0;
+					mapY++;
+				}
+			}
 			reader.close();
 		}
 		catch(IOException e)
@@ -193,15 +219,16 @@ public class Main
 	
 	public void UnloadRoom()
 	{
-			for (int x = 0; x < Byte.MAX_VALUE; x++)
+		for (int x = 0; x < Byte.MAX_VALUE; x++)
+		{
+			for (int y = 0; y < Byte.MAX_VALUE; y++)
 			{
-				for (int y = 0; y < Byte.MAX_VALUE; y++)
-				{
-					tile[x][y] = null;
-				}
+				tile[x][y] = null;
+				furniture[x][y] = null;
 			}
-			maxTilesX = 1;
-			maxTilesY = 1;
+		}
+		maxTilesX = 1;
+		maxTilesY = 1;
 	}
 	
 	public void LoadGame()
@@ -258,7 +285,6 @@ public class Main
 		tileSize = (int)(32 * drawScale);
 		renderDistX = (int)(renderX * drawScale);
 		renderDistY = (int)(renderY * drawScale);
-		texture2D.drawScale = drawScale;
 		cameraX = (int)(player[myPlayer].x * drawScale);
 		cameraY = (int)(player[myPlayer].y * drawScale);
 		cameraCenteredX = ScreenWidth / 2;
@@ -320,6 +346,7 @@ public class Main
 				if (mapX > 0 && mapY > 0 && mapX < MAXIMUMTILEX && mapY < MAXIMUMTILEY)
 				{
 					DrawTiles(graphics, mapX, mapY);
+					DrawFurniture(graphics, mapX, mapY);
 				}
 			}
 		}
@@ -343,6 +370,24 @@ public class Main
 			else if (tile[x][y].Type == TileID.TestObject)
 			{
 				value = Texture2D.Get("InteractionObjectTest");
+			}
+		}
+		if (value != null)
+		{
+			texture2D.DrawAsset(graphics, value, i, j, 1f);
+		}
+	}
+	
+	public void DrawFurniture(Graphics graphics, int x, int y)
+	{
+		Image value = null;
+		int i = (x * tileSize) - cameraX + (cameraCenteredX - tileSize / 2);
+		int j = (y * tileSize) - cameraY + (cameraCenteredY - tileSize / 2);
+		if (furniture[x][y] != null)
+		{
+			if (furniture[x][y].Type == TileID.TestFloor)
+			{
+				value = Texture2D.Get("FloorTest");
 			}
 		}
 		if (value != null)
