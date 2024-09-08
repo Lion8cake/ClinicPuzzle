@@ -6,6 +6,4 @@ public class TileID {
 	public final static int TestFloor = 1;
 	
 	public final static int TestWall = 2;
-	
-	public final static int TestObject = 3;
 }

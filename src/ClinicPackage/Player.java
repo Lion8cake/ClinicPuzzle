@@ -69,18 +69,22 @@ public class Player extends Entity {
 		{
 			Tile tileCol = Main.tile[i][upDown / 32];
 			Tile tileCol2 = Main.tile[i2][upDown / 32];
-			if (tileCol != null && Main.tileSolid[tileCol.Type])
+			Furniture furnCol = Main.furniture[i][upDown / 32];
+			Furniture furnCol2 = Main.furniture[i2][upDown / 32];
+			if (tileCol != null && (Main.tileSolid[tileCol.Type] || Main.furnitureSolid[furnCol.Type]))
 				isColliding[3] = true;
-			if (tileCol2 != null && Main.tileSolid[tileCol2.Type])
+			if (tileCol2 != null && (Main.tileSolid[tileCol2.Type] || Main.furnitureSolid[furnCol2.Type]))
 				isColliding[2] = true;
 		}
 		for (int leftRight = hitbox.x; leftRight < hitbox.x + hitbox.width; leftRight++)
 		{
 			Tile tileCol3 = Main.tile[leftRight / 32][j];
 			Tile tileCol4 = Main.tile[leftRight / 32][j2];
-			if (tileCol3 != null && Main.tileSolid[tileCol3.Type])
+			Furniture furnCol3 = Main.furniture[leftRight / 32][j];
+			Furniture furnCol4 = Main.furniture[leftRight / 32][j2];
+			if (tileCol3 != null && (Main.tileSolid[tileCol3.Type] || Main.furnitureSolid[furnCol3.Type]))
 				isColliding[1] = true;
-			if (tileCol4 != null && Main.tileSolid[tileCol4.Type])
+			if (tileCol4 != null && (Main.tileSolid[tileCol4.Type] || Main.furnitureSolid[furnCol4.Type]))
 				isColliding[0] = true;
 		}
 		
@@ -141,34 +145,34 @@ public class Player extends Entity {
 		{
 			int x;
 			int y;
-			Tile tile;
+			Furniture furn;
 			if (dirFacing == PlrDirectionTypes.Down)
 			{
 				x = (hitbox.x + hitbox.width) / 32;
 				y = (hitbox.y + (hitbox.height / 2)) / 32;
-				tile = Main.tile[x][y + 1];
+				furn = Main.furniture[x][y + 1];
 			}
 			else if (dirFacing == PlrDirectionTypes.Left)
 			{
 				y = hitbox.y / 32;
 				x = (hitbox.x + (hitbox.width / 2)) / 32;
-				tile = Main.tile[x - 1][y];
+				furn = Main.furniture[x - 1][y];
 			}
 			else if (dirFacing == PlrDirectionTypes.Up)
 			{
 				x = hitbox.x / 32;
 				y = (hitbox.y + (hitbox.height / 2)) / 32;
-				tile = Main.tile[x][y - 1];
+				furn = Main.furniture[x][y - 1];
 			}
 			else
 			{
 				y = (hitbox.y + hitbox.height) / 32;
 				x = (hitbox.x + (hitbox.width / 2)) / 32;
-				tile = Main.tile[x + 1][y];
+				furn = Main.furniture[x + 1][y];
 			}
-			if (Main.tileInteractable[tile.Type])
+			if (Main.furnitureInteractable[furn.Type])
 			{
-				Main.TileInteraction(this, tile.Type, x, y);
+				Main.TileInteraction(this, furn.Type, x, y);
 			}
 		}
 	}

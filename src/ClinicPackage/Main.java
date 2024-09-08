@@ -78,9 +78,12 @@ public class Main
 	
 	public static int tileSize = 32;
 	
+	//Tile Settings
 	public static boolean[] tileSolid = new boolean[Byte.MAX_VALUE];
 	
-	public static boolean[] tileInteractable = new boolean[Byte.MAX_VALUE];
+	public static boolean[] furnitureInteractable = new boolean[Byte.MAX_VALUE];
+	
+	public static boolean[] furnitureSolid = new boolean[Byte.MAX_VALUE];
 	
 	//Rooms
 	public int RoomID = 2;
@@ -152,11 +155,13 @@ public class Main
 		for (int i = 0; i < tileSolid.length; i++)
 		{
 			tileSolid[i] = true;
-			tileInteractable[i] = false;
+			furnitureInteractable[i] = false;
+			furnitureSolid[i] = true;
 		}
 		//Settings
 		tileSolid[1] = false;
-		tileInteractable[3] = true;
+		furnitureInteractable[2] = true;
+		furnitureSolid[0] = false;
 	}
 	
 	public void LoadRoom()
@@ -367,10 +372,6 @@ public class Main
 			{
 				value = Texture2D.Get("WallTest");
 			}
-			else if (tile[x][y].Type == TileID.TestObject)
-			{
-				value = Texture2D.Get("InteractionObjectTest");
-			}
 		}
 		if (value != null)
 		{
@@ -385,9 +386,33 @@ public class Main
 		int j = (y * tileSize) - cameraY + (cameraCenteredY - tileSize / 2);
 		if (furniture[x][y] != null)
 		{
-			if (furniture[x][y].Type == TileID.TestFloor)
+			if (furniture[x][y].Type == FurnitureID.TestFurnTop)
 			{
-				value = Texture2D.Get("FloorTest");
+				value = Texture2D.Get("TestFurn1");
+			}
+			else if (furniture[x][y].Type == FurnitureID.TestFurnTop2)
+			{
+				value = Texture2D.Get("TestFurn2");
+			}
+			else if (furniture[x][y].Type == FurnitureID.TestFurnMid)
+			{
+				value = Texture2D.Get("TestFurn3");
+			}
+			else if (furniture[x][y].Type == FurnitureID.TestFurnMid2)
+			{
+				value = Texture2D.Get("TestFurn4");
+			}
+			else if (furniture[x][y].Type == FurnitureID.TestFurnBottom)
+			{
+				value = Texture2D.Get("TestFurn5");
+			}
+			else if (furniture[x][y].Type == FurnitureID.TestFurnBottom2)
+			{
+				value = Texture2D.Get("TestFurn6");
+			}
+			else if (furniture[x][y].Type == FurnitureID.TestObject)
+			{
+				value = Texture2D.Get("InteractionObjectTest");
 			}
 		}
 		if (value != null)
@@ -465,7 +490,7 @@ public class Main
 	
 	public static void TileInteraction(Player player, int type, int x, int y)
 	{
-		if (type == TileID.TestObject)
+		if (type == FurnitureID.TestObject)
 		{
 			if (!textBoxOpen)
 			{
