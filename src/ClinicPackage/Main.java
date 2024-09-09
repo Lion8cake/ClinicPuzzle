@@ -160,7 +160,7 @@ public class Main
 		}
 		//Settings
 		tileSolid[1] = false;
-		furnitureInteractable[2] = true;
+		furnitureInteractable[7] = true;
 		furnitureSolid[0] = false;
 	}
 	
@@ -199,14 +199,43 @@ public class Main
 			while (mapX < maxTilesX && mapY < maxTilesY)
 			{
 				String line = reader.readLine();
+				int furnXtextpos = 0;
 				
 				while (mapX < maxTilesX)
 				{
-					String numbers[] = line.split(" ");
-					int num = Integer.parseInt(numbers[mapX]);
-					furniture[mapX][mapY] = new Furniture();
-					furniture[mapX][mapY].Type = num;
-					mapX++;
+					boolean gettingFurn = false;
+					String furnSettings = "";
+					
+					for (int i = furnXtextpos; i < line.length(); i++)
+					{
+						if (!gettingFurn && line.charAt(i) == '[')
+						{
+							gettingFurn = true;
+						}
+						if (gettingFurn)
+						{
+							if (line.charAt(i) == ']')
+							{
+								gettingFurn = false;
+								String numbers[] = furnSettings.split(" ");
+								for (int j = 0; j < numbers.length; j++)
+								{
+									Logging.Log(mapX + "|" + j + "|" + numbers[j]);
+									Logging.Log("" + i);
+								}
+								/*int num = Integer.parseInt(numbers[mapX]);
+								furniture[mapX][mapY] = new Furniture();
+								furniture[mapX][mapY].Type = num;*/
+								furnXtextpos = i + 1;
+								mapX++;
+								break;
+							}
+							else
+							{
+								furnSettings += line.charAt(i);
+							}
+						}
+					}
 				}
 				if (mapX >= maxTilesX)
 				{
