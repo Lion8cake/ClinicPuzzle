@@ -2,8 +2,6 @@ package ClinicPackage.Inputs;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
-import ClinicPackage.Logging;
 import ClinicPackage.Main;
 import ClinicPackage.Player;
 

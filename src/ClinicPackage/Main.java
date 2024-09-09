@@ -29,6 +29,8 @@ public class Main
 	
 	public static boolean InGame = false;
 	
+	public static boolean debugg = true;
+	
 	//files
 	public static boolean CreateGame = false;
 	
@@ -159,9 +161,9 @@ public class Main
 			furnitureSolid[i] = true;
 		}
 		//Settings
-		tileSolid[1] = false;
-		furnitureInteractable[7] = true;
-		furnitureSolid[0] = false;
+		tileSolid[TileID.TestFloor] = false;
+		furnitureInteractable[FurnitureID.TestObject] = true;
+		furnitureSolid[FurnitureID.Air] = false;
 	}
 	
 	public void LoadRoom()
@@ -204,29 +206,35 @@ public class Main
 				while (mapX < maxTilesX)
 				{
 					boolean gettingFurn = false;
+					boolean split = false;
 					String furnSettings = "";
-					
-					for (int i = furnXtextpos; i < line.length(); i++)
+					for (int i = furnXtextpos; i < line.length() && !split; i++)
 					{
-						if (!gettingFurn && line.charAt(i) == '[')
-						{
-							gettingFurn = true;
-						}
 						if (gettingFurn)
 						{
 							if (line.charAt(i) == ']')
 							{
 								gettingFurn = false;
+								split = true;
 								String numbers[] = furnSettings.split(" ");
+								furniture[mapX][mapY] = new Furniture();
 								for (int j = 0; j < numbers.length; j++)
 								{
-									Logging.Log(mapX + "|" + j + "|" + numbers[j]);
-									Logging.Log("" + i);
+									int num = Integer.parseInt(numbers[j]);
+									switch (j)
+									{
+										case 0:
+											furniture[mapX][mapY].Type = num;
+											break;
+										case 1:
+											furniture[mapX][mapY].xFrame = num;
+											break;
+										case 2:
+											furniture[mapX][mapY].yFrame = num;
+											break;
+									}
 								}
-								/*int num = Integer.parseInt(numbers[mapX]);
-								furniture[mapX][mapY] = new Furniture();
-								furniture[mapX][mapY].Type = num;*/
-								furnXtextpos = i + 1;
+								furnXtextpos = i;
 								mapX++;
 								break;
 							}
@@ -234,6 +242,10 @@ public class Main
 							{
 								furnSettings += line.charAt(i);
 							}
+						}
+						else if (line.charAt(i) == '[')
+						{
+							gettingFurn = true;
 						}
 					}
 				}
@@ -413,40 +425,22 @@ public class Main
 		Image value = null;
 		int i = (x * tileSize) - cameraX + (cameraCenteredX - tileSize / 2);
 		int j = (y * tileSize) - cameraY + (cameraCenteredY - tileSize / 2);
+		Rectangle frame = null;
 		if (furniture[x][y] != null)
 		{
-			if (furniture[x][y].Type == FurnitureID.TestFurnTop)
+			frame = new Rectangle(furniture[x][y].xFrame, furniture[x][y].yFrame, 32, 32);
+			if (furniture[x][y].Type == FurnitureID.TestFurn)
 			{
-				value = Texture2D.Get("TestFurn1");
-			}
-			else if (furniture[x][y].Type == FurnitureID.TestFurnTop2)
-			{
-				value = Texture2D.Get("TestFurn2");
-			}
-			else if (furniture[x][y].Type == FurnitureID.TestFurnMid)
-			{
-				value = Texture2D.Get("TestFurn3");
-			}
-			else if (furniture[x][y].Type == FurnitureID.TestFurnMid2)
-			{
-				value = Texture2D.Get("TestFurn4");
-			}
-			else if (furniture[x][y].Type == FurnitureID.TestFurnBottom)
-			{
-				value = Texture2D.Get("TestFurn5");
-			}
-			else if (furniture[x][y].Type == FurnitureID.TestFurnBottom2)
-			{
-				value = Texture2D.Get("TestFurn6");
+				value = Texture2D.Get("TestFurn");
 			}
 			else if (furniture[x][y].Type == FurnitureID.TestObject)
 			{
 				value = Texture2D.Get("InteractionObjectTest");
 			}
 		}
-		if (value != null)
+		if (value != null && frame != null)
 		{
-			texture2D.DrawAsset(graphics, value, i, j, 1f);
+			texture2D.DrawAsset(graphics, value, i, j, frame, 1f);
 		}
 	}
 	

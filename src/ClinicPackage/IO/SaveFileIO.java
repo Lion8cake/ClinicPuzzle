@@ -8,12 +8,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.stream.Stream;
 
 import ClinicPackage.Logging;
 import ClinicPackage.Main;
@@ -70,7 +68,7 @@ public class SaveFileIO {
 					Main.player[Main.myPlayer].x = Integer.parseInt(lines[0]);
 					Main.player[Main.myPlayer].y = Integer.parseInt(lines[1]);
 					Main.Instance.RoomID = Integer.parseInt(lines[2]);
-					Logging.Log("Save" + save + " Loaded!", Logging.LoggingType.File);
+					Logging.Log("Save" + (save + 1) + " Loaded!", Logging.LoggingType.File);
 				}
 				else
 				{
