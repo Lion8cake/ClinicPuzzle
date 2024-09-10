@@ -205,11 +205,11 @@ public class Texture2D {
 						fontLayout[d] = new String[] { "[", "]", ":", ";", "'", "," };
 						break;
 					case 6:
-						fontLayout[d] = new String[] { "I", "i", "l", "!", "." };
+						fontLayout[d] = new String[] { "I", "i", "l", "!", "|", "." };
 						break;
 				}
 			}
-			float TotalCount = 94;
+			float TotalCount = 95;
 			float CurrentProgress = 0;
 			float PrintProgress;
 			for (int j = 0; j < fontLayout.length; j++)

@@ -435,14 +435,7 @@ public class Main
 		int j = (y * tileSize) - cameraY + (cameraCenteredY - tileSize / 2);
 		if (tile[x][y] != null)
 		{
-			if (tile[x][y].Type == TileID.TestFloor)
-			{
-				value = Texture2D.Get("FloorTest");
-			}
-			else if (tile[x][y].Type == TileID.TestWall)
-			{
-				value = Texture2D.Get("WallTest");
-			}
+			value = TileImage(tile[x][y].Type);
 		}
 		if (value != null)
 		{
@@ -459,19 +452,38 @@ public class Main
 		if (furniture[x][y] != null)
 		{
 			frame = new Rectangle(furniture[x][y].xFrame, furniture[x][y].yFrame, 32, 32);
-			if (furniture[x][y].Type == FurnitureID.TestFurn)
-			{
-				value = Texture2D.Get("TestFurn");
-			}
-			else if (furniture[x][y].Type == FurnitureID.TestObject)
-			{
-				value = Texture2D.Get("InteractionObjectTest");
-			}
+			value = FurnitureImage(furniture[x][y].Type);
 		}
 		if (value != null && frame != null)
 		{
 			texture2D.DrawAsset(graphics, value, i, j, frame, 1f);
 		}
+	}
+	
+	public static Image TileImage(int type)
+	{
+		if (type == TileID.TestFloor)
+		{
+			return Texture2D.Get("FloorTest");
+		}
+		else if (type == TileID.TestWall)
+		{
+			return Texture2D.Get("WallTest");
+		}
+		return new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+	}
+	
+	public static Image FurnitureImage(int type)
+	{
+		if (type == FurnitureID.TestFurn)
+		{
+			return Texture2D.Get("TestFurn");
+		}
+		else if (type == FurnitureID.TestObject)
+		{
+			return Texture2D.Get("InteractionObjectTest");
+		}
+		return new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
 	}
 	
 	public void DrawPlayers(Graphics graphics)

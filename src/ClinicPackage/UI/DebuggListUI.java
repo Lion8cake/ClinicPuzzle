@@ -8,9 +8,10 @@ import ClinicPackage.Main;
 import Lion8cake.Texture2D;
 
 public class DebuggListUI extends UIElement {
-	public int panelSelected = 0;
 
 	public int maxPanels = 2;
+	
+	public int panelSelected = maxPanels;
 	
 	private int[] panelX = new int[maxPanels];
 	
@@ -81,33 +82,30 @@ public class DebuggListUI extends UIElement {
 	@Override
 	public void Update()
 	{
-		if (Main.InsideRectangle(new Rectangle(x, y, Width, Height), Main.MouseWorld))
+		for (int pan = 0; pan < maxPanels; pan++)
 		{
-			for (int pan = 0; pan < maxPanels; pan++)
+			if (Main.InsideRectangle(new Rectangle(panelX[pan], panelY[pan], panelWidth[pan], panelHeight[pan]), Main.MouseWorld))
 			{
-				if (Main.InsideRectangle(new Rectangle(panelX[pan], panelY[pan], panelWidth[pan], panelHeight[pan]), Main.MouseWorld))
+				panelSelected = pan;
+				if (Main.MouseClicked && KeyInputDelay <= 0)
 				{
-					panelSelected = pan;
-					if (Main.MouseClicked && KeyInputDelay <= 0)
+					KeyInputDelay = 7;
+					switch (pan)
 					{
-						KeyInputDelay = 7;
-						switch (pan)
-						{
-							case 0:
-								LevelEditorUI ui = new LevelEditorUI();
-								Main.UI.Apphend(ui);
-								Main.BigDebugMenuIsOpen = true;
-								Main.LevelEditorOpen = true;
-								Main.DebugIconOpen = false;
-								uiParent.CloseRequest();
-								CloseRequest();
-								break;
-							case 1:
-								uiParent.ListOpen = false;
-								KeyInputDelay = 30;
-								CloseRequest();
-								break;
-						}
+						case 0:
+							LevelEditorUI ui = new LevelEditorUI();
+							Main.UI.Apphend(ui);
+							Main.BigDebugMenuIsOpen = true;
+							Main.LevelEditorOpen = true;
+							Main.DebugIconOpen = false;
+							uiParent.CloseRequest();
+							CloseRequest();
+							break;
+						case 1:
+							uiParent.ListOpen = false;
+							KeyInputDelay = 30;
+							CloseRequest();
+							break;
 					}
 				}
 			}
