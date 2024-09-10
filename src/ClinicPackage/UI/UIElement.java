@@ -45,6 +45,11 @@ public class UIElement {
 	protected boolean Key_Accept = false;
 	protected boolean Key_Back = false;
 	
+	/**Allows to disable the keyboard input silencing of other elements when on top. <br/>
+	 * Defaults to true.
+	 */
+	public boolean KeyboardInputs = true;
+	
 	public static void DrawPanel(Graphics graphics, Image image, int x, int y, int width, int height) 
 	{
 		Rectangle frame = new Rectangle(0, 0, 16, 16);
@@ -67,11 +72,23 @@ public class UIElement {
 	
 	public void UIUpdate()
 	{
+		int keyboardUIIndex = 0;
+		boolean foundSuitableInputs = false;
+		for (int j = uiElements.size(); j > 0 && !foundSuitableInputs; j--)
+		{
+			UIElement eLement = uiElements.get(j - 1);
+			if (eLement.KeyboardInputs)
+			{
+				foundSuitableInputs = true;
+				keyboardUIIndex = eLement.uiElementID;
+			}
+		}
+		
 		for(int i = 0; i < uiElements.size(); i++)
 		{
 			UIElement element = uiElements.get(i);
 			
-			boolean flag = element == uiElements.get(uiElements.size() - 1);
+			boolean flag = element == uiElements.get(keyboardUIIndex);
 			element.Key_Up = flag ? Player.kUp : false;
 			element.Key_Down = flag ? Player.kDown : false;
 			element.Key_Left = flag ? Player.kLeft : false;

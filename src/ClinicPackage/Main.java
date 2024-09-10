@@ -2,6 +2,7 @@ package ClinicPackage;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -108,12 +109,21 @@ public class Main
 	
 	public static boolean MenuUIActive = false;
 	
+	public static boolean DebugIconOpen = false;
+	
 	//Settings
 	public static int Sound = 0;
 	
 	public static int Music = 0;
 	
 	public static int ResolutionType = 0;
+	
+	//Mouse
+	public static int MouseWorldX = 0;
+	
+	public static int MouseWorldY = 0;
+	
+	public static boolean MouseClicked = false;
 	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
 	 * Runs when the game opens or until the Instance of the game is loaded.
@@ -337,10 +347,11 @@ public class Main
 		cameraCenteredY = ScreenHeight / 2;
 		textBoxOpen = false;
 		UI.UIUpdate();
-		if (debugg)
+		if (debugg && !DebugIconOpen)
 		{
 			DebuggMenuUI debuggui = new DebuggMenuUI();
 			UI.Apphend(debuggui);
+			DebugIconOpen = true;
 		}
 		switch(ResolutionType)
 		{
@@ -514,6 +525,19 @@ public class Main
 		catch(Exception e) {
 			return false;
 		}
+	}
+	
+	public static boolean InsideRectangle(Rectangle rectTarget, Point pos)
+	{
+		if (pos.x > rectTarget.x + rectTarget.width || pos.y > rectTarget.y + rectTarget.height)
+		{
+			return false;
+		}
+		if (pos.x > rectTarget.x && pos.y > rectTarget.y)
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	public static void TileInteraction(Player player, int type, int x, int y)

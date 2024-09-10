@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import ClinicPackage.Inputs.InputHandler;
+import ClinicPackage.Inputs.MouseHandler;
+import ClinicPackage.Inputs.MouseUpdateHandler;
 
 public class Game extends JPanel implements Runnable {
 	/**
@@ -17,6 +19,8 @@ public class Game extends JPanel implements Runnable {
 	public static int screenWidth = 32 * 32;
 	public static int screenHeight = 32 * 24;
 	InputHandler gameKeyHandler = new InputHandler();
+	MouseHandler gameMouseHandler = new MouseHandler();
+	MouseUpdateHandler gameMouseUpdateHandler = new MouseUpdateHandler();
 	Thread gameThread;
 	Main gameSystem;
 	
@@ -40,6 +44,8 @@ public class Game extends JPanel implements Runnable {
 		this.setBackground(Color.black);
 		this.setDoubleBuffered(true);
 		this.addKeyListener(gameKeyHandler);
+		this.addMouseListener(gameMouseHandler);
+		this.addMouseMotionListener(gameMouseUpdateHandler);
 		this.setFocusable(true);
 		gameSystem = main;
 		startGameThread();
