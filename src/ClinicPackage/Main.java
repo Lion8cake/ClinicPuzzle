@@ -337,6 +337,11 @@ public class Main
 		cameraCenteredY = ScreenHeight / 2;
 		textBoxOpen = false;
 		UI.UIUpdate();
+		if (debugg)
+		{
+			DebuggMenuUI debuggui = new DebuggMenuUI();
+			UI.Apphend(debuggui);
+		}
 		switch(ResolutionType)
 		{
 			case 0: 
