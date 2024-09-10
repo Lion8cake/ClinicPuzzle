@@ -17,7 +17,7 @@ public class MouseUpdateHandler implements MouseMotionListener{
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		Main.MouseWorldX = e.getX();
-		Main.MouseWorldY = e.getY();
+		Main.MouseWorld.x = e.getX();
+		Main.MouseWorld.y = e.getY();
 	}
 }

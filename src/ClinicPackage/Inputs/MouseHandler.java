@@ -16,6 +16,7 @@ public class MouseHandler implements MouseListener {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		Main.MouseClicked = true;
+		Main.MouseHeld = true;
 	}
 
 	@Override
@@ -26,6 +27,7 @@ public class MouseHandler implements MouseListener {
 		}
 		MouseHeldTimer = 0;
 		Main.MouseClicked = false;
+		Main.MouseHeld = false;
 	}
 
 	@Override
@@ -34,7 +36,8 @@ public class MouseHandler implements MouseListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
+		Main.MouseWorld.x = Integer.MAX_VALUE;
+		Main.MouseWorld.y = Integer.MAX_VALUE;
 	}
 
 }

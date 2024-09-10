@@ -3,15 +3,16 @@ package ClinicPackage.UI;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
-
-import ClinicPackage.Logging;
 import ClinicPackage.Main;
 import Lion8cake.Texture2D;
 
 public class DebuggMenuUI extends UIElement {
 
+	private boolean active = false;
+	
+	public boolean ListOpen = false;
+	
 	@Override
 	public void SetStaticDefaults()
 	{
@@ -26,8 +27,9 @@ public class DebuggMenuUI extends UIElement {
 	@Override
 	public void Draw(Graphics g)
 	{
-		Image img = Texture2D.Get("TestUIPanelInactive");
-		UIElement.DrawPanel(g, img, x, y, Width, Height);
+		Image img = Texture2D.Get("TestUIPanel");
+		Image imgIn = Texture2D.Get("TestUIPanelInactive");
+		UIElement.DrawPanel(g, active ? img : imgIn, x, y, Width, Height);
 		
 		float textScale = 2f;
 		String text = "Debug Menu";
@@ -42,11 +44,24 @@ public class DebuggMenuUI extends UIElement {
 	@Override 
 	public void Update()
 	{
-		if (Main.InsideRectangle(new Rectangle(x, y, Width, Height), new Point(Main.MouseWorldX, Main.MouseWorldY)))
+		if (!Main.debugg)
 		{
-			if (Main.MouseClicked)
+			CloseRequest();
+			Main.DebugIconOpen = false;
+			return;
+		}
+		active = false;
+		if (Main.InsideRectangle(new Rectangle(x, y, Width, Height), Main.MouseWorld))
+		{
+			active = true;
+			if (Main.MouseClicked && KeyInputDelay <= 0)
 			{
-				Logging.Log("Clicked Debug, Open Debug bar");
+				if (!ListOpen)
+				{
+					DebuggListUI list = new DebuggListUI(this);
+					Main.UI.Apphend(list);
+					ListOpen = true;
+				}
 			}
 		}
 	}

@@ -30,7 +30,12 @@ public class Main
 	
 	public static boolean InGame = false;
 	
-	public static boolean debugg = true;
+	//debug
+	public static boolean debugg = true; //set to true when you want to have access to developer tools
+	
+	public static boolean BigDebugMenuIsOpen = false;
+	
+	public static boolean LevelEditorOpen = false;
 	
 	//files
 	public static boolean CreateGame = false;
@@ -119,11 +124,11 @@ public class Main
 	public static int ResolutionType = 0;
 	
 	//Mouse
-	public static int MouseWorldX = 0;
-	
-	public static int MouseWorldY = 0;
+	public static Point MouseWorld = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
 	
 	public static boolean MouseClicked = false;
+	
+	public static boolean MouseHeld = false;
 	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
 	 * Runs when the game opens or until the Instance of the game is loaded.
@@ -317,6 +322,7 @@ public class Main
 		InMainMenu = true;
 		Menu = 0;
 		MenuUIActive = false;
+		BigDebugMenuIsOpen = false;
 		UnloadRoom();
 	}
 	
@@ -326,7 +332,7 @@ public class Main
 	 */
 	public void Update()
 	{
-		if (InMainMenu || Menu == 2 || Menu == 1 || Menu == 3)
+		if ((InMainMenu || Menu == 2 || Menu == 1 || Menu == 3) && !BigDebugMenuIsOpen)
 		{
 			DoMainMenu();
 		}
@@ -347,11 +353,18 @@ public class Main
 		cameraCenteredY = ScreenHeight / 2;
 		textBoxOpen = false;
 		UI.UIUpdate();
-		if (debugg && !DebugIconOpen)
+		if (!BigDebugMenuIsOpen)
 		{
-			DebuggMenuUI debuggui = new DebuggMenuUI();
-			UI.Apphend(debuggui);
-			DebugIconOpen = true;
+			if (debugg && !DebugIconOpen)
+			{
+				DebuggMenuUI debuggui = new DebuggMenuUI();
+				UI.Apphend(debuggui);
+				DebugIconOpen = true;
+			}
+		}
+		else
+		{
+			Menu = -1;
 		}
 		switch(ResolutionType)
 		{
@@ -379,6 +392,7 @@ public class Main
 		{
 			Menu = 2;
 		}
+		MouseClicked = false;
 	}
 	
 	/**The method that does all of the game's drawing. This is seperate from Update as it repaints the screen accordingly to every update. <br />

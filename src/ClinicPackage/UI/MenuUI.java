@@ -224,7 +224,7 @@ public class MenuUI extends UIElement {
 	
 	@Override
 	public void Update() {
-		if (MainMenuType == -1) {
+		if (MainMenuType == -1 || Main.Instance.Menu == -1) {
 			CloseRequest();
 			return;
 		}
