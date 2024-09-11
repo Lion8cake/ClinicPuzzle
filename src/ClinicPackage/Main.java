@@ -130,6 +130,11 @@ public class Main
 	
 	public static boolean MouseHeld = false;
 	
+	//Text/Typing
+	public static boolean IsTyping = false;
+	
+	public static String TypedText = "";
+	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
 	 * Runs when the game opens or until the Instance of the game is loaded.
 	 * Make sure that 'Instance = this;' is the last line of this method
@@ -392,6 +397,10 @@ public class Main
 		{
 			Menu = 2;
 		}
+		if (!IsTyping && !TypedText.isEmpty())
+		{
+			TypedText = "";
+		}
 		MouseClicked = false;
 	}
 	
@@ -469,6 +478,14 @@ public class Main
 		else if (type == TileID.TestWall)
 		{
 			return Texture2D.Get("WallTest");
+		}
+		else if (type == 3)
+		{
+			return Texture2D.Get("FloorTest2");
+		}
+		else if (type == 4)
+		{
+			return Texture2D.Get("FloorTest3");
 		}
 		return new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
 	}
@@ -564,6 +581,25 @@ public class Main
 			return true;
 		}
 		return false;
+	}
+	
+	public static boolean StringIsDigit(String str)
+	{
+		if (str.length() <= 0)
+		{
+			return false;
+		}
+		boolean flag = true;
+		for (int i = 0; i < str.length() && flag; i++)
+		{
+			char chara = str.charAt(i);
+			if (!Character.isDigit(chara))
+			{
+				flag = false;
+				break;
+			}
+		}
+		return flag;
 	}
 	
 	public static void TileInteraction(Player player, int type, int x, int y)

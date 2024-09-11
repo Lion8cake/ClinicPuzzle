@@ -1,7 +1,7 @@
 package ClinicPackage.IDs;
 
 public class TileID {
-	public final static int MaxIDs = 2;
+	public final static int MaxIDs = 4;
 	
 	public final static int Air = 0;
 	

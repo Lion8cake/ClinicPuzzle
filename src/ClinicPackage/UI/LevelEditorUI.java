@@ -12,23 +12,33 @@ import Lion8cake.Texture2D;
 
 public class LevelEditorUI extends UIElement {
 
+	//Panels
 	public int maxPanels = 7;
-	
 	public int panelSelected = maxPanels;
-	
 	private int[] panelX = new int[maxPanels];
-	
 	private int[] panelY = new int[maxPanels];
-	
 	private int[] panelWidth = new int[maxPanels];
-	
 	private int[] panelHeight = new int[maxPanels];
-	
 	private String[] panelText = new String[maxPanels];
+
 	
+	
+	//Tiles UI
+	public int maxTiles;
+	public int tilesSelected = -1;
+	private int[] tileX;
+	private int[] tileY;
+	private int[] tileWidth;
+	private int[] tileHeight;
+	
+	//Tiles
 	private boolean TileSet = true;
+	private boolean LoadedTiles = false;
 	
-	//private int[] tilePanels = new int[2];
+	//Values edited through text
+	public boolean textFieldOpen = false;
+	public int roomWidth = 1;
+	public int roomHeight = 1;
 	
 	@Override
 	public void SetStaticDefaults() {
@@ -49,6 +59,7 @@ public class LevelEditorUI extends UIElement {
 	@Override
 	public void Draw(Graphics g)
 	{
+		Image img = Texture2D.Get("TestUIPanel");
 		Image imgIn = Texture2D.Get("TestUIPanelInactive");
 		UIElement.DrawPanel(g, imgIn, x, y, Width, Height);
 		
@@ -95,20 +106,24 @@ public class LevelEditorUI extends UIElement {
 			}
 		}
 		
-		if (TileSet)
+		if (LoadedTiles)
 		{
-			for (int t = 0; t <= TileID.MaxIDs; t++)
+			for (int t = 0; t < maxTiles; t++)
 			{
-				Image tile = Main.TileImage(t);
-				Texture2D.DrawStaticAsset(g, tile, RPBx + 16 + (32 * t) * 2 + (8 * t), RPBy + 16 + 3 * 32, null, 2f, 2f);
-			}
-		}
-		else
-		{
-			for (int t = 0; t <= FurnitureID.MaxIDs; t++)
-			{
-				Image furn = Main.FurnitureImage(t);
-				Texture2D.DrawStaticAsset(g, furn, RPBx + 16 + (32 * t) * 2 + (8 * t), RPBy + 16 + 3 * 32, new Rectangle(0, 0, 32, 32), 2f, 2f);
+				int tX = t % 4;
+				int tY = 0;
+				if (t % 4 == 0)
+				{
+					tY += (t / 4) * (18 * t);
+				}
+				Image tile = TileSet ? Main.TileImage(t) : Main.FurnitureImage(t);
+				tileX[t] = RPBx + 16 + (32 * tX) * 2 + (8 * tX);
+				tileY[t] = RPBy + 16 + 3 * 32 + tY;
+				tileWidth[t] = 32;
+				tileHeight[t] = 32;
+				if (t == tilesSelected)
+					Texture2D.DrawStaticAsset(g, img, tileX[t] - 1, tileY[t] - 1, new Rectangle(16, 16, 17, 17), 4f, 4f);
+				Texture2D.DrawStaticAsset(g, tile, tileX[t], tileY[t], new Rectangle(0, 0, tileWidth[t], tileHeight[t]), 2f, 2f);
 			}
 		}
 		
@@ -149,6 +164,19 @@ public class LevelEditorUI extends UIElement {
 			return;
 		}
 		
+		if (!LoadedTiles)
+		{
+			maxTiles = 0;
+			tilesSelected = -1;
+			for (maxTiles = 0; maxTiles <= (TileSet ? TileID.MaxIDs : FurnitureID.MaxIDs); maxTiles++);
+			tileX = new int[maxTiles];
+			tileY = new int[maxTiles];
+			tileWidth = new int[maxTiles];
+			tileHeight = new int[maxTiles];
+			LoadedTiles = true;
+		}
+		
+		int panelsUnselected = 0;
 		for (int pan = 0; pan < maxPanels; pan++)
 		{
 			if (Main.InsideRectangle(new Rectangle(panelX[pan], panelY[pan], panelWidth[pan], panelHeight[pan]), Main.MouseWorld))
@@ -160,8 +188,20 @@ public class LevelEditorUI extends UIElement {
 					switch (pan)
 					{
 						case 0: //Width
+							if (!textFieldOpen)
+							{
+								LevelEditorTextUI ui = new LevelEditorTextUI(this, 0);
+								Main.UI.Apphend(ui);
+								textFieldOpen = true;
+							}
 							break;
 						case 1: //Height
+							if (!textFieldOpen)
+							{
+								LevelEditorTextUI ui = new LevelEditorTextUI(this, 1);
+								Main.UI.Apphend(ui);
+								textFieldOpen = true;
+							}
 							break;
 						case 2: //Import
 							break;
@@ -169,9 +209,11 @@ public class LevelEditorUI extends UIElement {
 							break;
 						case 4: //Tiles
 							TileSet = true;
+							LoadedTiles = false;
 							break;
 						case 5: //Furniture
 							TileSet = false;
+							LoadedTiles = false;
 							break;
 						case 6: //Leave
 							BackButton();
@@ -179,7 +221,39 @@ public class LevelEditorUI extends UIElement {
 					}
 				}
 			}
+			else
+			{
+				panelsUnselected++;
+			}
 		}
+		if (panelsUnselected >= maxPanels)
+		{
+			panelSelected = -1;
+		}
+		
+		int tilesUnselected = 0;
+		for (int t = 0; t < maxTiles; t++)
+		{
+			if (Main.InsideRectangle(new Rectangle(tileX[t], tileY[t], tileWidth[t] * 2, tileHeight[t] * 2), Main.MouseWorld))
+			{
+				tilesSelected = t;
+				if (Main.MouseClicked && KeyInputDelay <= 0)
+				{
+					KeyInputDelay = 7;
+				}
+			}
+			else
+			{
+				tilesUnselected++;
+			}
+		}
+		if (tilesUnselected >= maxTiles)
+		{
+			tilesSelected = -1;
+		}
+		
+		panelText[0] = "Width: " + roomWidth;
+		panelText[1] = "Height: " + roomHeight;
 	}
 	
 	private void BackButton()

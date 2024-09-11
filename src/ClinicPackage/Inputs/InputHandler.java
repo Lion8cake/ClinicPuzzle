@@ -33,12 +33,35 @@ public class InputHandler implements KeyListener {
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
-		keyRegister(e);
+		if (Main.IsTyping)
+		{
+			String text = Main.TypedText;
+			if (e.getKeyChar() == '' || e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
+			{
+				if (!text.isEmpty() && text.length() > 0)
+				{
+					text = text.substring(0, text.length() - 1);
+				}
+			}
+			//else if (e.getKeyChar())
+			//{
+			//	Main.IsTyping = false;
+			//}
+			else
+			{
+				System.out.println(e.getKeyChar());
+				text += e.getKeyChar();
+			}
+			Main.TypedText = text;
+		}
+		else
+			keyRegister(e);
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		keyRegister(e);
+		if (!Main.IsTyping)
+			keyRegister(e);
 	}
 
 	public void keyRegister(KeyEvent e)
