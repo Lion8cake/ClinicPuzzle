@@ -4,8 +4,15 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.concurrent.Future;
 
-import ClinicPackage.Main;
+import ClinicPackage.*;
 import ClinicPackage.IDs.FurnitureID;
 import ClinicPackage.IDs.TileID;
 import Lion8cake.Texture2D;
@@ -21,8 +28,6 @@ public class LevelEditorUI extends UIElement {
 	private int[] panelHeight = new int[maxPanels];
 	private String[] panelText = new String[maxPanels];
 
-	
-	
 	//Tiles UI
 	public int maxTiles;
 	public int tilesSelected = -1;
@@ -39,6 +44,15 @@ public class LevelEditorUI extends UIElement {
 	public boolean textFieldOpen = false;
 	public int roomWidth = 1;
 	public int roomHeight = 1;
+	
+	//Virtual Space
+	public boolean RefreshRoom = true;
+	
+	public Tile[][] virtualtiles = new Tile[Main.MAXIMUMTILEX][Main.MAXIMUMTILEY];
+	
+	public Furniture[][] virtualfurn = new Furniture[Main.MAXIMUMTILEX][Main.MAXIMUMTILEY];
+	
+	public File importedSave = null;
 	
 	@Override
 	public void SetStaticDefaults() {
@@ -69,10 +83,13 @@ public class LevelEditorUI extends UIElement {
 		int RPBy = y + 16;
 		UIElement.DrawPanel(g, imgIn, RPBx, RPBy, RPBwidth, RPBheight);
 		
+		//Virtual Room Space
 		Color oldcolor = g.getColor();
 		g.setColor(Color.black);
 		g.fillRect(x + 10, y + 16, 20 * 32, 17 * 32);
 		g.setColor(oldcolor);
+		
+		
 		
 		for (int d = 0; d < maxPanels; d++)
 		{
@@ -135,6 +152,24 @@ public class LevelEditorUI extends UIElement {
 		Image Textbg = Main.texture2D.DrawText(text, 10 * 32, 3 * 32, Color.BLACK);
 		Texture2D.DrawStaticAsset(g, Textbg, textX + (int)(1 * textScale), textY + (int)(1 * textScale), null, textScale, textScale);
 		Texture2D.DrawStaticAsset(g, Text, textX, textY, null, textScale, textScale);
+		
+		for (int i = 0; i < roomWidth; i++)
+		{
+			for (int j = 0; j < roomHeight; j++)
+			{
+				Image value = null;
+				int k = x + 10 + (32 * i);
+				int l = y + 10 + (32 * j);
+				if (virtualtiles[i][j] != null)
+				{
+					value = Main.TileImage(virtualtiles[i][j].Type);
+				}
+				if (value != null)
+				{
+					Texture2D.DrawStaticAsset(g, value, k, l, null, 1f, 1f);
+				}
+			}
+		}
 	}
 	
 	private void panelDrawing(Graphics g, int panel, int x, int y)
@@ -175,6 +210,25 @@ public class LevelEditorUI extends UIElement {
 			tileHeight = new int[maxTiles];
 			LoadedTiles = true;
 		}
+		if (RefreshRoom)
+		{
+			if (importedSave != null)
+			{
+				LoadVirtualRoom(importedSave);
+			}
+			else
+			{
+				for (int i = 0; i < roomWidth; i++)
+				{
+					for (int j = 0; j < roomHeight; j++)
+					{
+						virtualtiles[i][j] = new Tile();
+						virtualfurn[i][j] = new Furniture();
+					}
+				}
+			}
+			RefreshRoom = false;
+		}
 		
 		int panelsUnselected = 0;
 		for (int pan = 0; pan < maxPanels; pan++)
@@ -204,8 +258,20 @@ public class LevelEditorUI extends UIElement {
 							}
 							break;
 						case 2: //Import
+							if (!textFieldOpen)
+							{
+								LevelEditorTextUI ui = new LevelEditorTextUI(this, 2);
+								Main.UI.Apphend(ui);
+								textFieldOpen = true;
+							}
 							break;
 						case 3: //Export
+							if (!textFieldOpen)
+							{
+								LevelEditorTextUI ui = new LevelEditorTextUI(this, 3);
+								Main.UI.Apphend(ui);
+								textFieldOpen = true;
+							}
 							break;
 						case 4: //Tiles
 							TileSet = true;
@@ -261,5 +327,104 @@ public class LevelEditorUI extends UIElement {
 		Main.LevelEditorOpen = false;
 		Main.Instance.BackToMainMenu();
 		CloseRequest();
+	}
+	
+	private void LoadVirtualRoom(File LoadFile)
+	{
+		try
+		{
+			if (LoadFile != null)
+			{
+				BufferedReader reader = new BufferedReader(new FileReader(LoadFile));
+				
+				int mapX = 0;
+				int mapY = 0;
+				
+				roomWidth = Integer.parseInt(reader.readLine());
+				roomHeight = Integer.parseInt(reader.readLine());
+				while (mapX < roomWidth && mapY < roomHeight)
+				{
+					String line = reader.readLine();
+					
+					while (mapX < roomWidth)
+					{
+						String numbers[] = line.split(" ");
+						int num = Integer.parseInt(numbers[mapX]);
+						virtualtiles[mapX][mapY] = new Tile();
+						virtualtiles[mapX][mapY].Type = num;
+						mapX++;
+					}
+					if (mapX >= roomWidth)
+					{
+						mapX = 0;
+						mapY++;
+					}
+				}
+				mapX = 0;
+				mapY = 0;
+				while (mapX < roomWidth && mapY < roomHeight)
+				{
+					String line = reader.readLine();
+					int furnXtextpos = 0;
+					
+					while (mapX < roomWidth)
+					{
+						boolean gettingFurn = false;
+						boolean split = false;
+						String furnSettings = "";
+						for (int i = furnXtextpos; i < line.length() && !split; i++)
+						{
+							if (gettingFurn)
+							{
+								if (line.charAt(i) == ']')
+								{
+									gettingFurn = false;
+									split = true;
+									String numbers[] = furnSettings.split(" ");
+									virtualfurn[mapX][mapY] = new Furniture();
+									for (int j = 0; j < numbers.length; j++)
+									{
+										int num = Integer.parseInt(numbers[j]);
+										switch (j)
+										{
+											case 0:
+												virtualfurn[mapX][mapY].Type = num;
+												break;
+											case 1:
+												virtualfurn[mapX][mapY].xFrame = num;
+												break;
+											case 2:
+												virtualfurn[mapX][mapY].yFrame = num;
+												break;
+										}
+									}
+									furnXtextpos = i;
+									mapX++;
+									break;
+								}
+								else
+								{
+									furnSettings += line.charAt(i);
+								}
+							}
+							else if (line.charAt(i) == '[')
+							{
+								gettingFurn = true;
+							}
+						}
+					}
+					if (mapX >= roomWidth)
+					{
+						mapX = 0;
+						mapY++;
+					}
+				}
+				reader.close();
+			}
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

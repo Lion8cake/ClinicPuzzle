@@ -266,6 +266,12 @@ public class Texture2D {
 								endofWord = true;
 						}
 					}
+					if (texts[o] == '/' && o != text.length() - 1 && texts[o + 1] == 'n')
+					{
+						k = 0;
+						l += 12;
+						
+					}
 					//Color
 					for (int x = 0; x < Characters[texts[o]].getWidth(); x++)
 					{
@@ -280,14 +286,14 @@ public class Texture2D {
 					//Character Wrapping
 					if ((!noHeightDefined && l < height) || noHeightDefined)
 					{
-						if (!noWidthDefined && ( k + wordWidth > width))
+						if (!noWidthDefined && (k + wordWidth > width))
 						{
 							k = 0;
 							l += 12;
 						}
 					}
 					//Image Drawing
-					if (!(k == 0 && texts[o] == ' '))
+					if (!(k == 0 && texts[o] == ' ') && !(k == 0 && texts[o] == '/' && texts[o + 1] == 'n') && !(k == 0 && o - 1 != -1 && texts[o - 1] == '/' && texts[o] == 'n'))
 					{
 						g.drawImage(Characters[texts[o]], k, l, null);
 						k += Characters[texts[o]].getWidth(null) + (texts[o] == ' ' || (o < text.length() - 1 && texts[o + 1] == ' ') ? 0 : 1);

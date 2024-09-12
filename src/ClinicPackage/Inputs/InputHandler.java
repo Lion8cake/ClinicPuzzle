@@ -33,34 +33,54 @@ public class InputHandler implements KeyListener {
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
 		if (Main.IsTyping)
 		{
 			String text = Main.TypedText;
-			if (e.getKeyChar() == '' || e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
+			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
 			{
 				if (!text.isEmpty() && text.length() > 0)
 				{
 					text = text.substring(0, text.length() - 1);
 				}
 			}
-			//else if (e.getKeyChar())
-			//{
-			//	Main.IsTyping = false;
-			//}
+			else if (e.getKeyCode() == KeyEvent.VK_ENTER)
+			{
+				Main.signaledFinishedText = true;
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
+			{
+				Main.IsTyping = false;
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_SHIFT)
+			{
+				Main.holdingShift = true;
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_CAPS_LOCK)
+			{
+				Main.capsLock = !Main.capsLock;
+			}
 			else
 			{
-				System.out.println(e.getKeyChar());
-				text += e.getKeyChar();
+				String chara = "";
+				chara +=  e.getKeyChar();
+				if (Main.holdingShift)
+				{
+					chara.toUpperCase();
+					Main.holdingShift = false;
+				}
+				else if (Main.capsLock)
+				{
+					chara.toUpperCase();
+				}
+				text += chara;
 			}
 			Main.TypedText = text;
 		}
 		else
-			keyRegister(e);
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (!Main.IsTyping)
 			keyRegister(e);
 	}
 

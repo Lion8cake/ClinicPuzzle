@@ -72,9 +72,9 @@ public class Main
 	public static int renderY = 12;
 	
 	//Tiles
-	final private static int MAXIMUMTILEX = Byte.MAX_VALUE;
+	public final static int MAXIMUMTILEX = Byte.MAX_VALUE;
 	
-	final private static int MAXIMUMTILEY = Byte.MAX_VALUE;
+	public final static int MAXIMUMTILEY = Byte.MAX_VALUE;
 	
 	public static int maxTilesX = 1;
 	
@@ -134,6 +134,12 @@ public class Main
 	public static boolean IsTyping = false;
 	
 	public static String TypedText = "";
+	
+	public static boolean signaledFinishedText = false;
+	
+	public static boolean holdingShift = false;
+	
+	public static boolean capsLock = false;
 	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
 	 * Runs when the game opens or until the Instance of the game is loaded.
@@ -400,6 +406,10 @@ public class Main
 		if (!IsTyping && !TypedText.isEmpty())
 		{
 			TypedText = "";
+		}
+		if (!Main.IsTyping)
+		{
+			signaledFinishedText = false;
 		}
 		MouseClicked = false;
 	}
