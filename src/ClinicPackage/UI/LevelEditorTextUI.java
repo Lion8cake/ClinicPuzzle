@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
-
 import ClinicPackage.Logging;
 import ClinicPackage.Main;
 import Lion8cake.Texture2D;
@@ -38,7 +37,7 @@ public class LevelEditorTextUI extends UIElement {
 	@Override
 	public void SetStaticDefaults()
 	{
-		//KeyboardInputs = true;
+		KeyboardInputs = true;
 		if (textType == LETextTypes.roomWidth || textType == LETextTypes.roomHeight)
 			smallText = true;
 		if (smallText)
@@ -126,6 +125,11 @@ public class LevelEditorTextUI extends UIElement {
 					}
 					else
 						Logging.Log("Warning/!\\: Input file was not found, unable to load room");
+				}
+				else if (textType == LETextTypes.ExportName)
+				{
+					File file = new File("Resources\\" + "RoomLayoutData\\" + Main.TypedText + ".rld").getAbsoluteFile();
+					parentUI.exportedSave = file.toPath();
 				}
 				parentUI.RefreshRoom = true;
 				Main.IsTyping = false;

@@ -8,11 +8,8 @@ public class MouseUpdateHandler implements MouseMotionListener{
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		MouseHandler.MouseHeldTimer++;
-		if (MouseHandler.MouseHeldTimer > 30)
-		{
-			//Logging.Log("Mouse Dragged");
-		}
+		Main.MouseWorld.x = e.getX();
+		Main.MouseWorld.y = e.getY();
 	}
 
 	@Override

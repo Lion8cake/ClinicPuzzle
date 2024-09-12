@@ -164,6 +164,22 @@ public class Texture2D {
 		graphics.drawImage(img, x, y, sizeX, sizeY, null);
 	}
 	
+	public static BufferedImage ColoredRect(int width, int height, Color color)
+	{
+		String key = width + height + color.getRGB() + "Rectangle";
+		Image rect = ImageDictionary.get(key);
+		if (rect == null)
+		{
+			rect = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			Graphics g = (Graphics)(rect.getGraphics());
+			g.setColor(color);
+			g.fillRect(0, 0, width, height);
+			g.dispose();
+			ImageDictionary.put(key, rect);
+		}
+		return (BufferedImage)rect;
+	}
+	
 	public Image DrawText(String text, int width, int height)
 	{
 		Color color = Color.WHITE;
