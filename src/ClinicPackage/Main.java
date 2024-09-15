@@ -347,7 +347,7 @@ public class Main
 		{
 			DoMainMenu();
 		}
-		else
+		else if (!LevelEditorOpen)
 		{
 			for (int plr = 0; plr < MAXPLAYERS; plr++)
 			{

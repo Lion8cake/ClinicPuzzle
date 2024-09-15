@@ -7,14 +7,6 @@ import Lion8cake.Texture2D;
 public class ClinicPuzzel {
 	public static void main(String[] str)
 	{	
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-	}
-	
-	private static void createAndShowGUI() {
 		JFrame window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setResizable(false);

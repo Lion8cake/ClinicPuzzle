@@ -17,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Hashtable;
+import java.util.function.Supplier;
+
 import ClinicPackage.*;
 import ClinicPackage.IDs.FurnitureID;
 import ClinicPackage.IDs.TileID;
@@ -118,6 +120,9 @@ public class LevelEditorUI extends UIElement {
 		}
 		key += roomWidth + roomHeight + "roomImage";
 		BufferedImage MapDisplay = roomDictionary.get(key);
+		float tileSize = 1f;
+		if (roomWidth > 20 || roomHeight > 16)
+			tileSize = 0.5f;
 		if (MapDisplay == null)
 		{
 			MapDisplay = new BufferedImage(roomWidth * 32, roomHeight * 32, BufferedImage.TYPE_INT_RGB);
@@ -152,16 +157,16 @@ public class LevelEditorUI extends UIElement {
 			g2.dispose();
 			roomDictionary.put(key, MapDisplay);
 		}
-		mapX = bgX + (bgWidth - MapDisplay.getWidth()) / 2;
-		mapY = bgY + (bgHeight - MapDisplay.getHeight()) / 2;
-		Texture2D.DrawStaticAsset(g, MapDisplay, mapX, mapY, null, 1f, 1f);
+		mapX = (int)(bgX + (bgWidth - MapDisplay.getWidth() * tileSize) / 2);
+		mapY = (int)(bgY + (bgHeight - MapDisplay.getHeight() * tileSize) / 2);
+		Texture2D.DrawStaticAsset(g, MapDisplay, mapX, mapY, null, tileSize, tileSize);
 
 		int grid;
         for (grid = 0; grid < roomHeight + 1; grid++) {
-            g.drawLine(mapX, mapY + grid * 32, mapX + 32 * roomWidth, mapY + grid * 32);
+            g.drawLine(mapX, mapY + grid * (int)(32 * tileSize), mapX + (int)(32 * tileSize) * roomWidth, mapY + grid * (int)(32 * tileSize));
         }
         for (grid = 0; grid < roomWidth + 1; grid++) {
-            g.drawLine(mapX + grid * 32, mapY, mapX + grid * 32, mapY + roomHeight * 32);
+            g.drawLine(mapX + grid * (int)(32 * tileSize), mapY, mapX + grid * (int)(32 * tileSize), mapY + roomHeight * (int)(32 * tileSize));
         }
 		
 		for (int d = 0; d < maxPanels; d++)
@@ -379,11 +384,14 @@ public class LevelEditorUI extends UIElement {
 			panelSelected = -1;
 		}
 		
+		float tileSize = 1f;
+		if (roomWidth > 20 || roomHeight > 16)
+			tileSize = 0.5f;
 		for (int g = 0; g < roomWidth; g++)
 		{
 			for (int h = 0; h < roomHeight; h++)
 			{
-				if (Main.InsideRectangle(new Rectangle(mapX + 32 * g, mapY + 32 * h, 32, 32), Main.MouseWorld))
+				if (Main.InsideRectangle(new Rectangle((int)(mapX + (32 * g) * tileSize), (int)(mapY + (32 * h) * tileSize), (int)(32 * tileSize), (int)(32 * tileSize)), Main.MouseWorld))
 				{
 					if ((Main.MouseClicked || Main.MouseHeld) && mouseHeldTile > -1)
 					{
@@ -488,9 +496,26 @@ public class LevelEditorUI extends UIElement {
 	
 	private void BackButton()
 	{
+		if (roomWidth == 1 && roomHeight == 1 && virtualtiles[0][0].Type == 0 && virtualfurn[0][0].Type == 0)
+		{
+			Main.LevelEditorOpen = false;
+			Main.Instance.BackToMainMenu();
+			CloseRequest();
+		}
+		else
+		{
+			Supplier<Runnable> d = () -> PopUpLeaveSurability(this);
+			PopupUI popUp = new PopupUI("Do you want to leave? There is an unsaved room.", d);
+			Main.UI.Apphend(popUp);
+		}
+		KeyInputDelay = 14;
+	}
+	
+	private Runnable PopUpLeaveSurability(LevelEditorUI parent) {
 		Main.LevelEditorOpen = false;
 		Main.Instance.BackToMainMenu();
-		CloseRequest();
+		parent.CloseRequest();
+		return null;
 	}
 	
 	private void LoadVirtualRoom(File LoadFile)
