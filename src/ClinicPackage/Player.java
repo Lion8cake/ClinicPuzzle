@@ -42,8 +42,8 @@ public class Player extends Entity {
 	
 	public void SetStaticDefaults()
 	{
-		x = (int)(8.5 * 32);
-		y = (int)(4.5 * 32);
+		x = 0;
+		y = 0;
 		velocityY = 4;
 		velocityX = 4;
 		Width = 32;

@@ -94,7 +94,7 @@ public class Main
 	public static boolean[] furnitureSolid = new boolean[Byte.MAX_VALUE];
 	
 	//Rooms
-	public int RoomID = 2;
+	public int RoomID = 3;
 	
 	//Players
 	final private static int MAXPLAYERS = 1; //Not multiplayer so we only need 1 player
@@ -187,9 +187,10 @@ public class Main
 			furnitureSolid[i] = true;
 		}
 		//Settings
-		tileSolid[TileID.TestFloor] = false;
-		furnitureInteractable[FurnitureID.TestObject] = true;
+		tileSolid[TileID.SturdyFloor] = false;
+		furnitureInteractable[FurnitureID.ThrashCan] = true;
 		furnitureSolid[FurnitureID.Air] = false;
+		furnitureSolid[FurnitureID.PlayerDefaultPositionPoint] = false;
 	}
 	
 	public void LoadRoom()
@@ -201,6 +202,7 @@ public class Main
 			
 			int mapX = 0;
 			int mapY = 0;
+			Point playerDefaultPosition = new Point(0, 0);
 			
 			maxTilesX = Integer.parseInt(reader.readLine());
 			maxTilesY = Integer.parseInt(reader.readLine());
@@ -251,6 +253,10 @@ public class Main
 									{
 										case 0:
 											furniture[mapX][mapY].Type = num;
+											if (num == FurnitureID.PlayerDefaultPositionPoint)
+											{
+												playerDefaultPosition = new Point(mapX * 16, mapY * 16);
+											}
 											break;
 										case 1:
 											furniture[mapX][mapY].xFrame = num;
@@ -282,6 +288,11 @@ public class Main
 				}
 			}
 			reader.close();
+			if (player[myPlayer].x == 0 && player[myPlayer].y == 0)
+			{
+				player[myPlayer].x = playerDefaultPosition.x;
+				player[myPlayer].y = playerDefaultPosition.y;
+			}
 		}
 		catch(IOException e)
 		{
@@ -377,6 +388,10 @@ public class Main
 		{
 			Menu = -1;
 		}
+		if (maxTilesX > 1 && maxTilesY > 1 && tile[maxTilesX][maxTilesY] != null && tile[maxTilesX][maxTilesY] != null)
+		{
+			UpdateTiles();
+		}
 		switch(ResolutionType)
 		{
 			case 0: 
@@ -414,6 +429,23 @@ public class Main
 		MouseClicked = false;
 	}
 	
+	public void UpdateTiles()
+	{
+		for (int mapX = (cameraX / tileSize) - renderDistX; mapX < (cameraX / tileSize) + 1 + renderDistX; mapX++)
+		{
+			for (int mapY = (cameraY / tileSize) - renderDistY; mapY < (cameraY / tileSize) + 1 + renderDistY; mapY++)
+			{
+				if (mapX >= 0 && mapY >= 0 && mapX < MAXIMUMTILEX && mapY < MAXIMUMTILEY)
+				{
+					if (furniture[mapX][mapY].Type == FurnitureID.PlayerDefaultPositionPoint)
+					{
+						furniture[mapX][mapY].Type = FurnitureID.Air;
+					}
+				}
+			}
+		}
+	}
+	
 	/**The method that does all of the game's drawing. This is seperate from Update as it repaints the screen accordingly to every update. <br />
 	 * NOTE: ANYTHING DRAWN OUTSIDE OF THIS METHOD **NOT** BE UPDATED
 	 */
@@ -438,7 +470,7 @@ public class Main
 		{
 			for (int mapY = (cameraY / tileSize) - renderDistY; mapY < (cameraY / tileSize) + 1 + renderDistY; mapY++)
 			{
-				if (mapX > 0 && mapY > 0 && mapX < MAXIMUMTILEX && mapY < MAXIMUMTILEY)
+				if (mapX >= 0 && mapY >= 0 && mapX < MAXIMUMTILEX && mapY < MAXIMUMTILEY)
 				{
 					DrawTiles(graphics, mapX, mapY);
 					DrawFurniture(graphics, mapX, mapY);
@@ -481,34 +513,21 @@ public class Main
 	
 	public static Image TileImage(int type)
 	{
-		if (type == TileID.TestFloor)
+		if (type > 0 && type <= TileID.MaxIDs)
 		{
-			return Texture2D.Get("FloorTest");
-		}
-		else if (type == TileID.TestWall)
-		{
-			return Texture2D.Get("WallTest");
-		}
-		else if (type == 3)
-		{
-			return Texture2D.Get("FloorTest2");
-		}
-		else if (type == 4)
-		{
-			return Texture2D.Get("FloorTest3");
+			return Texture2D.Get("Tile" + type);
 		}
 		return new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
 	}
 	
 	public static Image FurnitureImage(int type)
 	{
-		if (type == FurnitureID.TestFurn)
+		if (!(type == FurnitureID.PlayerDefaultPositionPoint && !LevelEditorOpen))
 		{
-			return Texture2D.Get("TestFurn");
-		}
-		else if (type == FurnitureID.TestObject)
-		{
-			return Texture2D.Get("InteractionObjectTest");
+			if (type > 0 && type <= FurnitureID.MaxIDs)
+			{
+				return Texture2D.Get("Furniture" + type);
+			}
 		}
 		return new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
 	}
@@ -614,7 +633,7 @@ public class Main
 	
 	public static void TileInteraction(Player player, int type, int x, int y)
 	{
-		if (type == FurnitureID.TestObject)
+		if (type == FurnitureID.ThrashCan)
 		{
 			if (!textBoxOpen)
 			{

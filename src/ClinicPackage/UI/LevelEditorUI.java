@@ -207,10 +207,8 @@ public class LevelEditorUI extends UIElement {
 			{
 				int tX = t % 4;
 				int tY = 0;
-				if (t % 4 == 0)
-				{
-					tY += (t / 4) * (18 * t);
-				}
+				int row = Math.toIntExact(t / 4);
+				tY = (18 * row) * 4;
 				Image tile = TileSet ? Main.TileImage(t) : Main.FurnitureImage(t);
 				tileX[t] = RPBx + 16 + (32 * tX) * 2 + (8 * tX);
 				tileY[t] = RPBy + 16 + 3 * 32 + tY;
