@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.util.Hashtable;
 import javax.imageio.ImageIO;
 
+import ClinicPackage.Logging;
+
 //Image System Made by Lion8cake
 public class Texture2D {
 
@@ -30,9 +32,11 @@ public class Texture2D {
 		if (value == null)
 		{
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); //Get the ClassLoader
+			String FilePath2 = "Assets/" + texturePath;
 	    	try {
-	    		String FilePath = readImageFile(texturePath, classLoader);
-	    		value = ImageIO.read(classLoader.getResourceAsStream(FilePath));  //Call the readImageFile method, returns String, we put the result of the method into the TexturePath String 
+	    		String FilePath = readImageFile(FilePath2, classLoader);
+	    		Logging.Log(FilePath);
+	    		value = ImageIO.read(classLoader.getResourceAsStream(FilePath2));  //Call the readImageFile method, returns String, we put the result of the method into the TexturePath String 
 	    		ImageDictionary.put(texturePath, value);
 	    	}
 	    	catch (IOException e) {
