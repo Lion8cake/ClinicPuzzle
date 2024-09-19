@@ -15,6 +15,7 @@ import ClinicPackage.Logging.*;
 import ClinicPackage.IDs.*;
 import ClinicPackage.IO.*;
 import ClinicPackage.UI.*;
+import Lion8cake.Sound;
 import Lion8cake.Texture2D;
 
 public class Main 
@@ -27,6 +28,10 @@ public class Main
 	final public static String GameName = "ClinicPuzzelGame"; //Shouldn't have spaces
 	
 	public static Texture2D texture2D;
+	
+	public static Sound playSound;
+	
+	public static Sound playMusic;
 	
 	public static boolean InGame = false;
 	
@@ -117,9 +122,9 @@ public class Main
 	public static boolean DebugIconOpen = false;
 	
 	//Settings
-	public static int Sound = 0;
+	public static int sound = 0;
 	
-	public static int Music = 0;
+	public static int music = 0;
 	
 	public static int ResolutionType = 0;
 	
@@ -166,6 +171,8 @@ public class Main
 		InMainMenu = true;
 		//LoadRoom();
 		InitiateTileSettings();
+		playSound = new Sound();
+		playMusic = new Sound();
 		texture2D = new Texture2D();
 		texture2D.FontFileName = "CatCodeFont";
 		texture2D.drawScale = drawScale;
@@ -373,6 +380,11 @@ public class Main
 		cameraY = (int)(player[myPlayer].y * drawScale);
 		cameraCenteredX = ScreenWidth / 2;
 		cameraCenteredY = ScreenHeight / 2;
+		try {
+			playSound.SetVolume(sound);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		textBoxOpen = false;
 		UI.UIUpdate();
 		if (!BigDebugMenuIsOpen)

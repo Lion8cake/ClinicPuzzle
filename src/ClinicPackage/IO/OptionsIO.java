@@ -24,8 +24,8 @@ public class OptionsIO {
 				}
 				if (Main.IsStringNumeric(lines))
 				{
-					Main.Sound = Integer.parseInt(lines[0]);
-					Main.Music = Integer.parseInt(lines[1]);
+					Main.sound = Integer.parseInt(lines[0]);
+					Main.music = Integer.parseInt(lines[1]);
 					Main.ResolutionType = Integer.parseInt(lines[2]);
 					InputHandler.UpKeyCode = Integer.parseInt(lines[3]);
 					InputHandler.DownKeyCode = Integer.parseInt(lines[4]);
@@ -61,8 +61,8 @@ public class OptionsIO {
 			try {
 				FileChannel.open(optionsPath, StandardOpenOption.WRITE).truncate(0).close(); //Clear options File
 				PrintWriter opt = new PrintWriter(new BufferedWriter(new FileWriter(optionsFile, true)));
-				opt.println(Main.Sound);
-				opt.println(Main.Music);
+				opt.println(Main.sound);
+				opt.println(Main.music);
 				opt.println(Main.ResolutionType);
 				opt.println(InputHandler.UpKeyCode);
 				opt.println(InputHandler.DownKeyCode);

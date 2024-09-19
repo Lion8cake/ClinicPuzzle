@@ -6,16 +6,19 @@ import java.io.InputStream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 
 //Sound system made by Lion8cake
 public class Sound {
 	private static String[] ValidExtentions = { ".wav", ".snd" };
 	
+	private int _VOLUME = 80;
+	
 	/**Plays the sound based on the string path inputed (file name), the path will extend off the Resources folder for this project.
 	 * <p>Make sure all sound files are in the Resources source folder within your project, ('projecteName')\Resources
 	 * <p>Supported image formats: .wav, .snd*/
-	public static void Play(String texturePath) //Overload of Play(texturePath, loopCount)
+	public void Play(String texturePath) //Overload of Play(texturePath, loopCount)
 	{ 
 		Play(texturePath, 0);
 	}
@@ -23,15 +26,25 @@ public class Sound {
 	/**Plays the sound based on the string path inputed (file name), the path will extend off the Resources folder for this project.
 	 * <p>Make sure all sound files are in the Resources source folder within your project, ('projecteName')\Resources
 	 * <p>Supported image formats: .wav, .snd*/
-	public static void Play(String texturePath, Boolean loop)//Overload of Play(texturePath, loopCount)
+	public void Play(String texturePath, Boolean loop)//Overload of Play(texturePath, loopCount)
 	{
 		Play(texturePath, loop ? Clip.LOOP_CONTINUOUSLY : 0);
+	}
+	
+	public void SetVolume(int volume) throws Exception
+	{
+		if (volume > 100 || volume < 0)
+		{
+			throw(new Exception("cannot increment past 100 or past 0"));
+		}
+		float trueVolume = 107 * ((float)volume / 100);
+		_VOLUME = (int)trueVolume;
 	}
 	
 	/**Plays the sound based on the string path inputed (file name), the path will extend off the Resources folder for this project.
 	 * <p>Make sure all sound files are in the Resources source folder within your project, ('projecteName')\Resources
 	 * <p>Supported image formats: .wav, .snd*/
-	public static void Play(String texturePath, int loopCount)
+	public void Play(String texturePath, int loopCount)
 	{ 
 		if (loopCount > 0)
 		{
@@ -44,7 +57,12 @@ public class Sound {
            	Clip clip;//Create a clip
     		try {
     			clip = AudioSystem.getClip(); //Get Clip
-    			clip.open(GetFileBasedonType(TexturePath, classLoader)); //Open the file, we call the GetFileBasedonType method
+    			clip.open(GetFileBasedonType(TexturePath, classLoader)); //Open the file, we call the GetFileBasedonType method\
+    			FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+    	        int volume = _VOLUME;
+    	        float range = control.getMinimum();
+    	        float result = range * (1 - volume / 100.0f);
+    	        control.setValue(result);
     		    clip.start(); //Start the file
     		    clip.loop(loopCount);
     		} catch (LineUnavailableException e) {

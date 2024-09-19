@@ -1,18 +1,15 @@
 package Lion8cake;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 import javax.imageio.ImageIO;
 
-import ClinicPackage.Logging;
-
 //Image System Made by Lion8cake
 public class Texture2D {
 
-	private static String[] ValidExtentions = { ".png", ".ico" }; //reads .Ico files that are just renamed .png files because I cannot be bothered making a whole .Ico reader
+	private static String[] ValidExtentions = { ".png", ".ico", "NotFound" }; //reads .Ico files that are just renamed .png files because I cannot be bothered making a whole .Ico reader
 	
 	public float drawScale = 2f;
 	
@@ -32,11 +29,9 @@ public class Texture2D {
 		if (value == null)
 		{
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); //Get the ClassLoader
-			String FilePath2 = "Assets/" + texturePath;
 	    	try {
-	    		String FilePath = readImageFile(FilePath2, classLoader);
-	    		Logging.Log(FilePath);
-	    		value = ImageIO.read(classLoader.getResourceAsStream(FilePath2));  //Call the readImageFile method, returns String, we put the result of the method into the TexturePath String 
+	    		String FilePath = readImageFile(texturePath, classLoader);
+	    		value = ImageIO.read(classLoader.getResourceAsStream(FilePath));  //Call the readImageFile method, returns String, we put the result of the method into the TexturePath String 
 	    		ImageDictionary.put(texturePath, value);
 	    	}
 	    	catch (IOException e) {
@@ -64,12 +59,11 @@ public class Texture2D {
 			{
 				break; //Stop the loop when we have the appropriate file
 			}
+			if (fileType == 2)
+			{
+				throw new IOException("The Image/Texture named '" + path + "' could not be found. Maybe a spelling mistake or unsupported image type?");
+			}
 		}
-        File file = new File("Resources\\" + path2).getAbsoluteFile(); //Check the Resources folder
-        if (!file.exists())
-		{
-            throw new IOException("The Image/Texture named '" + path + "' could not be found. Maybe a spelling mistake or unsupported image type?");
-        }
         return path2; //Return the String path of the file
     }
 

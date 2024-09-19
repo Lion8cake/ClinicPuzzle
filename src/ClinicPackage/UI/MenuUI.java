@@ -9,6 +9,7 @@ import ClinicPackage.Main;
 import ClinicPackage.IO.OptionsIO;
 import ClinicPackage.IO.SaveFileIO;
 import ClinicPackage.Inputs.InputHandler;
+import Lion8cake.Sound;
 import Lion8cake.Texture2D;
 
 public class MenuUI extends UIElement {
@@ -229,6 +230,7 @@ public class MenuUI extends UIElement {
 			return;
 		}
 		PopulateText();
+		int oldPanelSelected = panelSelected;
 		switch (MainMenuType) {
 			case 0:
 				maxPanels = 3;
@@ -310,6 +312,39 @@ public class MenuUI extends UIElement {
 			moveWait = 7;
 		}
 
+		if (MainMenuType == 1 && (panelSelected == 0 || panelSelected == 1))
+		{
+			if (KeyInputDelay == 0)
+			{
+				int volumeNumber = panelSelected == 0 ? Main.sound : Main.music;
+				int volOld = volumeNumber;
+				if (Key_Left)
+				{
+					volumeNumber--;
+				}
+				else if (Key_Right)
+				{
+					volumeNumber++;
+				}
+				
+				if (volumeNumber < 0)
+					volumeNumber = 0;
+				if (volumeNumber > 100)
+					volumeNumber = 100;
+				
+				if (volumeNumber != volOld)
+				{
+					Main.playSound.Play("UiClick");
+				}
+				
+				if (panelSelected == 0) 
+					Main.sound = volumeNumber;
+				else
+					Main.music = volumeNumber;
+				KeyInputDelay = 7;
+			}
+		}
+		
 		if (moveWait > 0)
 			moveWait--;
 		if (moveWait <= 0)
@@ -319,6 +354,11 @@ public class MenuUI extends UIElement {
 			panelSelected = 0;
 		if (panelSelected < 0)
 			panelSelected = maxPanels - 1;
+		
+		if (panelSelected != oldPanelSelected)
+		{
+			Main.playSound.Play("UiClick");
+		}
 	}
 
 	private void uiActivated() {
@@ -341,10 +381,8 @@ public class MenuUI extends UIElement {
 			case 1:
 				switch (panelSelected) {
 					case 0:
-						Main.Sound++;
 						break;
 					case 1:
-						Main.Music++;
 						break;
 					case 2:
 						CloseRequest();
@@ -445,8 +483,8 @@ public class MenuUI extends UIElement {
 				panelText[2] = "Exit";
 				break;
 			case 1:
-				panelText[0] = "Sound: " + Main.Sound;
-				panelText[1] = "Music: " + Main.Music;
+				panelText[0] = "Sound: " + Main.sound;
+				panelText[1] = "Music: " + Main.music;
 				panelText[2] = "Contols";
 				panelText[3] = "Resolution: " + Game.screenWidth + "x" + Game.screenHeight;
 				panelText[4] = "Back";
