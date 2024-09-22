@@ -10,6 +10,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Random;
+
+import javax.sound.sampled.Clip;
 
 import ClinicPackage.Logging.*;
 import ClinicPackage.IDs.*;
@@ -35,8 +38,10 @@ public class Main
 	
 	public static boolean InGame = false;
 	
+	public static Random rand = new Random();
+	
 	//debug
-	public static boolean debugg = true; //set to true when you want to have access to developer tools
+	public static boolean debugg = false; //set to true when you want to have access to developer tools
 	
 	public static boolean BigDebugMenuIsOpen = false;
 	
@@ -146,6 +151,9 @@ public class Main
 	
 	public static boolean capsLock = false;
 	
+	// music?
+	public static int MusicCountdown = 0;
+	
 	/** Used to initiate variables and other bits of memory/information when openning the game <br />
 	 * Runs when the game opens or until the Instance of the game is loaded.
 	 * Make sure that 'Instance = this;' is the last line of this method
@@ -156,8 +164,6 @@ public class Main
 		FileIO.CheckFolderspace();
 		OptionsIO.LoadSettings();
 		SaveFileIO.FileSavesSettup();
-		//AssetBank.InitiliseTextures(); //AssetBank used to be a place that stored frequently used textures. Removed due to Texture2D optimisations
-		//Logging.Log("Initialised Textures", LoggingType.Base);
 		if (player[myPlayer] == null)
 		{
 			player[myPlayer] = new Player();
@@ -167,9 +173,7 @@ public class Main
 			player[plr] = new Player();
 		}
 		Logging.Log("Initialised Players", LoggingType.Base);
-		//Logging.Log("/RoomLayoutData/MapLayout" + RoomID + ".rld");
 		InMainMenu = true;
-		//LoadRoom();
 		InitiateTileSettings();
 		playSound = new Sound();
 		playMusic = new Sound();
@@ -178,7 +182,6 @@ public class Main
 		texture2D.drawScale = drawScale;
 		UI = new UIElement();
 		
-		//Code runs here
 		Logging.Log("Initialisation Finished", LoggingType.Base);
 	}
 	
@@ -300,6 +303,7 @@ public class Main
 				player[myPlayer].x = playerDefaultPosition.x;
 				player[myPlayer].y = playerDefaultPosition.y;
 			}
+			PlayGameMusic();
 		}
 		catch(IOException e)
 		{
@@ -382,8 +386,28 @@ public class Main
 		cameraCenteredY = ScreenHeight / 2;
 		try {
 			playSound.SetVolume(sound);
+			playMusic.SetVolume(music);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		if (!InGame)
+		{	
+			Clip clip = playMusic.Get("IllJustBeFine", true);
+			if (clip.isActive())
+			{
+				clip.stop();
+				clip.close();
+				clip.flush();
+			}
+		}
+		else
+		{
+			MusicCountdown--;
+			if (MusicCountdown <= 0)
+			{
+				MusicCountdown = 0;
+				PlayGameMusic();
+			}
 		}
 		textBoxOpen = false;
 		UI.UIUpdate();
@@ -456,6 +480,13 @@ public class Main
 				}
 			}
 		}
+	}
+	
+	public void PlayGameMusic()
+	{
+		Clip clip = playMusic.Get("IllJustBeFine", true);
+		clip.start();
+		MusicCountdown = (107 * 60) + (rand.nextInt(60, 240) * 60);
 	}
 	
 	/**The method that does all of the game's drawing. This is seperate from Update as it repaints the screen accordingly to every update. <br />
@@ -649,7 +680,7 @@ public class Main
 		{
 			if (!textBoxOpen)
 			{
-				TextBoxUI textBox = new TextBoxUI(player, new String[] { "Sup", "How's your day been so far?", "hmm", "welp im just chilling in this void", "no clue where the rest of the world is", "bye" }, new int[] {0, 0, 0, 0, 0, 0}, new int[] {0, 0, 1, 0, 2, 0},  new String[] {"PortraitTest", "", "", ""});
+				TextBoxUI textBox = new TextBoxUI(player, new String[] { "Psst", "yeah hey, it's me the trash can", "not sure why I can talk...", "...but what you see in this room is everything.", "this \"game\" is more of a tech demo and doesn't /n contain much content", "I'll save your time, cya man!" }, new int[] {0, 0, 0, 0, 0, 0}, new int[] {0, 0, 1, 0, 2, 0},  new String[] {"PortraitTest", "", "", ""});
 				UI.Apphend(textBox);
 			}
 		}

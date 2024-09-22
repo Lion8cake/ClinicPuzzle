@@ -1,81 +1,169 @@
 package Lion8cake;
 
-import java.io.File;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 //Sound system made by Lion8cake
 public class Sound {
-	private static String[] ValidExtentions = { ".wav", ".snd" };
+	private static String[] ValidExtentions = { ".wav", ".snd", "NotFound" };
 	
-	private int _VOLUME = 80;
+	private static Hashtable<String, InputStream> SoundDictionary = new Hashtable<String, InputStream>();
 	
-	/**Plays the sound based on the string path inputed (file name), the path will extend off the Resources folder for this project.
-	 * <p>Make sure all sound files are in the Resources source folder within your project, ('projecteName')\Resources
-	 * <p>Supported image formats: .wav, .snd*/
-	public void Play(String texturePath) //Overload of Play(texturePath, loopCount)
-	{ 
-		Play(texturePath, 0);
-	}
+	public int _VOLUME = 100;
 	
-	/**Plays the sound based on the string path inputed (file name), the path will extend off the Resources folder for this project.
-	 * <p>Make sure all sound files are in the Resources source folder within your project, ('projecteName')\Resources
-	 * <p>Supported image formats: .wav, .snd*/
-	public void Play(String texturePath, Boolean loop)//Overload of Play(texturePath, loopCount)
+	public Hashtable<String, Clip> activeClips = new Hashtable<String, Clip>();
+	
+	public void Play(String name)
 	{
-		Play(texturePath, loop ? Clip.LOOP_CONTINUOUSLY : 0);
+		UpdateClips(name);
+		Clip clip = null;
+		clip = activeClips.get(name);
+		if (clip != null)
+		{
+			clip.start();
+		}
 	}
 	
+	public void Stop(String name)
+	{
+		UpdateClips(name);
+		Clip clip = null;
+		clip = activeClips.get(name);
+		if (clip != null)
+		{
+			clip.stop();
+			clip.close();
+			clip.flush();
+		}
+	}
+	
+	public void Loop(String name, int loopCount)
+	{
+		UpdateClips(name);
+		Clip clip = null;
+		clip = activeClips.get(name);
+		if (clip != null)
+		{
+			clip.loop(loopCount);
+		}
+	}
+	
+	/**Sets the volume of all sounds played through this instance of Sound. <br/>
+	 * accepts a percentage between 0 and 100
+	 * @param volume percentage. Only accpets 0 to 100.
+	 * @throws Exception when outside of the percentage range,
+	 */
 	public void SetVolume(int volume) throws Exception
 	{
 		if (volume > 100 || volume < 0)
 		{
-			throw(new Exception("cannot increment past 100 or past 0"));
+			throw(new Exception("cannot increment past 0 or 100"));
 		}
+		
+		Enumeration<String> keys = activeClips.keys();
+		while (keys.hasMoreElements()) {
+			String str = keys.nextElement();
+			UpdateClips(str);
+		}
+		
 		float trueVolume = 107 * ((float)volume / 100);
 		_VOLUME = (int)trueVolume;
 	}
 	
-	/**Plays the sound based on the string path inputed (file name), the path will extend off the Resources folder for this project.
-	 * <p>Make sure all sound files are in the Resources source folder within your project, ('projecteName')\Resources
-	 * <p>Supported image formats: .wav, .snd*/
-	public void Play(String texturePath, int loopCount)
-	{ 
-		if (loopCount > 0)
+	private void UpdateClips(String name)
+	{
+		if (_VOLUME <= 0)
 		{
-			loopCount -= 1; //We make all inputs that aren't continuous or 0 take away a loop to not make the inputed 3 loop 4 times
+			Stop(name);
+			return;
 		}
-		String TexturePath = null;
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); //Get the ClassLoader
-    	try {
-    		TexturePath = getTexturePath(texturePath, classLoader); //Call the getTexturePath method, returns String, we put the result of the method into the TexturePath String 
-           	Clip clip;//Create a clip
-    		try {
-    			clip = AudioSystem.getClip(); //Get Clip
-    			clip.open(GetFileBasedonType(TexturePath, classLoader)); //Open the file, we call the GetFileBasedonType method\
-    			FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-    	        int volume = _VOLUME;
-    	        float range = control.getMinimum();
-    	        float result = range * (1 - volume / 100.0f);
-    	        control.setValue(result);
-    		    clip.start(); //Start the file
-    		    clip.loop(loopCount);
-    		} catch (LineUnavailableException e) {
-    			e.printStackTrace();
-    		}
+		Clip clip = null;
+		clip = activeClips.get(name);
+		if (clip != null)
+		{
+			if (!clip.isActive() || !clip.isOpen())
+			{
+				clip.stop();
+				clip.close();
+				clip.flush();
+				activeClips.remove(name);
+				return;
+			}
+			FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+	        int volume = _VOLUME;
+	        float range = control.getMinimum();
+	        float result = range * (1 - volume / 100.0f);
+	        control.setValue(result);
 		}
-    	catch (IOException e) {
-			e.printStackTrace();
+		else
+		{
+			System.out.println("sound under the name '" + name + "' was not found, did you forget to add it to the the hashtable (addClips method)");
 		}
 	}
 	
-	/**Returns String with file extension if the file is found within the Resources source Folder, requires a ClassLoader to get the appropriate project's Resource**/
-    private static String getTexturePath(String path, ClassLoader classLoader) throws IOException {
+	public void SetNonCachedClipVolume(Clip clip)
+	{
+		FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        int volume = _VOLUME;
+        float range = control.getMinimum();
+        float result = range * (1 - volume / 100.0f);
+        control.setValue(result);
+	}
+	
+	/**Gets the clip based on the string path inputed, the path will extend off the Resources folder for this project.
+	 * <p>Make sure all asset files are in the Resources source folder within your project, ('projecteName')\Resources
+	 * <p>Returns Clip
+	 * <p>Supported image formats: .snd*/
+	public Clip Get(String texturePath, boolean onlyOne)
+	{
+		Clip value = null;
+		value = activeClips.get(texturePath);
+		if (value == null)
+		{
+			InputStream value2 = null;
+			AudioInputStream Ainput = null;
+			value2 = SoundDictionary.get(texturePath);
+	    	try {
+	    		ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); //Get the ClassLoader
+				String FilePath = readSoundFile(texturePath, classLoader);
+	    		value2 = classLoader.getResourceAsStream(FilePath);
+	    		SoundDictionary.put(texturePath, value2);
+	    	}
+	    	catch (IOException e) {
+				e.printStackTrace();
+			}
+	    	BufferedInputStream bufferedAudioStream = new BufferedInputStream(value2);
+			try {
+				Ainput = AudioSystem.getAudioInputStream(bufferedAudioStream);
+			} catch (UnsupportedAudioFileException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			try {
+				value = AudioSystem.getClip();
+				value.open(Ainput);
+				if (onlyOne)
+					activeClips.put(texturePath, value);
+			} catch (LineUnavailableException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+    	return value;
+	}
+	
+	/**Returns String if it succeeds, else it will throw an error telling you to check that your image exists and is named correctly/has correct format**/
+    private static String readSoundFile(String path, ClassLoader classLoader) throws IOException {
     	String path2 = null;
     	InputStream input = null;
         for (int fileType = 0; fileType < ValidExtentions.length; fileType++) //Loop through all available file extensions, multiple file extensions allows for more file flexibility
@@ -86,36 +174,11 @@ public class Sound {
 			{
 				break; //Stop the loop when we have the appropriate file
 			}
-		}
-        File file = new File("Resources\\" + path2).getAbsoluteFile(); //Check the Resources folder
-        if (!file.exists())
-		{
-			throw new IllegalArgumentException("The Sound Asset/Media Asset named '" + path + "' could not be found. Maybe a spelling mistake or unsupported sound type?");
-		}
-		return path2; //Return the String path of the file
-    }
-    
-    /**Returns AudioInputStream of the file inputed, the string for texturePath MUST contain a file extension and that file MUST exist. Use PlaySound.getTexturePath to get/find the file with just a string name**/
-    private static AudioInputStream GetFileBasedonType(String texturePath, ClassLoader classLoader) throws IOException {
-    	int index = texturePath.lastIndexOf('.'); //Get the file extension of the file, files cannot have . within their name
-    	String fileExtension = null;
-        if(index > 0) {
-          fileExtension = "." + texturePath.substring(index + 1); //Splice the string and get the file extension as its own separate string
-        }
-    	AudioInputStream inputStream = null;
-    	try {
-    		if (fileExtension != null) //Make sure an extension is present just in-case the file doesn't have one
-    		{
-    			inputStream = AudioSystem.getAudioInputStream(classLoader.getResourceAsStream(texturePath)); //Get the AudioInputStream of the file
-    		}
-    		else
+			if (fileType == 2)
 			{
-				throw new IllegalArgumentException("An Illegal extention was entered and passed the file extention check, How did you get here?"); //Self explanatory
+				throw new IOException("The sound named '" + path + "' could not be found. Maybe a spelling mistake or unsupported audio type?");
 			}
-	    }
-    	catch(Exception ex) {
-	    	throw new IllegalArgumentException("(" + fileExtension + " File Loader) An Error Occurred when getting '" + texturePath + "'!"); //Return an error for the file extension
-	    }
-    	return inputStream; //Return the AudioInputStream of the file found.
+		}
+        return path2; //Return the String path of the file
     }
 }

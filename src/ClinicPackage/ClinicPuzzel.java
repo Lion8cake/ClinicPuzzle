@@ -20,7 +20,7 @@ public class ClinicPuzzel {
 		window.pack();
 		
 		window.setIconImage(Texture2D.GetIcon());
-		window.setTitle("Game");
+		window.setTitle("Clinic Puzzel - Game Engine Tech Demo");
 		window.setVisible(true);
     }
 }

@@ -316,6 +316,10 @@ public class Texture2D {
 				g.dispose();
 				textDrawnLength = k;
 				textDrawnHeight = l + 12;
+				if (textDrawnLength < 1)
+					textDrawnLength = 1;
+				if (textDrawnHeight < 1)
+					textDrawnHeight = 1;
 				BufferedImage tempTextImage = null;
 				if (noWidthDefined || noHeightDefined)
 				{

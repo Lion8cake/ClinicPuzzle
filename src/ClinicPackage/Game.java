@@ -104,5 +104,6 @@ public class Game extends JPanel implements Runnable {
 	public static void CloseGame()
 	{
 		SwingUtilities.getWindowAncestor(Instance).dispose();
+		System.exit(0);
 	}
 }

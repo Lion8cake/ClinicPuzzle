@@ -4,12 +4,12 @@ import java.awt.event.KeyEvent;
 import java.awt.*;
 import java.awt.image.*;
 import java.util.function.Supplier;
+import javax.sound.sampled.Clip;
 import ClinicPackage.Game;
 import ClinicPackage.Main;
 import ClinicPackage.IO.OptionsIO;
 import ClinicPackage.IO.SaveFileIO;
 import ClinicPackage.Inputs.InputHandler;
-import Lion8cake.Sound;
 import Lion8cake.Texture2D;
 
 public class MenuUI extends UIElement {
@@ -185,6 +185,84 @@ public class MenuUI extends UIElement {
 				}
 				break;
 			}
+			case 5:
+			{
+				String[] str = new String[7];
+				int[] credTextX = new int[7];
+				int[] credTextY = new int[7];
+				Image[] credText = new Image[7];
+				
+				str[0] = "Lion8cake - Programmer";
+				str[1] = "Pearl - Concept artist and ideas";
+				str[2] = "Goose____ - Artist behind 'I'll Just be fine' music";
+				str[3] = "Pixabay - ui click sound";
+				str[4] = "https://pixabay.com/sound-effects/ui-click-43196/";
+				str[5] = "FiReTiTi - buffered image blurr code";
+				str[6] = "https://stackoverflow.com/questions/36599547/adding-blur-effect-to-bufferredimage-in-java";
+				
+				float textScale = 1f;
+				
+				for (int j = 0; j < str.length; j++)
+				{
+					credText[j] = Main.texture2D.DrawText(str[j], -1, -1, Color.WHITE);
+					switch (j)
+					{
+						case 0:
+							textScale = 2f;
+							credTextX[j] = (int)((Main.ScreenWidth / 2) - ((credText[j].getWidth(null) / 2) * textScale));
+							credTextY[j] = 128;
+							break;
+						case 1:
+							textScale = 2f;
+							credTextX[j] = (int)((Main.ScreenWidth / 2) - ((credText[j].getWidth(null) / 2) * textScale));
+							credTextY[j] = (int) (128 * (j + 1) + credText[j - 1].getHeight(null) * textScale);
+							break;
+						case 2:
+							textScale = 2f;
+							credTextX[j] = (int)((Main.ScreenWidth / 2) - ((credText[j].getWidth(null) / 2) * textScale));
+							credTextY[j] = (int) (128 * (j + 1) + credText[j - 1].getHeight(null) * textScale);
+							break;
+						case 3:
+							textScale = 1f;
+							credTextX[j] = (int)((Main.ScreenWidth / 2) - ((credText[j].getWidth(null) / 2) * textScale));
+							credTextY[j] = (int)(Main.ScreenHeight - (Height * 1.8) - ((credText[j].getHeight(null) / 2 * textScale)) + 24);
+							break;
+						case 4:
+							textScale = 1f;
+							credTextX[j] = (int)((Main.ScreenWidth / 2) - ((credText[j].getWidth(null) / 2) * textScale));
+							credTextY[j] = credTextY[3] + 16;
+							break;
+						case 5:
+							textScale = 1f;
+							credTextX[j] = (int)((Main.ScreenWidth / 2) - ((credText[j].getWidth(null) / 2) * textScale));
+							credTextY[j] = credTextY[3] + (16 * 2);
+							break;
+						case 6:
+							textScale = 1f;
+							credTextX[j] = (int)((Main.ScreenWidth / 2) - ((credText[j].getWidth(null) / 2) * textScale));
+							credTextY[j] = credTextY[3] + (16 * 3);
+							break;
+					}
+					Texture2D.DrawStaticAsset(graphics, credText[j], credTextX[j], credTextY[j], null, textScale, textScale);
+				}
+				
+				for (int i = 0; i < 2; i++)
+				{
+					BufferedImage pfps = (BufferedImage)(Texture2D.Get("profiles"));
+					Rectangle frame = new Rectangle(0 + 64 * i, 0, 64, 64);
+					Texture2D.DrawStaticAsset(graphics, pfps, (int)(Main.ScreenWidth / 2 - ((pfps.getWidth() / 2) / 1.5f)), (i == 0 ? credTextY[0] : credTextY[2]) + 24, frame, 1.5f, 1.5f);
+				}
+				
+				BufferedImage img = (BufferedImage) (Texture2D.Get("TestUIPanel"));
+				int i = (Main.ScreenWidth / 2) - (Width / 2);
+				int j = (Main.ScreenHeight - Height - 16);
+				UIElement.DrawPanel(graphics, img, i, j, Width, Height);
+
+				//Text
+				String text = panelText[panelSelected];
+				DrawTextCentered(graphics, text, panelSelected, i, j);
+				break;
+			}
 		}
 	}
 
@@ -232,20 +310,23 @@ public class MenuUI extends UIElement {
 		PopulateText();
 		int oldPanelSelected = panelSelected;
 		switch (MainMenuType) {
-			case 0:
+			case 0: //Main menu
 				maxPanels = 3;
 				break;
-			case 1:
+			case 1: //Options
 				maxPanels = 5;
 				break;
-			case 2:
+			case 2: //Pause Menu
 				maxPanels = 3;
 				break;
-			case 3:
+			case 3: //Controls
 				maxPanels = 7; // Amount of Key input settings + back
 				break;
-			case 4:
+			case 4: //Saves Menu
 				maxPanels = 6; // 5 saves + back
+				break;
+			case 5: //Credits
+				maxPanels = 1;
 				break;
 		}
 
@@ -334,7 +415,9 @@ public class MenuUI extends UIElement {
 				
 				if (volumeNumber != volOld)
 				{
-					Main.playSound.Play("UiClick");
+					Clip clip = Main.playSound.Get("UiClick", false);
+					Main.playSound.SetNonCachedClipVolume(clip);
+					clip.start();
 				}
 				
 				if (panelSelected == 0) 
@@ -357,7 +440,9 @@ public class MenuUI extends UIElement {
 		
 		if (panelSelected != oldPanelSelected)
 		{
-			Main.playSound.Play("UiClick");
+			Clip clip = Main.playSound.Get("UiClick", false);
+			Main.playSound.SetNonCachedClipVolume(clip);
+			clip.start();
 		}
 	}
 
@@ -389,8 +474,8 @@ public class MenuUI extends UIElement {
 						Main.Instance.ChangeMainMenu(3); // Controls
 						break;
 					case 3:
-						Main.ResolutionType++;
-						KeyInputDelay = 20;
+						CloseRequest();
+						Main.Instance.ChangeMainMenu(5); // Credits
 						break;
 					case 4:
 						Back();
@@ -449,6 +534,13 @@ public class MenuUI extends UIElement {
 						break;
 				}
 				break;
+			case 5:
+				switch (panelSelected) {
+					case 0:
+						Back();
+						break;
+				}
+				break;
 		}
 	}
 
@@ -485,8 +577,8 @@ public class MenuUI extends UIElement {
 			case 1:
 				panelText[0] = "Sound: " + Main.sound;
 				panelText[1] = "Music: " + Main.music;
-				panelText[2] = "Contols";
-				panelText[3] = "Resolution: " + Game.screenWidth + "x" + Game.screenHeight;
+				panelText[2] = "Controls";
+				panelText[3] = "Credits";
 				panelText[4] = "Back";
 				break;
 			case 2:
@@ -510,6 +602,9 @@ public class MenuUI extends UIElement {
 				panelText[3] = "Save4";
 				panelText[4] = "Save5";
 				panelText[5] = "Back";
+				break;
+			case 5:
+				panelText[0] = "Back";
 				break;
 		}
 	}
@@ -538,6 +633,10 @@ public class MenuUI extends UIElement {
 			case 4:
 				CloseRequest();
 				Main.Instance.ChangeMainMenu(0);
+				break;
+			case 5: 
+				CloseRequest();
+				Main.Instance.ChangeMainMenu(1);
 				break;
 			}
 	}
