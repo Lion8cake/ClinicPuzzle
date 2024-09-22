@@ -680,7 +680,7 @@ public class Main
 		{
 			if (!textBoxOpen)
 			{
-				TextBoxUI textBox = new TextBoxUI(player, new String[] { "Psst", "yeah hey, it's me the trash can", "not sure why I can talk...", "...but what you see in this room is everything.", "this \"game\" is more of a tech demo and doesn't /n contain much content", "I'll save your time, cya man!" }, new int[] {0, 0, 0, 0, 0, 0}, new int[] {0, 0, 1, 0, 2, 0},  new String[] {"PortraitTest", "", "", ""});
+				TextBoxUI textBox = new TextBoxUI(player, new String[] { "Psst", "yeah hey, it's me the trash can", "not sure why I can talk...", "...but what you see in this room is everything.", "this \"game\" is more of a tech demo and doesn't contain much content", "I'll save your time, cya man!" }, new int[] {0, 0, 0, 0, 0, 0}, new int[] {0, 0, 1, 0, 2, 0},  new String[] {"PortraitTest", "", "", ""});
 				UI.Apphend(textBox);
 			}
 		}
