@@ -36,7 +36,7 @@ public class Game extends JPanel implements Runnable {
 	
 	public static JFrame Parent = null;
 	
-	public Game(Main main, JFrame parent)
+	public Game(Main main, JFrame parent) //This is the constructor of the Game class, this sets a lot of preffered window/Jframe settings
 	{
 		Parent = parent;
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -71,15 +71,17 @@ public class Game extends JPanel implements Runnable {
 			
 			if (frameDelta >= 1)
 			{
-				Main main = gameSystem;
+				Main main = gameSystem; //Main can be found at - src/ClinicPackage/Main.java
 				Main.ScreenWidth = screenWidth;
 				Main.ScreenHeight = screenHeight;
 				if (Main.Instance == null)
 				{
-					main.Initialisation();
+					main.Initialisation();//Initialisation
 				}
-				main.Update();
-				repaint();
+				main.Update(); //Update
+				repaint(); //and paint
+				//Are all called here in run from the Main class, why? so that we don't have to mess with the Game class very often. Its much easier to house everything in a main class
+				//so that they can be organised much easier than having to mess with stuff like delta time and other parts of this structure
 				
 				frameDelta--;
 			}
@@ -103,7 +105,7 @@ public class Game extends JPanel implements Runnable {
 	 */
 	public static void CloseGame()
 	{
-		SwingUtilities.getWindowAncestor(Instance).dispose();
-		System.exit(0);
+		SwingUtilities.getWindowAncestor(Instance).dispose(); //terminates the window
+		System.exit(0); //Stops all code, assets, etc
 	}
 }
